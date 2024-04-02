@@ -59,6 +59,7 @@
         android:layout_height="20dp"
         android:layout_marginLeft="-28dp"
         android:layout_toRightOf="@id/txtQuantity"
-        android:src="@drawable/dots" />
+        android:src="@drawable/dots"
+        app:tint="#A6A6A6"/>
 
 </RelativeLayout>
