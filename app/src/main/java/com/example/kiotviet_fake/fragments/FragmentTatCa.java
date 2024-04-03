@@ -1,6 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
 import com.example.kiotviet_fake.adapters.TableAdapter;
+import com.example.kiotviet_fake.database.ApiService;
+import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.models.Table;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentTatCa extends Fragment {
 
@@ -45,18 +56,42 @@ public class FragmentTatCa extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         ArrayList<Table> arrayList = new ArrayList<>();
-        arrayList.add(new Table("Mang về", null, null));
 
-        arrayList.add(new Table("BÀN 1", null, null));
-        arrayList.add(new Table("BÀN 2", "8g30", "18.000"));
+        //select data from api
+        ApiService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ApiService.class);
+        Call<String> call = apiService.getData();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body());
 
-        arrayList.add(new Table("BÀN 3", null, null));
-        arrayList.add(new Table("BÀN 4", "8g30", "18.000"));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String tableName = jsonObject.getString("table_name");
+                            // Sử dụng ID tại đây theo nhu cầu của bạn
+                            arrayList.add(new Table(tableName, null, null));
 
+                            Log.d("TAG", "TABLE_name: " + tableName);
+                        }
+                        // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
+                        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        recyclerView.setAdapter(tableAdapter);
+                        tableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("TAG", "Failed to fetch data: " + response.code());
+                }
+            }
 
-
-
-        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-        recyclerView.setAdapter(tableAdapter);
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "Failed to fetch data: " + t.getMessage());
+            }
+        });
     }
+
 }
