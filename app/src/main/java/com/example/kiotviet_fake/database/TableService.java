@@ -3,9 +3,9 @@ package com.example.kiotviet_fake.database;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface ApiService {
+public interface TableService {
     @GET("select.php")
-    Call<String> getData();
+    Call<String> getTable();
 }
 
 

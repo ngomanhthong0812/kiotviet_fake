@@ -18,6 +18,7 @@ import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
 import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.database.ApiService;
 import com.example.kiotviet_fake.database.RetrofitClient;
+import com.example.kiotviet_fake.database.TableService;
 import com.example.kiotviet_fake.models.Table;
 
 import org.json.JSONArray;
@@ -58,8 +59,8 @@ public class FragmentTatCa extends Fragment {
         ArrayList<Table> arrayList = new ArrayList<>();
 
         //select data from api
-        ApiService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ApiService.class);
-        Call<String> call = apiService.getData();
+        TableService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableService.class);
+        Call<String> call = apiService.getTable();
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
