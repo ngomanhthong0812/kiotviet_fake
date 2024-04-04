@@ -27,7 +27,6 @@ import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.HomePagerAdapter;
 import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
 import com.example.kiotviet_fake.adapters.TableAdapter;
-import com.example.kiotviet_fake.database.ApiService;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.fragments.FragmentSuDung;
 import com.example.kiotviet_fake.fragments.FramentHome;

@@ -2,6 +2,7 @@ package com.example.kiotviet_fake.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.activities.OrderProductActivity;
 import com.example.kiotviet_fake.activities.TableDetailActivity;
 import com.example.kiotviet_fake.models.Table;
 
@@ -39,16 +41,13 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.viewHolder> 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         Table table = tables.get(position);
-        holder.txtSoBan.setText(table.getTenBan());
-        holder.txtThoiGian.setText(table.getThoiGian());
-        String gia = table.getGia();
-        if (gia != null) {
-            holder.txtGia.setText(gia);
-        } else {
-            holder.txtGia.setText(""); // hoặc một giá trị mặc định khác thích hợp
+        holder.txtSoBan.setText(table.getTable_name());
+        holder.txtGia.setText(String.valueOf(table.getTable_price()));
+        if(table.getTable_price() == 0){
+            holder.txtGia.setText("");
         }
-
-        if (table.getGia() != null && table.getThoiGian() != null) {
+//        holder.txtThoiGian.setText(table.getThoiGian());
+        if (table.getStatus() != 0) {
             // Đặt màu nền và border màu xanh
             holder.item.setBackgroundResource(R.drawable.bg_item_1);
         } else {
@@ -56,7 +55,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.viewHolder> 
             holder.item.setBackgroundResource(R.drawable.bg_item);
         }
 
-        if (table.getTenBan().toLowerCase().contains("mang")) {
+        if (table.getTable_name().toLowerCase().contains("mang")) {
             holder.imgCart.setVisibility(View.VISIBLE); // Hiển thị biểu tượng giỏ hàng
         } else {
             holder.imgCart.setVisibility(View.GONE); // Ẩn biểu tượng giỏ hàng
@@ -65,7 +64,16 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.viewHolder> 
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, TableDetailActivity.class);
+                Intent intent;
+                if (table.getStatus() != 0) {
+                    intent = new Intent(context, TableDetailActivity.class);
+                    intent.putExtra("nameTable", table.getTable_name());
+                    intent.putExtra("idTable", table.getId());
+                } else {
+                    intent = new Intent(context, OrderProductActivity.class);
+                    intent.putExtra("nameTable", table.getTable_name());
+                    intent.putExtra("idTable", table.getId());
+                }
                 context.startActivity(intent);
             }
         });

@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface TableService {
-    @GET("select.php")
+    @GET("tables/select.php")
     Call<String> getTable();
 }
 

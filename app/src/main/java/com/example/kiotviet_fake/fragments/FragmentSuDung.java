@@ -1,6 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.TableAdapter;
+import com.example.kiotviet_fake.database.RetrofitClient;
+import com.example.kiotviet_fake.database.TableService;
 import com.example.kiotviet_fake.models.Table;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentSuDung extends Fragment {
 
@@ -44,16 +55,50 @@ public class FragmentSuDung extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         ArrayList<Table> arrayList = new ArrayList<>();
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
-        arrayList.add(new Table("BÀN 3", "8g30", "18.000"));
 
-        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-        recyclerView.setAdapter(tableAdapter);
+        //select data from api
+        TableService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableService.class);
+        Call<String> call = apiService.getTable();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body());
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            int id = Integer.parseInt(jsonObject.getString("id"));
+                            String tableName = jsonObject.getString("table_name");
+                            int status = Integer.parseInt(jsonObject.getString("status"));
+                            float  table_price = Float.parseFloat(jsonObject.getString("table_price"));
+
+                            String userIdString = jsonObject.getString("user_id");
+                            int userId = 0; // Giá trị mặc định nếu không thể chuyển đổi
+                            if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
+                                userId = Integer.parseInt(userIdString);
+                            }
+                            if (status != 0) {
+                                arrayList.add(new Table(id, tableName, status, userId,table_price));
+                            }
+                        }
+                        // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
+                        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        recyclerView.setAdapter(tableAdapter);
+                        tableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("TAG", "Failed to fetch data: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "Failed to fetch data: " + t.getMessage());
+            }
+        });
     }
 
 }

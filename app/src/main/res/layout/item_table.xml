@@ -31,7 +31,7 @@
                 android:id="@+id/txtSoBan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="17dp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:paddingVertical="5dp"
-            android:text="1"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="13dp" />
 
@@ -51,7 +51,7 @@
             android:id="@+id/txtGia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123"
+            android:text=""
             android:textColor="@color/tabselect"
             android:textSize="16dp"
             android:textStyle="bold" />

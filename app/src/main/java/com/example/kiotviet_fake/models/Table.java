@@ -1,37 +1,57 @@
 package com.example.kiotviet_fake.models;
 
 public class Table {
-    public String tenBan;
-    public String thoiGian;
-    public String gia;
+    public int id;
+    public String table_name;
+    public int status;
+    public int user_id;
+    public float table_price;
 
-    public Table(String tenBan, String thoiGian, String gia) {
-        this.tenBan = tenBan;
-        this.thoiGian = thoiGian;
-        this.gia = gia;
+    public Table(int id, String table_name, int status, int user_id, float table_price) {
+        this.id = id;
+        this.table_name = table_name;
+        this.status = status;
+        this.user_id = user_id;
+        this.table_price = table_price;
     }
 
-    public String getTenBan() {
-        return tenBan;
+    public int getId() {
+        return id;
     }
 
-    public void setTenBan(String tenBan) {
-        this.tenBan = tenBan;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getThoiGian() {
-        return thoiGian;
+    public String getTable_name() {
+        return table_name;
     }
 
-    public void setThoiGian(String thoiGian) {
-        this.thoiGian = thoiGian;
+    public void setTable_name(String table_name) {
+        this.table_name = table_name;
     }
 
-    public String getGia() {
-        return gia;
+    public int getStatus() {
+        return status;
     }
 
-    public void setGia(String gia) {
-        this.gia = gia;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public float getTable_price() {
+        return table_price;
+    }
+
+    public void setTable_price(int table_price) {
+        this.table_price = table_price;
     }
 }

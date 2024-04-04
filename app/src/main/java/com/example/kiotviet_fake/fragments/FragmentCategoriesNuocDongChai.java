@@ -1,5 +1,6 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,18 +9,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
-import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
-import com.example.kiotviet_fake.adapters.TableAdapter;
-import com.example.kiotviet_fake.database.OrdersService;
+import com.example.kiotviet_fake.adapters.ProductAdapter;
+import com.example.kiotviet_fake.database.ProductService;
 import com.example.kiotviet_fake.database.RetrofitClient;
-import com.example.kiotviet_fake.database.TableService;
-import com.example.kiotviet_fake.models.Table;
+import com.example.kiotviet_fake.models.Product;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,10 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentTatCa extends Fragment {
-    private ArrayList<Table> tableList = new ArrayList<>();
-
-    public FragmentTatCa() {
+public class FragmentCategoriesNuocDongChai extends Fragment {
+    public FragmentCategoriesNuocDongChai() {
         // Required empty public constructor
     }
 
@@ -42,7 +40,7 @@ public class FragmentTatCa extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tat_ca, container, false);
+        return inflater.inflate(R.layout.fragment_categories_nuoc_uong_dong_chai, container, false);
     }
 
     @Override
@@ -50,18 +48,17 @@ public class FragmentTatCa extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initView();
     }
-
     public void initView() {
         RecyclerView recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
+        GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
 
-        ArrayList<Table> arrayList = new ArrayList<>();
+        ArrayList<Product> arrayList = new ArrayList<>();
 
         //select data from api
-        TableService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableService.class);
-        Call<String> call = apiService.getTable();
+        ProductService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductService.class);
+        Call<String> call = apiService.getProducts();
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -72,23 +69,26 @@ public class FragmentTatCa extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             int id = Integer.parseInt(jsonObject.getString("id"));
-                            String tableName = jsonObject.getString("table_name");
-                            int status = Integer.parseInt(jsonObject.getString("status"));
-                            float  table_price = Float.parseFloat(jsonObject.getString("table_price"));
+                            String name = jsonObject.getString("product_name");
+                            float price = Integer.parseInt(jsonObject.getString("price"));
+                            int quantity = Integer.parseInt(jsonObject.getString("quantity"));
+                            String categoriesName = jsonObject.getString("categories_name");
 
-                            String userIdString = jsonObject.getString("user_id");
-                            int userId = 0; // Giá trị mặc định nếu không thể chuyển đổi
-                            if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
-                                userId = Integer.parseInt(userIdString);
+                            if (categoriesName.equals("NƯỚC UỐNG ĐÓNG CHAI")) {
+                                arrayList.add(new Product(id, name, price, quantity, 0));
                             }
-                            arrayList.add(new Table(id, tableName, status, userId,table_price));
 
 
                         }
+                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+                        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
+                        dividerItemDecoration.setDrawable(drawable);
+                        recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
+
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-                        recyclerView.setAdapter(tableAdapter);
-                        tableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+                        ProductAdapter productAdapter = new ProductAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        recyclerView.setAdapter(productAdapter);
+                        productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -103,6 +103,4 @@ public class FragmentTatCa extends Fragment {
             }
         });
     }
-
-
 }
