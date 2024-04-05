@@ -5,9 +5,9 @@ public class Table {
     public String table_name;
     public int status;
     public int user_id;
-    public float table_price;
+    public String table_price;
 
-    public Table(int id, String table_name, int status, int user_id, float table_price) {
+    public Table(int id, String table_name, int status, int user_id, String table_price) {
         this.id = id;
         this.table_name = table_name;
         this.status = status;
@@ -47,11 +47,11 @@ public class Table {
         this.user_id = user_id;
     }
 
-    public float getTable_price() {
+    public String getTable_price() {
         return table_price;
     }
 
-    public void setTable_price(int table_price) {
+    public void setTable_price(String table_price) {
         this.table_price = table_price;
     }
 }

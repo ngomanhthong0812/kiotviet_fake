@@ -25,7 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,11 +73,14 @@ public class FragmentCategoriesThuocLa extends Fragment {
                             int id = Integer.parseInt(jsonObject.getString("id"));
                             String name = jsonObject.getString("product_name");
                             float price = Integer.parseInt(jsonObject.getString("price"));
+                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
+                            String formattedPrice = formatter.format(price);
+
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String categoriesName = jsonObject.getString("categories_name");
 
                             if(categoriesName.equals("THUỐC LÁ")){
-                                arrayList.add(new Product(id, name, price, quantity, 0));
+                                arrayList.add(new Product(id, name, formattedPrice, quantity, 0));
                             }
 
 

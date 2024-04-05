@@ -1,7 +1,6 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
-import com.example.kiotviet_fake.models.Table;
 import com.example.kiotviet_fake.session.SessionManager;
 
 import java.util.ArrayList;
@@ -44,9 +43,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         Product product = products.get(position);
 
-//        Log.d("ProductClicked", "Id: " + product.getId() + ",Product: " + product.getName() + ",Quantity: " + product.getName() + ", Price: " + product.getPrice());
-
-
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
         holder.txtQuantity.setText(String.valueOf(product.getQuantityOrder()));
@@ -59,24 +55,60 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         }
 
         final boolean[] isExpanded = {false};
-        holder.item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (product.getQuantityOrder() == 0) {
+        SessionManager sessionManager = SessionManager.getInstance();
+        if (product.getQuantityOrder() == 0) {
+            holder.item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                     if (isExpanded[0]) {
                         holder.countQuanity.setVisibility(View.GONE);
                         holder.imgCheck.setVisibility(View.GONE);
-                        SessionManager.getInstance().setCount(SessionManager.getInstance().getCount() - 1);
                     } else {
                         holder.countQuanity.setVisibility(View.VISIBLE);
                         holder.imgCheck.setVisibility(View.VISIBLE);
-                        SessionManager.getInstance().setCount(SessionManager.getInstance().getCount() + 1);
                     }
                     // Sau khi thay đổi trạng thái, cập nhật biến boolean
                     isExpanded[0] = !isExpanded[0];
 
+                    if (!isExpanded[0]) {
+                        // Nếu trạng thái là false, xóa đơn hàng
+                        SessionManager sessionManager = SessionManager.getInstance();
+                        sessionManager.removeOrderByProductId(product.getId());
+                    } else {
+                        // Nếu trạng thái là true, thêm đơn hàng mới
+                        Order order1 = new Order(product.getQuantityOrder(), product.getPrice(), 1, product.getId());
+                        sessionManager.addOrder(order1);
+
+                        ArrayList<Order> orders = sessionManager.getOrders();
+
+                        for (Order order : orders) {
+                            Log.e("TAG", "onClick123: "+order);
+                        }
+                    }
                 }
 
+            });
+        }
+
+        final int[] count = {1};
+        holder.btnTang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.txtCount.setText(String.valueOf(count[0] +=1));
+                product.setQuantityOrder(count[0]);
+//                holder.txtQuantity.setText(String.valueOf(count[0]));
+                sessionManager.updateQuantityProduct(product.getId(),count[0]);
+            }
+        });
+
+        holder.btnGiam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.txtCount.setText(String.valueOf(count[0] -=1));
+                product.setQuantityOrder(count[0]);
+//                holder.txtQuantity.setText(String.valueOf(count[0]));
+                sessionManager.updateQuantityProduct(product.getId(),count[0]);
             }
         });
     }
@@ -86,7 +118,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtPrice, txtQuantity;
+        TextView txtName, txtPrice, txtQuantity, btnTang, btnGiam,txtCount;
         ImageView imgSelect, imgCheck;
         LinearLayout countQuanity;
         RelativeLayout item;
@@ -100,6 +132,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
             imgCheck = (ImageView) itemView.findViewById(R.id.imgCheck);
             item = (RelativeLayout) itemView.findViewById(R.id.item);
             countQuanity = (LinearLayout) itemView.findViewById(R.id.countQuanity);
+            btnTang = (TextView) itemView.findViewById(R.id.btnTang);
+            btnGiam = (TextView) itemView.findViewById(R.id.btnGiam);
+            txtCount = (TextView) itemView.findViewById(R.id.txtCount);
 
         }
     }

@@ -3,11 +3,11 @@ package com.example.kiotviet_fake.models;
 public class Product {
     public int id;
     public String name;
-    public float price;
+    public String price;
     public int quantity;
     public int quantityOrder;
 
-    public Product(int id, String name, float price, int quantity, int quantityOrder) {
+    public Product(int id, String name, String price, int quantity, int quantityOrder) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -31,11 +31,11 @@ public class Product {
         this.name = name;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

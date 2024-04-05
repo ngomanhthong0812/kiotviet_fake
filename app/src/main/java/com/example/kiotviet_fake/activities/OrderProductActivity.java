@@ -1,12 +1,17 @@
 package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +22,36 @@ import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
 import com.example.kiotviet_fake.adapters.OrderProductAdapter;
 import com.example.kiotviet_fake.adapters.ProductAdapter;
+import com.example.kiotviet_fake.database.OrderInsertApiClient;
+import com.example.kiotviet_fake.database.OrderInsertItemsService;
+import com.example.kiotviet_fake.database.OrderInsertService;
+import com.example.kiotviet_fake.database.OrderItemsInsertApiClient;
+import com.example.kiotviet_fake.database.TableItemsUpdateApiClient;
+import com.example.kiotviet_fake.database.OrdersSelectService;
+import com.example.kiotviet_fake.database.OrdersService;
+import com.example.kiotviet_fake.database.RetrofitClient;
+import com.example.kiotviet_fake.database.UpdateStatusTableService;
+import com.example.kiotviet_fake.models.Order;
+import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderProductActivity extends AppCompatActivity {
     private ViewPager pager;
@@ -26,6 +59,12 @@ public class OrderProductActivity extends AppCompatActivity {
 
     TextView txtNameTable, btnThemVaoDon;
     ImageView btnCancel;
+
+    int idTable;
+    String nameTable;
+    int newOrderId;
+
+    float tableTotalPrice;
 
 
     @Override
@@ -37,13 +76,14 @@ public class OrderProductActivity extends AppCompatActivity {
         addControl();
         btnClick();
         updateUI();
-
     }
 
     private void updateUI() {
         Intent intent = getIntent();
-        String nameTable = intent.getStringExtra("nameTable");
+        nameTable = intent.getStringExtra("nameTable");
+        idTable = intent.getIntExtra("idTable", 0);
         txtNameTable.setText(nameTable);
+
     }
 
     private void addControl() {
@@ -67,10 +107,159 @@ public class OrderProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrderProductActivity.this, MainActivity.class);
-                SessionManager.getInstance().setCount(0);
                 startActivity(intent);
             }
         });
+
+        btnThemVaoDon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    insertOrder("11168851", "60-dayfreetrial");
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    public void insertOrder(String username, String password) throws ParseException {
+        Date currentDate = new Date();
+
+        // Định dạng thời gian hiện tại thành chuỗi theo định dạng "yyyy-MM-dd HH:mm:ss"
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = formatter.format(currentDate);
+        String code = generateRandomCode();
+        int tableId = idTable;
+        int userId = 1; // user_id demo
+
+        OrderInsertService service = OrderInsertApiClient.createService(username, password);
+        Call<String> call = service.insertOrder(formattedDateTime, code, tableId, userId);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                        newOrderId = jsonObject.getInt("orderId");
+                        Log.e("TAG", "thong: " + newOrderId);
+                        insertOrder_items("11168851", "60-dayfreetrial");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+
+    }
+
+    public void insertOrder_items(String username, String password) throws ParseException {
+
+        SessionManager sessionManager = SessionManager.getInstance();
+        ArrayList<Order> orders = sessionManager.getOrders();
+
+        int numberOfOrders = orders.size(); // Số lượng đơn hàng cần thêm vào
+
+        // Biến đếm số lượng Retrofit đã hoàn thành
+        AtomicInteger retrofitCallCounter = new AtomicInteger(0);
+
+        for (Order order : orders) {
+            int quantity = order.getQuantity();
+            String priceString = order.getPrice();
+            priceString = priceString.replace(",", ""); // Loại bỏ dấu phẩy
+            float price = Float.parseFloat(priceString) * order.getQuantity();
+            int order_id = newOrderId;
+            int product_id = order.getProductId();
+
+            tableTotalPrice += price;
+
+
+            OrderInsertItemsService service = OrderItemsInsertApiClient.createService(username, password);
+            Call<String> call = service.insertOrderItem(quantity, price, order_id, product_id);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        // Tăng biến đếm sau mỗi Retrofit thành công
+                        int counter = retrofitCallCounter.incrementAndGet();
+
+                        // Kiểm tra xem tất cả các cuộc gọi Retrofit đã hoàn thành chưa
+                        if (counter == numberOfOrders) {
+                            // Nếu tất cả các cuộc gọi Retrofit đã hoàn thành, chuyển màn hình mới
+                            navigateToTableDetailActivity();
+                        }
+                    } else {
+                        // Xử lý phản hồi không thành công
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    // Xử lý lỗi
+                }
+            });
+        }
+
+        //xoá tất cả product đã chọn khi nhấn thêm vào đơn
+        sessionManager.removeAll();
+        updateStatusTable("11168851", "60-dayfreetrial");
+    }
+
+    private void updateStatusTable(String username, String password) {
+
+        int id = idTable;
+        double status = 1;
+        float table_price = tableTotalPrice;
+
+        UpdateStatusTableService service = TableItemsUpdateApiClient.createService(username, password);
+        Call<String> call = service.updateData(id, status, table_price);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    private void navigateToTableDetailActivity() {
+        Intent intent = new Intent(OrderProductActivity.this, TableDetailActivity.class);
+        intent.putExtra("idTable", idTable);
+        intent.putExtra("nameTable", nameTable);
+        startActivity(intent);
+    }
+
+
+    public static String generateRandomCode() {
+        Random rand = new Random();
+
+        // Tạo ba số ngẫu nhiên từ 100 đến 999
+        int num1 = rand.nextInt(900) + 100;
+        int num2 = rand.nextInt(900) + 100;
+
+        // Kết hợp các số và dấu "-" để tạo mã
+        String code = num1 + "-" + num2;
+
+        return code;
     }
 
 }

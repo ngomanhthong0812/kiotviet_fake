@@ -43,7 +43,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.viewHolder> 
         Table table = tables.get(position);
         holder.txtSoBan.setText(table.getTable_name());
         holder.txtGia.setText(String.valueOf(table.getTable_price()));
-        if(table.getTable_price() == 0){
+        if(table.getTable_price().equals("0")){
             holder.txtGia.setText("");
         }
 //        holder.txtThoiGian.setText(table.getThoiGian());

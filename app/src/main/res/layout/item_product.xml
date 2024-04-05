@@ -96,7 +96,9 @@
             android:gravity="center"
             android:text="-"
             android:textColor="@color/tabselect"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
             android:id="@+id/txtCount"
@@ -116,7 +118,9 @@
             android:gravity="center"
             android:text="+"
             android:textColor="@color/tabselect"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
 
     </LinearLayout>

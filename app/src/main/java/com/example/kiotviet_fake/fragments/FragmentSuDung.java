@@ -22,7 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +74,8 @@ public class FragmentSuDung extends Fragment {
                             String tableName = jsonObject.getString("table_name");
                             int status = Integer.parseInt(jsonObject.getString("status"));
                             float  table_price = Float.parseFloat(jsonObject.getString("table_price"));
+                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
+                            String formattedPrice = formatter.format(table_price);
 
                             String userIdString = jsonObject.getString("user_id");
                             int userId = 0; // Giá trị mặc định nếu không thể chuyển đổi
@@ -79,7 +83,7 @@ public class FragmentSuDung extends Fragment {
                                 userId = Integer.parseInt(userIdString);
                             }
                             if (status != 0) {
-                                arrayList.add(new Table(id, tableName, status, userId,table_price));
+                                arrayList.add(new Table(id, tableName, status, userId,formattedPrice));
                             }
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API

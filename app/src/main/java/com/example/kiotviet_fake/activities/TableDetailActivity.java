@@ -30,7 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,8 +52,8 @@ public class TableDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_table_detail);
 
         addControl();
-        btnClick();
         updateUI();
+        btnClick();
         initView();
     }
 
@@ -103,18 +105,24 @@ public class TableDetailActivity extends AppCompatActivity {
                             int product_id = Integer.parseInt(jsonObject.getString("product_id"));
                             String product_name = jsonObject.getString("name");
                             float price = Integer.parseInt(jsonObject.getString("price"));
+                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
+                            String formattedPrice = formatter.format(price);
+
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
-                            txtCode.setText(code);
-
                             if (idTable == table_id) {
-                                arrayList.add(new Product(product_id, product_name, price, 200, quantity));
+                                arrayList.add(new Product(product_id, product_name, formattedPrice, 200, quantity));
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
+                                txtCode.setText(code);
                             }
+
+                            NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
+                            String formatPrice = formatterNumberFormat.format(priceTotal);
+
                             txtQuantity.setText("Tổng tiền " + quantityTotal);
-                            txtTotalPrice.setText(String.valueOf(priceTotal));
+                            txtTotalPrice.setText(formatPrice);
 
 
                         }
