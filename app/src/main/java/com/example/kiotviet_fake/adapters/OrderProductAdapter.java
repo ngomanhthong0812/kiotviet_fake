@@ -1,15 +1,10 @@
 package com.example.kiotviet_fake.adapters;
 
 
-import android.telecom.Call;
-import android.util.Log;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.kiotviet_fake.database.CategoriesService;
-import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesCafe;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesDaXay;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesMonThem;
@@ -21,13 +16,6 @@ import com.example.kiotviet_fake.fragments.FragmentCategoriesSua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesSuaChua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesTatCa;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesThuocLa;
-import com.example.kiotviet_fake.fragments.FragmentTatCa;
-import com.example.kiotviet_fake.fragments.FragmentConTrong;
-import com.example.kiotviet_fake.fragments.FragmentSuDung;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.String;
 

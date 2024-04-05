@@ -1,17 +1,10 @@
 package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,33 +12,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
-import com.example.kiotviet_fake.adapters.NotificationPagerAdapter;
 import com.example.kiotviet_fake.adapters.OrderProductAdapter;
-import com.example.kiotviet_fake.adapters.ProductAdapter;
-import com.example.kiotviet_fake.database.OrderInsertApiClient;
-import com.example.kiotviet_fake.database.OrderInsertItemsService;
-import com.example.kiotviet_fake.database.OrderInsertService;
-import com.example.kiotviet_fake.database.OrderItemsInsertApiClient;
-import com.example.kiotviet_fake.database.TableItemsUpdateApiClient;
-import com.example.kiotviet_fake.database.OrdersSelectService;
-import com.example.kiotviet_fake.database.OrdersService;
-import com.example.kiotviet_fake.database.RetrofitClient;
-import com.example.kiotviet_fake.database.UpdateStatusTableService;
+import com.example.kiotviet_fake.database.insertOrders.OrderInsertApiClient;
+import com.example.kiotviet_fake.database.insertOrderItems.OrderInsertItemsService;
+import com.example.kiotviet_fake.database.insertOrders.OrderInsertService;
+import com.example.kiotviet_fake.database.insertOrderItems.OrderInsertItemsApiClient;
+import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
+import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
 import com.example.kiotviet_fake.models.Order;
-import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
 import com.google.android.material.tabs.TabLayout;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -139,6 +123,7 @@ public class OrderProductActivity extends AppCompatActivity {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().toString());
@@ -182,10 +167,11 @@ public class OrderProductActivity extends AppCompatActivity {
             int order_id = newOrderId;
             int product_id = order.getProductId();
 
+            // tính tổng giá của bàn
             tableTotalPrice += price;
 
 
-            OrderInsertItemsService service = OrderItemsInsertApiClient.createService(username, password);
+            OrderInsertItemsService service = OrderInsertItemsApiClient.createService(username, password);
             Call<String> call = service.insertOrderItem(quantity, price, order_id, product_id);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -212,7 +198,7 @@ public class OrderProductActivity extends AppCompatActivity {
         }
 
         //xoá tất cả product đã chọn khi nhấn thêm vào đơn
-        sessionManager.removeAll();
+        sessionManager.removeOrderAll();
         updateStatusTable("11168851", "60-dayfreetrial");
     }
 
@@ -222,7 +208,7 @@ public class OrderProductActivity extends AppCompatActivity {
         double status = 1;
         float table_price = tableTotalPrice;
 
-        UpdateStatusTableService service = TableItemsUpdateApiClient.createService(username, password);
+        TableUpdateStatusService service = TableUpdateStatusApiClient.createService(username, password);
         Call<String> call = service.updateData(id, status, table_price);
         call.enqueue(new Callback<String>() {
             @Override
@@ -245,6 +231,7 @@ public class OrderProductActivity extends AppCompatActivity {
         Intent intent = new Intent(OrderProductActivity.this, TableDetailActivity.class);
         intent.putExtra("idTable", idTable);
         intent.putExtra("nameTable", nameTable);
+        intent.putExtra("idOrder", newOrderId);
         startActivity(intent);
     }
 

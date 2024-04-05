@@ -1,13 +1,15 @@
-package com.example.kiotviet_fake.database;
+package com.example.kiotviet_fake.database.updateTableStatus;
+
+import com.example.kiotviet_fake.database.BasicAuthInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class TableItemsUpdateApiClient {
+public class TableUpdateStatusApiClient {
     private static final String BASE_URL = "http://ngomanhthong-001-site1.htempurl.com/";
 
-    public static UpdateStatusTableService createService(String username, String password) {
+    public static TableUpdateStatusService createService(String username, String password) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new BasicAuthInterceptor(username, password))
                 .build();
@@ -18,6 +20,6 @@ public class TableItemsUpdateApiClient {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        return retrofit.create(UpdateStatusTableService.class);
+        return retrofit.create(TableUpdateStatusService.class);
     }
 }

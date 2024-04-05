@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.ProductAdapter;
-import com.example.kiotviet_fake.database.ProductService;
+import com.example.kiotviet_fake.database.select.ProductSelectService;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.models.Product;
 
@@ -60,7 +60,7 @@ public class FragmentCategoriesSodaY extends Fragment {
         ArrayList<Product> arrayList = new ArrayList<>();
 
         //select data from api
-        ProductService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductService.class);
+        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductSelectService.class);
         Call<String> call = apiService.getProducts();
         call.enqueue(new Callback<String>() {
             @Override

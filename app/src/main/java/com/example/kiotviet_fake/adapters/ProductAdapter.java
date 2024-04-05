@@ -64,9 +64,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                     if (isExpanded[0]) {
                         holder.countQuanity.setVisibility(View.GONE);
                         holder.imgCheck.setVisibility(View.GONE);
+                        // gán số lượng 0 khi ko chọn vào sản phẩm
+                        product.setQuantityOrder(0);
                     } else {
                         holder.countQuanity.setVisibility(View.VISIBLE);
                         holder.imgCheck.setVisibility(View.VISIBLE);
+                        // gán số lượng 1 khi chọn vào sản phẩm
+                        product.setQuantityOrder(1);
                     }
                     // Sau khi thay đổi trạng thái, cập nhật biến boolean
                     isExpanded[0] = !isExpanded[0];
@@ -80,11 +84,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                         Order order1 = new Order(product.getQuantityOrder(), product.getPrice(), 1, product.getId());
                         sessionManager.addOrder(order1);
 
-                        ArrayList<Order> orders = sessionManager.getOrders();
-
-                        for (Order order : orders) {
-                            Log.e("TAG", "onClick123: "+order);
-                        }
+//                        ArrayList<Order> orders = sessionManager.getOrders();
+//
+//                        for (Order order : orders) {
+//                            Log.e("TAG", "onClick123: "+order);
+//                        }
                     }
                 }
 

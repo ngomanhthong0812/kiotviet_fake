@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.database.RetrofitClient;
-import com.example.kiotviet_fake.database.TableService;
+import com.example.kiotviet_fake.database.select.TableSelectService;
 import com.example.kiotviet_fake.models.Table;
 
 import org.json.JSONArray;
@@ -59,7 +59,7 @@ public class FragmentConTrong extends Fragment {
         ArrayList<Table> arrayList = new ArrayList<>();
 
         //select data from api
-        TableService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableService.class);
+        TableSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectService.class);
         Call<String> call = apiService.getTable();
         call.enqueue(new Callback<String>() {
             @Override

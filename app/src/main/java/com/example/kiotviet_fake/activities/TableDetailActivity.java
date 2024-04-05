@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -12,26 +11,38 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
-import com.example.kiotviet_fake.adapters.OrderProductAdapter;
 import com.example.kiotviet_fake.adapters.ProductAdapter;
-import com.example.kiotviet_fake.adapters.TableAdapter;
-import com.example.kiotviet_fake.database.CategoriesService;
-import com.example.kiotviet_fake.database.OrdersService;
-import com.example.kiotviet_fake.database.ProductService;
+import com.example.kiotviet_fake.database.deleteOrder.OrderDeleteApiClient;
+import com.example.kiotviet_fake.database.deleteOrder.OrderDeleteService;
+import com.example.kiotviet_fake.database.deleteOrderItems.OrderDeleteItemsApiClient;
+import com.example.kiotviet_fake.database.deleteOrderItems.OrderDeleteItemsService;
+import com.example.kiotviet_fake.database.insertBills.BillsInsertItemsApiClient;
+import com.example.kiotviet_fake.database.insertBills.BillsInsertItemsService;
+import com.example.kiotviet_fake.database.insertOrders.OrderInsertApiClient;
+import com.example.kiotviet_fake.database.insertOrders.OrderInsertService;
+import com.example.kiotviet_fake.database.select.Orders_OrderItem_Product_SelectService;
 import com.example.kiotviet_fake.database.RetrofitClient;
+import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
+import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
+import com.example.kiotviet_fake.models.Bill;
+import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
-import com.example.kiotviet_fake.models.Table;
+import com.example.kiotviet_fake.session.SessionManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -40,11 +51,14 @@ import retrofit2.Response;
 
 public class TableDetailActivity extends AppCompatActivity {
     ImageView btnCancel;
-    TextView txtNameTable, txtCode, txtQuantity,txtTotalPrice;
+    TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
+    Button btnThanhToan, btnTamTinh, btnThongBao;
 
     int idTable;
     int quantityTotal = 0;
     float priceTotal = 0;
+
+    int idOrderByDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +77,9 @@ public class TableDetailActivity extends AppCompatActivity {
         txtCode = (TextView) findViewById(R.id.txtCode);
         txtQuantity = (TextView) findViewById(R.id.txtQuantity);
         txtTotalPrice = (TextView) findViewById(R.id.txtTotalPrice);
+        btnThanhToan = (Button) findViewById(R.id.btnThanhToan);
+        btnTamTinh = (Button) findViewById(R.id.btnTamTinh);
+        btnThongBao = (Button) findViewById(R.id.btnThongBao);
 
     }
 
@@ -82,13 +99,27 @@ public class TableDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnThanhToan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertBill("11168851", "60-dayfreetrial");
+            }
+        });
     }
 
 
     public void initView() {
         //select data from api
-        OrdersService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(OrdersService.class);
+        Orders_OrderItem_Product_SelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Orders_OrderItem_Product_SelectService.class);
         Call<String> call = apiService.getOrders();
+
+        //thêm dữ liệu vào sessionManager
+        SessionManager sessionManager = SessionManager.getInstance();
+        Date currentDate = new Date();
+        SimpleDateFormat formatterSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = formatterSimpleDateFormat.format(currentDate);
+
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -98,6 +129,7 @@ public class TableDetailActivity extends AppCompatActivity {
                         ArrayList<Product> arrayList = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            int id = Integer.parseInt(jsonObject.getString("id"));
                             String code = jsonObject.getString("code");
                             String dateTime = jsonObject.getString("dateTime");
                             int table_id = Integer.parseInt(jsonObject.getString("table_id"));
@@ -116,6 +148,11 @@ public class TableDetailActivity extends AppCompatActivity {
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
                                 txtCode.setText(code);
+                                idOrderByDelete = id;
+
+
+                                Bill bill = new Bill(dateTime, formattedDateTime, code, table_id, user_id, quantity, price * quantity, product_id);
+                                sessionManager.addBill(bill);
                             }
 
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
@@ -153,5 +190,121 @@ public class TableDetailActivity extends AppCompatActivity {
                 Log.e("TAG", "Failed to fetch data: " + t.getMessage());
             }
         });
+
     }
+
+    public void deleteOrder_items(String username, String password) throws ParseException {
+
+        OrderDeleteItemsService service = OrderDeleteItemsApiClient.createService(username, password);
+        Call<String> call = service.deleteOrderItem(idOrderByDelete);
+        Log.e("TAG", "deleteOrder_items: " + idOrderByDelete);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                // kiểm tra Retrofit đã hoàn thành
+                if (response.isSuccessful()) {
+                    try {
+                        deleteOrder("11168851", "60-dayfreetrial");
+                        updateStatusTable("11168851", "60-dayfreetrial");
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    public void deleteOrder(String username, String password) throws ParseException {
+
+        OrderDeleteService service = OrderDeleteApiClient.createService(username, password);
+        Call<String> call = service.deleteOrder(idOrderByDelete);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                // kiểm tra Retrofit đã hoàn thành
+                if (response.isSuccessful()) {
+                    navigateToTableDetailActivity();
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    private void updateStatusTable(String username, String password) {
+
+        int id = idTable;
+        double status = 0;
+        float table_price = 0;
+
+        TableUpdateStatusService service = TableUpdateStatusApiClient.createService(username, password);
+        Call<String> call = service.updateData(id, status, table_price);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    private void insertBill(String username, String password) {
+        SessionManager sessionManager = SessionManager.getInstance();
+        ArrayList<Bill> bills = sessionManager.getBills();
+
+        for (Bill bill : bills) {
+            Log.e("TAG", "insertBill: " + bill);
+            BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
+            Call<String> call = service.insertBills(bill.getDateTime(), bill.getDateTimeEnd(), bill.getCode(), bill.getTableId(), bill.getUserId(), bill.getQuantity(), bill.getTotalPrice(), bill.getProductId());
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            deleteOrder_items("11168851", "60-dayfreetrial");
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        // Xử lý phản hồi không thành công
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    // Xử lý lỗi
+                }
+            });
+        }
+    }
+
+    private void navigateToTableDetailActivity() {
+        Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
+        startActivity(intent);
+
+        SessionManager sessionManager = SessionManager.getInstance();
+        sessionManager.removeBillAll();
+
+    }
+
 }

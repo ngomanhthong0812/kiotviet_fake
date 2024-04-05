@@ -1,11 +1,11 @@
-package com.example.kiotviet_fake.database;
+package com.example.kiotviet_fake.database.updateTableStatus;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-public interface UpdateStatusTableService {
+public interface TableUpdateStatusService {
     @FormUrlEncoded
     @POST("tables/updateStatusById.php")
     Call<String> updateData(
