@@ -69,6 +69,7 @@
            android:layout_below="@+id/TenGianHang"
            android:layout_marginTop="25dp"
            android:ems="10"
+           android:textColor="@color/black"
            android:inputType="text"
            android:textColorHint="#979797"
            android:hint="Tên đăng nhập" />
@@ -81,7 +82,8 @@
            android:layout_below="@+id/TenDangNhap"
            android:layout_marginTop="25dp"
            android:ems="10"
-           android:inputType="text"
+           android:textColor="@color/black"
+           android:inputType="textPassword"
            android:hint="Mật khẩu"
            android:textColorHint="#979797"
            />
