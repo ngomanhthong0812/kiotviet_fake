@@ -1,12 +1,15 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.activities.LoginActivity;
+import com.example.kiotviet_fake.activities.MainActivity;
+import com.example.kiotviet_fake.activities.ProductDetailActivity;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
@@ -109,6 +115,37 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                 product.setQuantityOrder(count[0]);
 //                holder.txtQuantity.setText(String.valueOf(count[0]));
                 sessionManager.updateQuantityProduct(product.getId(),count[0]);
+            }
+        });
+
+        holder.imgSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(context, v);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.action_more){
+                            // Xử lý khi người dùng chọn sửa
+                            Intent intent = new Intent(context, ProductDetailActivity.class);
+
+                            intent.putExtra("product_id", product.getId());
+                            intent.putExtra("product_name", product.getName());
+                            intent.putExtra("product_price", product.getPrice());
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Thêm cờ FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(intent); // Sử dụng context để khởi chạy Intent
+                        }
+                        if (item.getItemId() ==  R.id.action_delete){
+                            // Xử lý khi người dùng chọn sửa
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+
             }
         });
     }
