@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
@@ -21,16 +22,15 @@ import com.example.kiotviet_fake.database.deleteOrder.OrderDeleteApiClient;
 import com.example.kiotviet_fake.database.deleteOrder.OrderDeleteService;
 import com.example.kiotviet_fake.database.deleteOrderItems.OrderDeleteItemsApiClient;
 import com.example.kiotviet_fake.database.deleteOrderItems.OrderDeleteItemsService;
-import com.example.kiotviet_fake.database.insertBills.BillsInsertItemsApiClient;
-import com.example.kiotviet_fake.database.insertBills.BillsInsertItemsService;
-import com.example.kiotviet_fake.database.insertOrders.OrderInsertApiClient;
-import com.example.kiotviet_fake.database.insertOrders.OrderInsertService;
+import com.example.kiotviet_fake.database.insertBillItems.BillsInsertItemsApiClient;
+import com.example.kiotviet_fake.database.insertBillItems.BillsInsertItemsService;
+import com.example.kiotviet_fake.database.insertBills.BillsInsertApiClient;
+import com.example.kiotviet_fake.database.insertBills.BillsInsertService;
 import com.example.kiotviet_fake.database.select.Orders_OrderItem_Product_SelectService;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
 import com.example.kiotviet_fake.models.Bill;
-import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
 
@@ -50,15 +50,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TableDetailActivity extends AppCompatActivity {
-    ImageView btnCancel;
+    ImageView btnCancel, btnThem;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
 
     int idTable;
+    int newOrderId;
+    String nameTable;
     int quantityTotal = 0;
     float priceTotal = 0;
 
     int idOrderByDelete;
+
+    int newBillId;
+
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +86,16 @@ public class TableDetailActivity extends AppCompatActivity {
         btnThanhToan = (Button) findViewById(R.id.btnThanhToan);
         btnTamTinh = (Button) findViewById(R.id.btnTamTinh);
         btnThongBao = (Button) findViewById(R.id.btnThongBao);
+        btnThem = (ImageView) findViewById(R.id.btnThem);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
 
     private void updateUI() {
         Intent intent = getIntent();
-        String nameTable = intent.getStringExtra("nameTable");
+        nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
+        newOrderId = intent.getIntExtra("idOrder", 0);
 
         txtNameTable.setText(nameTable);
     }
@@ -103,7 +112,17 @@ public class TableDetailActivity extends AppCompatActivity {
         btnThanhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // thêm hiệu ứng loading
+                progressBar.setVisibility(View.VISIBLE);
+
                 insertBill("11168851", "60-dayfreetrial");
+            }
+        });
+
+        btnThem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToTableOrderProductActivity();
             }
         });
     }
@@ -116,9 +135,6 @@ public class TableDetailActivity extends AppCompatActivity {
 
         //thêm dữ liệu vào sessionManager
         SessionManager sessionManager = SessionManager.getInstance();
-        Date currentDate = new Date();
-        SimpleDateFormat formatterSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = formatterSimpleDateFormat.format(currentDate);
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -150,8 +166,8 @@ public class TableDetailActivity extends AppCompatActivity {
                                 txtCode.setText(code);
                                 idOrderByDelete = id;
 
-
-                                Bill bill = new Bill(dateTime, formattedDateTime, code, table_id, user_id, quantity, price * quantity, product_id);
+                                // thêm vào kho lưu trữ bill
+                                Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
                                 sessionManager.addBill(bill);
                             }
 
@@ -230,7 +246,7 @@ public class TableDetailActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
-                    navigateToTableDetailActivity();
+                    navigateToTableMainActivity();
                 } else {
                     // Xử lý phản hồi không thành công
                 }
@@ -269,13 +285,49 @@ public class TableDetailActivity extends AppCompatActivity {
     }
 
     private void insertBill(String username, String password) {
+        //lấy thời gian hiện tại
+        Date currentDate = new Date();
+        SimpleDateFormat formatterSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = formatterSimpleDateFormat.format(currentDate);
+
+        SessionManager sessionManager = SessionManager.getInstance();
+        ArrayList<Bill> bills = sessionManager.getBills();
+        Bill firstBill = bills.get(0);
+
+        BillsInsertService service = BillsInsertApiClient.createService(username, password);
+        Call<String> call = service.insertBills(firstBill.getDateTime(), formattedDateTime, firstBill.getCode(), firstBill.getTableId(), firstBill.getUserId());
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response.body().toString());
+                        newBillId = jsonObject.getInt("billId");
+                        insertBillItems("11168851", "60-dayfreetrial");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    private void insertBillItems(String username, String password) {
         SessionManager sessionManager = SessionManager.getInstance();
         ArrayList<Bill> bills = sessionManager.getBills();
 
         for (Bill bill : bills) {
             Log.e("TAG", "insertBill: " + bill);
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
-            Call<String> call = service.insertBills(bill.getDateTime(), bill.getDateTimeEnd(), bill.getCode(), bill.getTableId(), bill.getUserId(), bill.getQuantity(), bill.getTotalPrice(), bill.getProductId());
+            Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(), newBillId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -298,13 +350,23 @@ public class TableDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void navigateToTableDetailActivity() {
+    private void navigateToTableMainActivity() {
         Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
         startActivity(intent);
 
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.removeBillAll();
+//        // ẩn hiệu ứng loading
+//        progressBar.setVisibility(View.GONE);
 
+    }
+
+    private void navigateToTableOrderProductActivity() {
+        Intent intent = new Intent(TableDetailActivity.this, OrderProductActivity.class);
+        intent.putExtra("idTable", idTable);
+        intent.putExtra("nameTable", nameTable);
+        intent.putExtra("idOrder", newOrderId);
+        startActivity(intent);
     }
 
 }

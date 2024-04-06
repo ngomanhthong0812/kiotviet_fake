@@ -5,7 +5,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-public interface BillsInsertItemsService {
+public interface BillsInsertService {
     @FormUrlEncoded
     @POST("bills/insert.php")
     Call<String> insertBills(
@@ -13,9 +13,6 @@ public interface BillsInsertItemsService {
             @Field("dateTime_end") String dateTimeEnd,
             @Field("code") String code,
             @Field("table_id") int tableId,
-            @Field("user_id") int userId,
-            @Field("quantity") int quantity,
-            @Field("total_price") float totalPrice,
-            @Field("product_id") int productId
+            @Field("user_id") int userId
     );
 }

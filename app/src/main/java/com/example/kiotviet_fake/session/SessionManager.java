@@ -25,6 +25,7 @@ public class SessionManager {
     public void addOrder(Order order) {
         orders.add(order);
     }
+
     public void addBill(Bill bill) {
         bills.add(bill);
     }
@@ -32,9 +33,11 @@ public class SessionManager {
     public ArrayList<Order> getOrders() {
         return orders;
     }
+
     public ArrayList<Bill> getBills() {
         return bills;
     }
+
     public void removeOrderByProductId(int productId) {
         for (Order order : orders) {
             if (order.getProductId() == productId) {
@@ -43,6 +46,7 @@ public class SessionManager {
             }
         }
     }
+
     public void updateQuantityProduct(int productId, int newQuantity) {
         for (Order order : orders) {
             if (order.getProductId() == productId) {
@@ -52,10 +56,11 @@ public class SessionManager {
         }
     }
 
-    public void removeOrderAll(){
+    public void removeOrderAll() {
         orders.clear();
     }
-    public void removeBillAll(){
+
+    public void removeBillAll() {
         bills.clear();
     }
 

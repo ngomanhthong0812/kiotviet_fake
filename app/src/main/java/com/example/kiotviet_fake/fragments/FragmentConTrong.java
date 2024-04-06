@@ -1,5 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentConTrong extends Fragment {
-
+    int isTableUserId;
 
     public FragmentConTrong() {
         // Required empty public constructor
@@ -40,6 +42,10 @@ public class FragmentConTrong extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // lấy ra userId vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        isTableUserId = sharedPreferences.getInt("userId", 0);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_con_trong, container, false);
     }
@@ -73,7 +79,7 @@ public class FragmentConTrong extends Fragment {
                             int id = Integer.parseInt(jsonObject.getString("id"));
                             String tableName = jsonObject.getString("table_name");
                             int status = Integer.parseInt(jsonObject.getString("status"));
-                            float  table_price = Float.parseFloat(jsonObject.getString("table_price"));
+                            float table_price = Float.parseFloat(jsonObject.getString("table_price"));
                             NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
                             String formattedPrice = formatter.format(table_price);
 
@@ -83,7 +89,7 @@ public class FragmentConTrong extends Fragment {
                                 userId = Integer.parseInt(userIdString);
                             }
 
-                            if (status == 0) {
+                            if (status == 0 && userId == isTableUserId) {
                                 arrayList.add(new Table(id, tableName, status, userId, formattedPrice));
                             }
                         }

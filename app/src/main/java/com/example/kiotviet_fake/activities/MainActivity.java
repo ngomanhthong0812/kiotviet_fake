@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
@@ -35,6 +38,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.lang.String;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,18 +46,21 @@ import retrofit2.Response;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    ImageView btnNotification,logo_kiotViet;
+    ImageView btnNotification, logo_kiotViet;
     SearchView searchView;
 
     private DrawerLayout drawerLayout;
     Toolbar toolbar;
+    NavigationView navigationView;
+
+    String shopName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("NotificationActivity", "Activity is created");
-         toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -72,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
         }
 
-
+        // lấy ra tên shop vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        shopName = sharedPreferences.getString("shopName", "");
 
 
         addControl();
@@ -110,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void addControl() {
         btnNotification = (ImageView) findViewById(R.id.btnNotification);
+        navigationView = findViewById(R.id.nav_view);
+
+        View headerView = navigationView.getHeaderView(0);
+
+        TextView txtNameShop = headerView.findViewById(R.id.txtNameShop);
+        txtNameShop.setText(shopName);
 
     }
 

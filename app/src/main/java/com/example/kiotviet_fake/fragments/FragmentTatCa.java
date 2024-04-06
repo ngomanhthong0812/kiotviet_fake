@@ -1,5 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentTatCa extends Fragment {
-    private ArrayList<Table> tableList = new ArrayList<>();
+    int isTableUserId;
 
     public FragmentTatCa() {
         // Required empty public constructor
@@ -40,6 +42,10 @@ public class FragmentTatCa extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // lấy ra userId vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        isTableUserId = sharedPreferences.getInt("userId", 0);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tat_ca, container, false);
     }
@@ -73,7 +79,7 @@ public class FragmentTatCa extends Fragment {
                             int id = Integer.parseInt(jsonObject.getString("id"));
                             String tableName = jsonObject.getString("table_name");
                             int status = Integer.parseInt(jsonObject.getString("status"));
-                            float  table_price = Float.parseFloat(jsonObject.getString("table_price"));
+                            float table_price = Float.parseFloat(jsonObject.getString("table_price"));
                             NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
                             String formattedPrice = formatter.format(table_price);
 
@@ -83,8 +89,9 @@ public class FragmentTatCa extends Fragment {
                             if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
                                 userId = Integer.parseInt(userIdString);
                             }
-                            arrayList.add(new Table(id, tableName, status, userId,formattedPrice));
-
+                            if (userId == isTableUserId) {
+                                arrayList.add(new Table(id, tableName, status, userId, formattedPrice));
+                            }
 
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API

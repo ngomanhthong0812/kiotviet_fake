@@ -1,6 +1,8 @@
 package com.example.kiotviet_fake.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,8 +32,11 @@ public class LoginActivity extends AppCompatActivity {
     TextView DangKyTaiKhoan;
     EditText userName, password, nameRestaurant;
     Button btnDangNhap;
-    String usersName, userspassword, restaurant_name, shop_id,user_id, role;
+    String usersName, userspassword, restaurant_name, shop_id, user_id, role;
     ArrayList<Users> userList = new ArrayList<>();
+
+    int userId;
+    String shopName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                             usersName = userObject.getString("user_name");
                             userspassword = userObject.getString("password");
                             role = userObject.getString("role");
-                            Users user = new Users(shop_id,user_id, restaurant_name,usersName,userspassword,role);
+                            Users user = new Users(shop_id, user_id, restaurant_name, usersName, userspassword, role);
                             userList.add(user);
                         }
 
@@ -96,17 +101,25 @@ public class LoginActivity extends AppCompatActivity {
                 String inputRestaurant = nameRestaurant.getText().toString();
                 boolean isValidUser = false;
                 for (Users user : userList) {
-                    System.out.println("user list test name " + user.getUser_name() );
-                    System.out.println("user list test pass " + user.getPassword() );
-                    System.out.println("user list test restau " + user.getShop_name() );
-                    System.out.println("user list test role " + user.getRole() );
+                    System.out.println("user list test name " + user.getUser_name());
+                    System.out.println("user list test pass " + user.getPassword());
+                    System.out.println("user list test restau " + user.getShop_name());
                     if (user.getUser_name().equals(inputUserName) && user.getPassword().equals(inputPassword) && user.getShop_name().equals(inputRestaurant)) {
                         isValidUser = true;
+                        userId = Integer.parseInt(user.getUser_id());
+                        shopName = user.getShop_name();
                         break;
                     }
                 }
 
                 if (isValidUser) {
+                    // gửi userId khi đăng nhập thành công
+                    SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("userId", userId);
+                    editor.putString("shopName",shopName);
+                    editor.apply();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 } else {

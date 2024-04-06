@@ -1,5 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentSuDung extends Fragment {
-
+    int isTableUserId;
 
     public FragmentSuDung() {
         // Required empty public constructor
@@ -40,6 +42,11 @@ public class FragmentSuDung extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // lấy ra userId vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        isTableUserId = sharedPreferences.getInt("userId", 0);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_su_dung, container, false);
     }
@@ -82,7 +89,7 @@ public class FragmentSuDung extends Fragment {
                             if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
                                 userId = Integer.parseInt(userIdString);
                             }
-                            if (status != 0) {
+                            if (status != 0 && userId == isTableUserId) {
                                 arrayList.add(new Table(id, tableName, status, userId,formattedPrice));
                             }
                         }

@@ -84,15 +84,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                         Order order1 = new Order(product.getQuantityOrder(), product.getPrice(), 1, product.getId());
                         sessionManager.addOrder(order1);
 
-//                        ArrayList<Order> orders = sessionManager.getOrders();
-//
-//                        for (Order order : orders) {
-//                            Log.e("TAG", "onClick123: "+order);
-//                        }
                     }
                 }
 
             });
+
         }
 
         final int[] count = {1};

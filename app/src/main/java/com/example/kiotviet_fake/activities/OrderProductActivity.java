@@ -4,11 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
@@ -41,7 +47,7 @@ public class OrderProductActivity extends AppCompatActivity {
     private ViewPager pager;
     private TabLayout tabLayout;
 
-    TextView txtNameTable, btnThemVaoDon;
+    TextView txtNameTable, btnThemVaoDon, bntChonLai;
     ImageView btnCancel;
 
     int idTable;
@@ -49,12 +55,18 @@ public class OrderProductActivity extends AppCompatActivity {
     int newOrderId;
 
     float tableTotalPrice;
+    int isTableUserId;
+    ProgressBar progressBar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_product);
+
+        // lấy ra userId vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        isTableUserId = sharedPreferences.getInt("userId", 0);
 
 
         addControl();
@@ -76,6 +88,8 @@ public class OrderProductActivity extends AppCompatActivity {
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         txtNameTable = (TextView) findViewById(R.id.txtNameTable);
         btnThemVaoDon = (TextView) findViewById(R.id.btnThemVaoDon);
+        bntChonLai = (TextView) findViewById(R.id.bntChonLai);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         FragmentManager manager = getSupportFragmentManager();
         OrderProductAdapter adapter = new OrderProductAdapter(manager);
@@ -99,10 +113,23 @@ public class OrderProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    // thêm hiệu ứng loading
+                    progressBar.setVisibility(View.VISIBLE);
+
                     insertOrder("11168851", "60-dayfreetrial");
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+        bntChonLai.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                SessionManager sessionManager = SessionManager.getInstance();
+                sessionManager.removeOrderAll();
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -116,7 +143,7 @@ public class OrderProductActivity extends AppCompatActivity {
         String formattedDateTime = formatter.format(currentDate);
         String code = generateRandomCode();
         int tableId = idTable;
-        int userId = 1; // user_id demo
+        int userId = isTableUserId;
 
         OrderInsertService service = OrderInsertApiClient.createService(username, password);
         Call<String> call = service.insertOrder(formattedDateTime, code, tableId, userId);
@@ -182,6 +209,7 @@ public class OrderProductActivity extends AppCompatActivity {
 
                         // Kiểm tra xem tất cả các cuộc gọi Retrofit đã hoàn thành chưa
                         if (counter == numberOfOrders) {
+
                             // Nếu tất cả các cuộc gọi Retrofit đã hoàn thành, chuyển màn hình mới
                             navigateToTableDetailActivity();
                         }
@@ -233,6 +261,9 @@ public class OrderProductActivity extends AppCompatActivity {
         intent.putExtra("nameTable", nameTable);
         intent.putExtra("idOrder", newOrderId);
         startActivity(intent);
+
+//        // ẩn hiệu ứng loading
+//        progressBar.setVisibility(View.GONE);
     }
 
 
