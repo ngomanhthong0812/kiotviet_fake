@@ -136,9 +136,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (item.getItemId() == R.id.DongBo) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
         }
+        if (item.getItemId() == R.id.BaoCaoCuoiNgay) {
+            Intent intent = new Intent(this, EndOfDayReportActivity.class);
+            startActivity(intent);
+        }
         if (item.getItemId() == R.id.DangXuat) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
+
+            // reset userId về 0
+            SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("userId", 0);
+            editor.putString("shopName", shopName);
+            editor.apply();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

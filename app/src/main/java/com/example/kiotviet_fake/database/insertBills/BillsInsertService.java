@@ -13,6 +13,7 @@ public interface BillsInsertService {
             @Field("dateTime_end") String dateTimeEnd,
             @Field("code") String code,
             @Field("table_id") int tableId,
-            @Field("user_id") int userId
+            @Field("user_id") int userId,
+            @Field("total_price") float total_price
     );
 }

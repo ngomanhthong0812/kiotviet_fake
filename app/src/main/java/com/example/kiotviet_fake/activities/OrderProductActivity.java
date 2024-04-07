@@ -107,8 +107,7 @@ public class OrderProductActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrderProductActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish(); // Kết thúc hoạt động hiện tại và quay lại trang trước đó
             }
         });
 
