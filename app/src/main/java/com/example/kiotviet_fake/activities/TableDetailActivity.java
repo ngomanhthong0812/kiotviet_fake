@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -366,6 +368,11 @@ public class TableDetailActivity extends AppCompatActivity {
         intent.putExtra("idTable", idTable);
         intent.putExtra("nameTable", nameTable);
         intent.putExtra("idOrder", newOrderId);
+
+        String txtTotal = txtTotalPrice.getText().toString();
+        txtTotal = txtTotal.replace(",", "");
+        intent.putExtra("totalPriceTable", Integer.parseInt(txtTotal));
+
         startActivity(intent);
     }
 

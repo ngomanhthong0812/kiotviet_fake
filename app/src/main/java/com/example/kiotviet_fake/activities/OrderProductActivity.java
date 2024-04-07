@@ -58,6 +58,8 @@ public class OrderProductActivity extends AppCompatActivity {
     int isTableUserId;
     ProgressBar progressBar;
 
+    SharedPreferences sharedPreferences_1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,6 @@ public class OrderProductActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
 
-
         addControl();
         btnClick();
         updateUI();
@@ -78,6 +79,8 @@ public class OrderProductActivity extends AppCompatActivity {
         Intent intent = getIntent();
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
+        tableTotalPrice = intent.getIntExtra("totalPriceTable", 0);
+
         txtNameTable.setText(nameTable);
 
     }
