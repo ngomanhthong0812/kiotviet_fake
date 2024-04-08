@@ -28,12 +28,15 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentCategoriesTatCa extends Fragment {
+    private Random random = new Random();
+
     public FragmentCategoriesTatCa() {
         // Required empty public constructor
     }
@@ -79,9 +82,8 @@ public class FragmentCategoriesTatCa extends Fragment {
 
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
-                            arrayList.add(new Product(id, name, formattedPrice, quantity, 0));
-
-
+                            String idProductItem = id + "Tất Cả";
+                            arrayList.add(new Product(id, idProductItem, name, formattedPrice, quantity, 0));
 
                         }
                         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
@@ -107,6 +109,7 @@ public class FragmentCategoriesTatCa extends Fragment {
             }
         });
     }
+
     public interface OnTotalQuantityChangeListener {
         void onTotalQuantityChanged(int totalQuantity);
     }

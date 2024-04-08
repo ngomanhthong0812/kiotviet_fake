@@ -38,18 +38,27 @@ public class SessionManager {
         return bills;
     }
 
-    public void removeOrderByProductId(int productId) {
+    public void removeOrderByProductId(String idProductItem) {
         for (Order order : orders) {
-            if (order.getProductId() == productId) {
+            if (order.getIdProductItem().equals(idProductItem)) {
                 orders.remove(order);
                 break;
             }
         }
     }
-
-    public void updateQuantityProduct(int productId, int newQuantity) {
+    public int getOrderQuantityByIdProductItem(String idProductItem) {
+        int quantity = 0;
         for (Order order : orders) {
-            if (order.getProductId() == productId) {
+            if (order.getIdProductItem().equals(idProductItem)) {
+                quantity += order.getQuantity();
+            }
+        }
+        return quantity;
+    }
+
+    public void updateQuantityProduct(String idProductItem, int newQuantity) {
+        for (Order order : orders) {
+            if (order.getIdProductItem().equals(idProductItem)) {
                 order.setQuantity(newQuantity);
                 break;
             }

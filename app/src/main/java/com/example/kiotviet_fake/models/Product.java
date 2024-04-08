@@ -2,13 +2,15 @@ package com.example.kiotviet_fake.models;
 
 public class Product {
     public int id;
+    public String idProductItem;
     public String name;
     public String price;
     public int quantity;
     public int quantityOrder;
 
-    public Product(int id, String name, String price, int quantity, int quantityOrder) {
+    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder) {
         this.id = id;
+        this.idProductItem = idProductItem;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -21,6 +23,14 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdProductItem() {
+        return idProductItem;
+    }
+
+    public void setIdProductItem(String idProductItem) {
+        this.idProductItem = idProductItem;
     }
 
     public String getName() {

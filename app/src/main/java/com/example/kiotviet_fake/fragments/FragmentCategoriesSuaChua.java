@@ -28,12 +28,14 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentCategoriesSuaChua extends Fragment {
+    private Random random = new Random();
     public FragmentCategoriesSuaChua() {
         // Required empty public constructor
     }
@@ -81,7 +83,8 @@ public class FragmentCategoriesSuaChua extends Fragment {
                             String categoriesName = jsonObject.getString("categories_name");
 
                             if (categoriesName.equals("SỮA CHUA")) {
-                                arrayList.add(new Product(id, name, formattedPrice, quantity, 0));
+                                String idProductItem = id + categoriesName;
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0));
                             }
 
 

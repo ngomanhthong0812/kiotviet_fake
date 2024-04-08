@@ -1,19 +1,28 @@
 package com.example.kiotviet_fake.models;
 
 public class Order {
+    private String idProductItem;
     private int quantity;
     private String price;
     private int orderId;
     private int productId;
 
-    public Order(int quantity, String price, int orderId, int productId) {
+    public Order(String idProductItem, int quantity, String price, int orderId, int productId) {
+        this.idProductItem = idProductItem;
         this.quantity = quantity;
         this.price = price;
         this.orderId = orderId;
         this.productId = productId;
     }
 
-    // Getters and setters
+    public String getIdProductItem() {
+        return idProductItem;
+    }
+
+    public void setIdProductItem(String idProductItem) {
+        this.idProductItem = idProductItem;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -49,8 +58,9 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "quantity=" + quantity +
-                ", price=" + price +
+                "idProductItem='" + idProductItem + '\'' +
+                ", quantity=" + quantity +
+                ", price='" + price + '\'' +
                 ", orderId=" + orderId +
                 ", productId=" + productId +
                 '}';

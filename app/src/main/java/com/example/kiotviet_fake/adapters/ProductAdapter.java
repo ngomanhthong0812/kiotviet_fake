@@ -30,7 +30,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     ArrayList<Product> products;
     Context context;
 
-
     public ProductAdapter(ArrayList<Product> products, Context context) {
         this.products = products;
         this.context = context;
@@ -48,76 +47,70 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         Product product = products.get(position);
+        SessionManager sessionManager = SessionManager.getInstance();
+        int getOrderQuantityByProductId = sessionManager.getOrderQuantityByIdProductItem(product.getIdProductItem());
+        final int[] count = {getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1};
 
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
         holder.txtQuantity.setText(String.valueOf(product.getQuantityOrder()));
-        if (product.getQuantityOrder() == 0) {
-            holder.txtQuantity.setVisibility(View.GONE);
-            holder.imgSelect.setVisibility(View.GONE);
-        } else {
-            holder.txtQuantity.setVisibility(View.VISIBLE);
-            holder.imgSelect.setVisibility(View.VISIBLE);
-        }
+        holder.txtQuantity.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
+        holder.imgSelect.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
 
-        final boolean[] isExpanded = {false};
-        SessionManager sessionManager = SessionManager.getInstance();
-        if (product.getQuantityOrder() == 0) {
-            holder.item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        holder.txtCount.setText(String.valueOf(getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1));
+        holder.countQuanity.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
+        holder.imgCheck.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
 
-                    if (isExpanded[0]) {
-                        holder.countQuanity.setVisibility(View.GONE);
-                        holder.imgCheck.setVisibility(View.GONE);
-                        // gán số lượng 0 khi ko chọn vào sản phẩm
-                        product.setQuantityOrder(0);
-                    } else {
-                        holder.countQuanity.setVisibility(View.VISIBLE);
-                        holder.imgCheck.setVisibility(View.VISIBLE);
-                        // gán số lượng 1 khi chọn vào sản phẩm
-                        product.setQuantityOrder(1);
-                    }
-                    // Sau khi thay đổi trạng thái, cập nhật biến boolean
-                    isExpanded[0] = !isExpanded[0];
+        // xử lý item order product
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (count[0] > 0) {
+                    holder.countQuanity.setVisibility(View.VISIBLE);
+                    holder.imgCheck.setVisibility(View.VISIBLE);
+                    product.setQuantityOrder(1); // gán số lượng 1 khi chọn vào sản phẩm
 
-                    if (!isExpanded[0]) {
-                        // Nếu trạng thái là false, xóa đơn hàng
-                        SessionManager sessionManager = SessionManager.getInstance();
-                        sessionManager.removeOrderByProductId(product.getId());
-                    } else {
-                        // Nếu trạng thái là true, thêm đơn hàng mới
-                        Order order1 = new Order(product.getQuantityOrder(), product.getPrice(), 1, product.getId());
-                        sessionManager.addOrder(order1);
+                    // thêm đơn hàng mới
+                    Order order1 = new Order(product.getIdProductItem(), product.getQuantityOrder(), product.getPrice(), 1, product.getId());
+                    sessionManager.addOrder(order1);
+                } else {
+                    holder.countQuanity.setVisibility(View.GONE);
+                    holder.imgCheck.setVisibility(View.GONE);
+                    product.setQuantityOrder(0);  // gán số lượng 0 khi ko chọn vào sản phẩm
 
-                    }
+                    //xóa đơn hàng
+                    SessionManager sessionManager = SessionManager.getInstance();
+                    sessionManager.removeOrderByProductId(product.getIdProductItem());
                 }
 
-            });
+            }
 
-        }
+        });
 
-        final int[] count = {1};
         holder.btnTang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.txtCount.setText(String.valueOf(count[0] += 1));
+                count[0]++;
+                holder.txtCount.setText(String.valueOf(count[0]));
                 product.setQuantityOrder(count[0]);
-//                holder.txtQuantity.setText(String.valueOf(count[0]));
-                sessionManager.updateQuantityProduct(product.getId(), count[0]);
+                sessionManager.updateQuantityProduct(product.getIdProductItem(), count[0]);
             }
         });
 
         holder.btnGiam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.txtCount.setText(String.valueOf(count[0] -= 1));
-                product.setQuantityOrder(count[0]);
-//                holder.txtQuantity.setText(String.valueOf(count[0]));
-                sessionManager.updateQuantityProduct(product.getId(), count[0]);
+                if (count[0] > 1) {
+                    count[0]--;
+                    holder.txtCount.setText(String.valueOf(count[0]));
+                    product.setQuantityOrder(count[0]);
+                    sessionManager.updateQuantityProduct(product.getIdProductItem(), count[0]);
+                }
             }
         });
 
+
+        // xử lý item detail product
         holder.imgSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

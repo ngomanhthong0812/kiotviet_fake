@@ -58,7 +58,6 @@ public class OrderProductActivity extends AppCompatActivity {
     int isTableUserId;
     ProgressBar progressBar;
 
-    SharedPreferences sharedPreferences_1;
 
 
     @Override
@@ -107,6 +106,10 @@ public class OrderProductActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // xoá session order
+                SessionManager sessionManager = SessionManager.getInstance();
+                sessionManager.removeOrderAll();
+
                 finish(); // Kết thúc hoạt động hiện tại và quay lại trang trước đó
             }
         });
@@ -127,11 +130,14 @@ public class OrderProductActivity extends AppCompatActivity {
         bntChonLai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //reset lại trang
                 Intent intent = getIntent();
+                startActivity(intent);
+
+
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
                 finish();
-                startActivity(intent);
             }
         });
 
