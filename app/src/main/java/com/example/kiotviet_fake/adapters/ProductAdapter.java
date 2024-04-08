@@ -22,7 +22,6 @@ import com.example.kiotviet_fake.activities.MainActivity;
 import com.example.kiotviet_fake.activities.ProductDetailActivity;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
-import com.example.kiotviet_fake.models.Table;
 import com.example.kiotviet_fake.session.SessionManager;
 
 import java.util.ArrayList;
@@ -102,20 +101,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.btnTang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.txtCount.setText(String.valueOf(count[0] +=1));
+                holder.txtCount.setText(String.valueOf(count[0] += 1));
                 product.setQuantityOrder(count[0]);
 //                holder.txtQuantity.setText(String.valueOf(count[0]));
-                sessionManager.updateQuantityProduct(product.getId(),count[0]);
+                sessionManager.updateQuantityProduct(product.getId(), count[0]);
             }
         });
 
         holder.btnGiam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.txtCount.setText(String.valueOf(count[0] -=1));
+                holder.txtCount.setText(String.valueOf(count[0] -= 1));
                 product.setQuantityOrder(count[0]);
 //                holder.txtQuantity.setText(String.valueOf(count[0]));
-                sessionManager.updateQuantityProduct(product.getId(),count[0]);
+                sessionManager.updateQuantityProduct(product.getId(), count[0]);
             }
         });
 
@@ -127,7 +126,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.action_more){
+                        if (item.getItemId() == R.id.action_more) {
                             // Xử lý khi người dùng chọn sửa
                             Intent intent = new Intent(context, ProductDetailActivity.class);
 
@@ -138,17 +137,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Thêm cờ FLAG_ACTIVITY_NEW_TASK
                             context.startActivity(intent); // Sử dụng context để khởi chạy Intent
                         }
-                        if (item.getItemId() ==  R.id.action_delete){
-                            // Xử lý khi người dùng chọn xóa
-                            XoaSanPham();
+                        if (item.getItemId() == R.id.action_delete) {
+                            // Xử lý khi người dùng chọn sửa
+                            Log.e("TAG", "onMenuItemClick: " + product.getId());
                             return true;
                         }
                         return false;
-                    }
-
-                    private void XoaSanPham() {
-                        System.out.println(product.getId());
-
                     }
                 });
                 popupMenu.show();
@@ -162,7 +156,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtPrice, txtQuantity, btnTang, btnGiam,txtCount;
+        TextView txtName, txtPrice, txtQuantity, btnTang, btnGiam, txtCount;
         ImageView imgSelect, imgCheck;
         LinearLayout countQuanity;
         RelativeLayout item;
