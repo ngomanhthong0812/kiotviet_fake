@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt("userId", userId);
-                    editor.putString("shopName",shopName);
+                    editor.putString("shopName", shopName);
                     editor.apply();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -127,5 +127,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // lấy ra tên shop vừa dc truyền khi login thành công
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt("userId", 0);
+        if (userId == 0) {
+            finishAffinity();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
