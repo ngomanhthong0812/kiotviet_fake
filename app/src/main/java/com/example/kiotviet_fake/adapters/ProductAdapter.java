@@ -22,6 +22,7 @@ import com.example.kiotviet_fake.activities.MainActivity;
 import com.example.kiotviet_fake.activities.ProductDetailActivity;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
+import com.example.kiotviet_fake.models.Table;
 import com.example.kiotviet_fake.session.SessionManager;
 
 import java.util.ArrayList;
@@ -138,11 +139,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             context.startActivity(intent); // Sử dụng context để khởi chạy Intent
                         }
                         if (item.getItemId() ==  R.id.action_delete){
-                            // Xử lý khi người dùng chọn sửa
-
+                            // Xử lý khi người dùng chọn xóa
+                            XoaSanPham();
                             return true;
                         }
                         return false;
+                    }
+
+                    private void XoaSanPham() {
+                        System.out.println(product.getId());
+
                     }
                 });
                 popupMenu.show();

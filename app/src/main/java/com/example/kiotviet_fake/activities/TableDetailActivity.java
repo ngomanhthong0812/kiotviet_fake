@@ -162,7 +162,7 @@ public class TableDetailActivity extends AppCompatActivity {
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
                             if (idTable == table_id) {
-                                arrayList.add(new Product(product_id, product_name, formattedPrice, 200, quantity));
+                                arrayList.add(new Product(product_id,table_id, product_name, formattedPrice, 200, quantity));
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
                                 txtCode.setText(code);
@@ -296,8 +296,12 @@ public class TableDetailActivity extends AppCompatActivity {
         ArrayList<Bill> bills = sessionManager.getBills();
         Bill firstBill = bills.get(0);
 
+
+        String txtTotal = txtTotalPrice.getText().toString();
+        txtTotal = txtTotal.replace(",", "");
+
         BillsInsertService service = BillsInsertApiClient.createService(username, password);
-        Call<String> call = service.insertBills(firstBill.getDateTime(), formattedDateTime, firstBill.getCode(), firstBill.getTableId(), firstBill.getUserId());
+        Call<String> call = service.insertBills(firstBill.getDateTime(), formattedDateTime, firstBill.getCode(), firstBill.getTableId(), firstBill.getUserId(), Float.parseFloat(txtTotal));
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
