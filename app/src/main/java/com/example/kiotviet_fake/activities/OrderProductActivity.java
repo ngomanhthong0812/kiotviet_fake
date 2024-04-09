@@ -241,7 +241,7 @@ public class OrderProductActivity extends AppCompatActivity {
 
         // Biến đếm số lượng Retrofit đã hoàn thành
         AtomicInteger retrofitCallCounter = new AtomicInteger(0);
-
+// them vong lap kiem tra xem có sản phẩm đó trong bàn chk
         for (Order order : orders) {
             int quantity = order.getQuantity();
             String priceString = order.getPrice();

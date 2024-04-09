@@ -6,15 +6,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-<<<<<<< HEAD
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-=======
 import android.content.Intent;
->>>>>>> 334f534ed1d14a0a0bd1914b958a48184ae703de
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -86,6 +83,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         initView();
 
     }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -94,6 +92,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             updateUI();
         }
     };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -193,7 +192,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
                             if (idTable == table_id) {
-                                arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity));
+                                arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable));
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
                                 txtCode.setText(code);

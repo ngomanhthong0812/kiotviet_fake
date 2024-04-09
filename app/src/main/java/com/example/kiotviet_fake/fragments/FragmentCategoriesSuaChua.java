@@ -84,7 +84,7 @@ public class FragmentCategoriesSuaChua extends Fragment {
 
                             if (categoriesName.equals("SỮA CHUA")) {
                                 String idProductItem = id + categoriesName;
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0,0,null));
                             }
 
 

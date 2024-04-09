@@ -32,6 +32,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     int productId,productQuantity;
     String productPrice, productName, quantityStr;
     float totalPrice;
+    String nameTable;
+    int idTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,11 +159,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 Toast.makeText(ProductDetailActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                 Log.d("update", "Thành công: " + productId);
 
-                                // Gửi broadcast để thông báo cho TableDetailActivity cập nhật UI
-                                Intent intent = new Intent("com.example.kiotviet_fake.PRODUCT_UPDATED");
-                                sendBroadcast(intent);
-
-                                finish();
+                              Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
+                                intent.putExtra("idTable", idTable);
+                                intent.putExtra("nameTable", nameTable);
+                              startActivity(intent);
 
 
                             } else {
@@ -193,7 +194,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         productName = intent.getStringExtra("product_name");
         productPrice = intent.getStringExtra("product_price");
         productQuantity = intent.getIntExtra("product_quantity",0);
-        System.out.println("test SLLL :" + productQuantity);
+        nameTable = intent.getStringExtra("nameTable");
+        idTable = intent.getIntExtra("idTable", 0);
+
         totalPrice = Float.parseFloat(productPrice.replace(",", ""));
     }
 

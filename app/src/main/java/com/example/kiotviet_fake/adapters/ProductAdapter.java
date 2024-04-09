@@ -73,7 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.txtCount.setText(String.valueOf(getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1));
         holder.countQuanity.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
         holder.imgCheck.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
-        isToggle[0] = getOrderQuantityByProductId > 0 ? true: false;
+        isToggle[0] = getOrderQuantityByProductId > 0 ? true : false;
 
         // xử lý item order product
         holder.item.setOnClickListener(new View.OnClickListener() {
@@ -138,13 +138,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             // Xử lý khi người dùng chọn sửa
                             Intent intent = new Intent(context, ProductDetailActivity.class);
 
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("product_id", product.getId());
                             intent.putExtra("product_name", product.getName());
                             intent.putExtra("product_price", product.getPrice());
                             intent.putExtra("product_quantity", product.getQuantityOrder());
+                            intent.putExtra("nameTable", product.getNameTable());
+                            intent.putExtra("idTable", product.getIdTable());
 
-                            System.out.println("test SLL produxt:" + product.getQuantityOrder());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Thêm cờ FLAG_ACTIVITY_NEW_TASK
                             context.startActivity(intent); // Sử dụng context để khởi chạy Intent
 
                         }
@@ -167,14 +168,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                 if (response.isSuccessful()) {
                                     // Xử lý phản hồi thành công từ API nếu cần
                                     Log.d("DeleteItemOfOrder", "Xóa sản phẩm thành công id  : " + product.getId());
-<<<<<<< HEAD
-=======
 
                                     // Thông báo cho Activity biết rằng có item được xoá
                                     adapterListener.onItemDeleted();
 
                                     //cập nhật UI
->>>>>>> 334f534ed1d14a0a0bd1914b958a48184ae703de
                                     products.remove(product);
                                     notifyDataSetChanged();
 
@@ -201,7 +199,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         return products.size();
     }
 
-    public class  viewHolder extends RecyclerView.ViewHolder {
+    public class viewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtPrice, txtQuantity, btnTang, btnGiam, txtCount;
         ImageView imgSelect, imgCheck;
         LinearLayout countQuanity;

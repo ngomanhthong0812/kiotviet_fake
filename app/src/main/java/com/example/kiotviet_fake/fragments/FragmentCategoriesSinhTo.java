@@ -85,7 +85,7 @@ public class FragmentCategoriesSinhTo extends Fragment {
                             if (categoriesName.equals("SINH TỐ")) {
                                 int number = random.nextInt(); // Tạo một số ngẫu nhiên
                                 String idProductItem = id + categoriesName; // Tạo một số ngẫu nhiên
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0,0,null));
                             }
 
 
