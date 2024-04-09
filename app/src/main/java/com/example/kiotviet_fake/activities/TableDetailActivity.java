@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +30,7 @@ import com.example.kiotviet_fake.database.select.Orders_OrderItem_Product_Select
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
+import com.example.kiotviet_fake.interface_main.AdapterListener;
 import com.example.kiotviet_fake.models.Bill;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
@@ -51,7 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TableDetailActivity extends AppCompatActivity {
+public class TableDetailActivity extends AppCompatActivity implements AdapterListener {
     ImageView btnCancel, btnThem;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
@@ -79,6 +78,7 @@ public class TableDetailActivity extends AppCompatActivity {
         initView();
     }
 
+
     public void addControl() {
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         txtNameTable = (TextView) findViewById(R.id.txtNameTable);
@@ -97,7 +97,6 @@ public class TableDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
-        newOrderId = intent.getIntExtra("idOrder", 0);
 
         txtNameTable.setText(nameTable);
     }
@@ -148,6 +147,7 @@ public class TableDetailActivity extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             int id = Integer.parseInt(jsonObject.getString("id"));
+                            int order_id = Integer.parseInt(jsonObject.getString("orderId"));
                             String code = jsonObject.getString("code");
                             String dateTime = jsonObject.getString("dateTime");
                             int table_id = Integer.parseInt(jsonObject.getString("table_id"));
@@ -162,11 +162,12 @@ public class TableDetailActivity extends AppCompatActivity {
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
                             if (idTable == table_id) {
-                                arrayList.add(new Product(id,"", product_name, formattedPrice, 200, quantity));
+                                arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity));
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
                                 txtCode.setText(code);
                                 idOrderByDelete = id;
+                                newOrderId = order_id;
 
                                 // thêm vào kho lưu trữ bill
                                 Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
@@ -192,9 +193,12 @@ public class TableDetailActivity extends AppCompatActivity {
                         recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
 
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        ProductAdapter productAdapter = new ProductAdapter(arrayList, getApplicationContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        ProductAdapter productAdapter = new ProductAdapter(arrayList, getApplicationContext(), TableDetailActivity.this); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
                         recyclerView.setAdapter(productAdapter);
                         productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+
+                        updateTable("11168851", "60-dayfreetrial"); // cập nhật giá và trạng thái cảu bàn
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -223,7 +227,7 @@ public class TableDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
                         deleteOrder("11168851", "60-dayfreetrial");
-                        updateStatusTable("11168851", "60-dayfreetrial");
+                        isUpdateStatusTable("11168851", "60-dayfreetrial");
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
@@ -261,7 +265,7 @@ public class TableDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void updateStatusTable(String username, String password) {
+    private void isUpdateStatusTable(String username, String password) {
 
         int id = idTable;
         double status = 0;
@@ -380,4 +384,36 @@ public class TableDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // nhận thông báo từ productAdapter khi item đã được xoá
+    @Override
+    public void onItemDeleted() {
+        quantityTotal = 0;
+        priceTotal = 0;
+        initView();  // chạy lại initView
+    }
+
+    private void updateTable(String username, String password) {
+
+        int id = idTable;
+        double status = 1;
+        float table_price = priceTotal;
+
+        TableUpdateStatusService service = TableUpdateStatusApiClient.createService(username, password);
+        Call<String> call = service.updateData(id, status, table_price);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
 }

@@ -22,6 +22,7 @@ import com.example.kiotviet_fake.activities.MainActivity;
 import com.example.kiotviet_fake.activities.ProductDetailActivity;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderAPI;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderService;
+import com.example.kiotviet_fake.interface_main.AdapterListener;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
@@ -36,10 +37,13 @@ import retrofit2.Response;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHolder> {
     ArrayList<Product> products;
     Context context;
+    private AdapterListener adapterListener;
 
-    public ProductAdapter(ArrayList<Product> products, Context context) {
+    public ProductAdapter(ArrayList<Product> products, Context context, AdapterListener adapterListener) {
         this.products = products;
         this.context = context;
+        this.adapterListener = adapterListener;
+
     }
 
     @NonNull
@@ -68,6 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.txtCount.setText(String.valueOf(getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1));
         holder.countQuanity.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
         holder.imgCheck.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
+        isToggle[0] = getOrderQuantityByProductId > 0 ? true: false;
 
         // xử lý item order product
         holder.item.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +165,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                     // Xử lý phản hồi thành công từ API nếu cần
                                     Log.d("DeleteItemOfOrder", "Xóa sản phẩm thành công id  : " + product.getId());
 
+                                    // Thông báo cho Activity biết rằng có item được xoá
+                                    adapterListener.onItemDeleted();
+
+                                    //cập nhật UI
+                                    products.remove(product);
                                     notifyDataSetChanged();
 
                                 } else {
