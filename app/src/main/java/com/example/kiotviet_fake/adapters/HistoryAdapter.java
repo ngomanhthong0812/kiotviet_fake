@@ -12,7 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.models.History;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
@@ -34,9 +38,52 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         History history = historyList.get(position);
-        holder.totalPriceTextView.setText(String.valueOf(history.getTotal_price()));
+        float total = Float.valueOf((float) history.getTotal_price());
 
-        // Thêm các thành phần giao diện khác nếu cần
+        // Định dạng mới cho ngày
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        // Định dạng mới cho giờ
+        SimpleDateFormat newTimeFormat = new SimpleDateFormat("HH:mm");
+
+        holder.totalPriceTextView.setText(formatPrice(total));
+        holder.txtCode.setText(history.getCode());
+        holder.nameTable.setText(history.getNameTable());
+
+        // Chuyển đổi chuỗi ngày thành đối tượng Date
+        try {
+            // Đối tượng Date từ chuỗi datetime
+            Date datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(history.getDateTime_end());
+
+            // Định dạng ngày mới sử dụng đối tượng newDateFormat
+            String formattedDate = newDateFormat.format(datetime);
+            holder.dateDay.setText(formattedDate);
+
+            // Định dạng giờ mới sử dụng đối tượng newTimeFormat
+            String formattedTime = newTimeFormat.format(datetime);
+            holder.timeDay.setText(formattedTime);
+            holder.itemChidell.setText(formattedTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String formatPrice(float price) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(price);
+    }
+
+    private String getFormattedTime(String datetime) {
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat newTimeFormat = new SimpleDateFormat("HH:mm");
+
+        try {
+            Date date = oldDateFormat.parse(datetime);
+            return newTimeFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ""; // Trả về chuỗi rỗng nếu có lỗi xảy ra
+        }
     }
 
     @Override
@@ -47,14 +94,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView totalPriceTextView;
-
-        // Thêm các thành phần giao diện khác nếu cần
+        TextView txtCode, dateDay, timeDay,nameTable,itemChidell;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             totalPriceTextView = itemView.findViewById(R.id.totalHistory);
-            // Khởi tạo các thành phần giao diện khác nếu cần
+            txtCode = itemView.findViewById(R.id.txtCode);
+            dateDay = itemView.findViewById(R.id.dateDay);
+            timeDay = itemView.findViewById(R.id.timeDay);
+            itemChidell = itemView.findViewById(R.id.itemChidell);
+            nameTable = itemView.findViewById(R.id.nameTable);
         }
     }
 }

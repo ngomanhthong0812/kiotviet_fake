@@ -54,11 +54,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
 
     String shopName;
+    int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Log.d("NotificationActivity", "Activity is created");
         toolbar = findViewById(R.id.toolbar);
 
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // lấy ra tên shop vừa dc truyền khi login thành công
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         shopName = sharedPreferences.getString("shopName", "");
-
+        userId = sharedPreferences.getInt("userId",0);
 
         addControl();
         btnClick();
@@ -140,8 +142,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, EndOfDayReportActivity.class);
             startActivity(intent);
         }
-        if (item.getItemId() == R.id.ThietLap) {
+        if (item.getItemId() == R.id.history) {
             Intent intent = new Intent(this, HistoryOdersActivity.class);
+            intent.putExtra("user_id", userId);
             startActivity(intent);
         }
         if (item.getItemId() == R.id.DangXuat) {
