@@ -120,7 +120,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onClick(View v) {
                 // thêm hiệu ứng loading
                 progressBar.setVisibility(View.VISIBLE);
-
                 insertBill("11168851", "60-dayfreetrial");
             }
         });
@@ -171,7 +170,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
                                 txtCode.setText(code);
-                                idOrderByDelete = id;
+                                idOrderByDelete = order_id;
                                 newOrderId = order_id;
 
                                 // thêm vào kho lưu trữ bill
@@ -232,7 +231,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 if (response.isSuccessful()) {
                     try {
                         deleteOrder("11168851", "60-dayfreetrial");
-                        isUpdateStatusTable("11168851", "60-dayfreetrial");
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
@@ -257,7 +255,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onResponse(Call<String> call, Response<String> response) {
                 // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
-                    navigateToTableMainActivity();
+                    isUpdateStatusTable("11168851", "60-dayfreetrial");
                 } else {
                     // Xử lý phản hồi không thành công
                 }
@@ -282,10 +280,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-
+                    navigateToTableMainActivity();
                 } else {
                     // Xử lý phản hồi không thành công
                 }
+                Log.e("TAG", "onResponse: " + "ok");
             }
 
             @Override
@@ -339,6 +338,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         SessionManager sessionManager = SessionManager.getInstance();
         ArrayList<Bill> bills = sessionManager.getBills();
 
+        int totalCalls = bills.size();
+        final int[] completedCalls = {0};
         for (Bill bill : bills) {
             Log.e("TAG", "insertBill: " + bill);
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
@@ -348,7 +349,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.isSuccessful()) {
                         try {
-                            deleteOrder_items("11168851", "60-dayfreetrial");
+                            completedCalls[0]++;
+                            if (completedCalls[0] == totalCalls) {
+                                deleteOrder_items("11168851", "60-dayfreetrial");
+                            }
                         } catch (ParseException e) {
                             throw new RuntimeException(e);
                         }
@@ -368,11 +372,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     private void navigateToTableMainActivity() {
         Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
         startActivity(intent);
+        finish();
 
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.removeBillAll();
-//        // ẩn hiệu ứng loading
-//        progressBar.setVisibility(View.GONE);
 
     }
 

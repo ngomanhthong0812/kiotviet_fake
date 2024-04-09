@@ -82,7 +82,7 @@ public class OrderProductActivity extends AppCompatActivity {
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
         tableTotalPrice = intent.getIntExtra("totalPriceTable", 0);
-        newOrderId = intent.getIntExtra("idOrder", newOrderId);
+        newOrderId = intent.getIntExtra("idOrder", 0);
         Log.e("TAG", "updateUI: " + newOrderId);
 
         txtNameTable.setText(nameTable);
@@ -138,7 +138,6 @@ public class OrderProductActivity extends AppCompatActivity {
 
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
-                finish();
             }
         });
 
