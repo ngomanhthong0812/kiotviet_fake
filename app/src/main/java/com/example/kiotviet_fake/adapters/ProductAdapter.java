@@ -168,7 +168,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                 if (response.isSuccessful()) {
                                     // Xử lý phản hồi thành công từ API nếu cần
                                     Log.d("DeleteItemOfOrder", "Xóa sản phẩm thành công id  : " + product.getId());
-
                                     // Thông báo cho Activity biết rằng có item được xoá
                                     adapterListener.onItemDeleted();
 

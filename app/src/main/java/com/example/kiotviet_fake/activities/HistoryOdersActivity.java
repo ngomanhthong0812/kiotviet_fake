@@ -1,10 +1,13 @@
 package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
@@ -24,16 +27,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HistoryOdersActivity extends AppCompatActivity {
-    ListView listHistory ;
+    RecyclerView listHistory;
     HistoryAdapter historyAdapter;
     ArrayList<History> historyList;
+    ImageView btnClose;
+    int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_oders);
         LoadData();
+        BtnClick();
         fetchData();
+    }
+
+    private void BtnClick() {
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HistoryOdersActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void fetchData() {
@@ -56,9 +72,12 @@ public class HistoryOdersActivity extends AppCompatActivity {
                             int table_id = jsonObject.getInt("table_id");
                             int user_id = jsonObject.getInt("user_id");
                             double total_price = jsonObject.getDouble("total_price");
+                            String nameTable = jsonObject.getString("table_name");
 
-                            History history = new History(id, dateTime, dateTime_end, code, table_id, user_id, total_price);
-                            historyList.add(history);
+                            if (user_id == userId) {
+                                History history = new History(id, dateTime, dateTime_end, code, table_id, user_id, total_price,nameTable);
+                                historyList.add(history);
+                            }
                         }
                         // Cập nhật dữ liệu mới cho adapter
                         historyAdapter.notifyDataSetChanged();
@@ -81,8 +100,14 @@ public class HistoryOdersActivity extends AppCompatActivity {
 
     private void LoadData() {
         listHistory = findViewById(R.id.listHistory);
+        btnClose = findViewById(R.id.btnClose);
+
+        Intent intent = getIntent();
+        userId = intent.getIntExtra("user_id", 0);
+
         historyList = new ArrayList<>();
         historyAdapter = new HistoryAdapter(historyList, this);
+        listHistory.setLayoutManager(new LinearLayoutManager(this));
         listHistory.setAdapter(historyAdapter);
     }
 }

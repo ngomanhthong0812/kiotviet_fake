@@ -121,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, "Tên người dùng hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();

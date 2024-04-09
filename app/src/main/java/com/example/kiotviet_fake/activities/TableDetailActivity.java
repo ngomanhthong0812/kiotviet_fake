@@ -84,31 +84,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Khi nhận được broadcast, cập nhật lại giao diện người dùng
-            addControl();
-            updateUI();
-        }
-    };
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Đăng ký BroadcastReceiver
-        IntentFilter intentFilter = new IntentFilter("com.example.kiotviet_fake.PRODUCT_UPDATED");
-        registerReceiver(mReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Hủy đăng ký BroadcastReceiver để tránh rò rỉ bộ nhớ
-        unregisterReceiver(mReceiver);
-    }
-
-
     public void addControl() {
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         txtNameTable = (TextView) findViewById(R.id.txtNameTable);

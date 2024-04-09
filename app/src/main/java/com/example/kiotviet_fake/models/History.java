@@ -10,8 +10,9 @@ public class History {
     private int table_id;
     private int user_id;
     private double total_price;
+    private String nameTable;
 
-    public History(int id, String dateTime, String dateTime_end, String code, int table_id, int user_id, double total_price) {
+    public History(int id, String dateTime, String dateTime_end, String code, int table_id, int user_id, double total_price, String nameTable) {
         this.id = id;
         this.dateTime = dateTime;
         this.dateTime_end = dateTime_end;
@@ -19,6 +20,7 @@ public class History {
         this.table_id = table_id;
         this.user_id = user_id;
         this.total_price = total_price;
+        this.nameTable = nameTable;
     }
 
     public int getId() {
@@ -75,5 +77,13 @@ public class History {
 
     public void setTotal_price(double total_price) {
         this.total_price = total_price;
+    }
+
+    public String getNameTable() {
+        return nameTable;
+    }
+
+    public void setNameTable(String nameTable) {
+        this.nameTable = nameTable;
     }
 }
