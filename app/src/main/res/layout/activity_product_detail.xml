@@ -132,7 +132,8 @@
                     android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:text="0"
+                    android:textColorHint="@color/black_overlay"
+                    android:hint="Giảm giá (%)"
                     android:textStyle="bold"
                     android:background="@drawable/bg_icon_count"
                     android:textSize="17dp"
@@ -159,7 +160,7 @@
                     android:textSize="17dp"
                     android:textStyle="bold" />
 
-                <EditText
+                <TextView
                     android:id="@+id/EdtPrice"
                     android:layout_width="170dp"
                     android:layout_height="wrap_content"
@@ -201,13 +202,15 @@
                         android:padding="5dp"
                         android:src="@drawable/minus_24"
                         android:layout_marginRight="25dp"/>
-                    <TextView
+
+                    <EditText
                         android:id="@+id/quantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="17dp"
+                        android:text="1"
+                        android:inputType="number"
                         android:textColor="@color/black"
-                        android:text="1"/>
+                        android:textSize="17dp" />
                     <ImageView
                         android:id="@+id/tang"
                         android:layout_width="wrap_content"
@@ -230,14 +233,14 @@
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="17dp"
-                        android:layout_gravity="end"
+                        android:layout_gravity="center"
                         android:text="30,000"/>
                 </LinearLayout>
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnThemVaoDon"
+                android:id="@+id/btnLuuSanPham"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
