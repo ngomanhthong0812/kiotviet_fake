@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -77,6 +79,29 @@ public class TableDetailActivity extends AppCompatActivity {
         updateUI();
         btnClick();
         initView();
+
+    }
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Khi nhận được broadcast, cập nhật lại giao diện người dùng
+            addControl();
+            updateUI();
+        }
+    };
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Đăng ký BroadcastReceiver
+        IntentFilter intentFilter = new IntentFilter("com.example.kiotviet_fake.PRODUCT_UPDATED");
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Hủy đăng ký BroadcastReceiver để tránh rò rỉ bộ nhớ
+        unregisterReceiver(mReceiver);
     }
 
     public void addControl() {

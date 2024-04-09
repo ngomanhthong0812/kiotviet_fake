@@ -140,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, EndOfDayReportActivity.class);
             startActivity(intent);
         }
+        if (item.getItemId() == R.id.ThietLap) {
+            Intent intent = new Intent(this, HistoryOdersActivity.class);
+            startActivity(intent);
+        }
         if (item.getItemId() == R.id.DangXuat) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

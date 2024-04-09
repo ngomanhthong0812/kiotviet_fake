@@ -156,10 +156,18 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 // Xử lý response thành công
                                 Toast.makeText(ProductDetailActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                 Log.d("update", "Thành công: " + productId);
-                               finish();
+
+                                // Gửi broadcast để thông báo cho TableDetailActivity cập nhật UI
+                                Intent intent = new Intent("com.example.kiotviet_fake.PRODUCT_UPDATED");
+                                sendBroadcast(intent);
+
+                                finish();
+
+
                             } else {
                                 // Xử lý response không thành công
                                 Toast.makeText(ProductDetailActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+
                                 Log.e("update", "Thất bại: " + response.message());
                             }
                         }

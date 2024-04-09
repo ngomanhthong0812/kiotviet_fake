@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -133,10 +134,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             intent.putExtra("product_id", product.getId());
                             intent.putExtra("product_name", product.getName());
                             intent.putExtra("product_price", product.getPrice());
-                            intent.putExtra("product_quantity", product.getQuantity());
-                            System.out.println("test SLL produxt:" + product.getQuantity());
+                            intent.putExtra("product_quantity", product.getQuantityOrder());
+
+                            System.out.println("test SLL produxt:" + product.getQuantityOrder());
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Thêm cờ FLAG_ACTIVITY_NEW_TASK
                             context.startActivity(intent); // Sử dụng context để khởi chạy Intent
+
                         }
                         if (item.getItemId() == R.id.action_delete) {
                             // Xử lý khi người dùng chọn sửa
@@ -157,7 +160,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                 if (response.isSuccessful()) {
                                     // Xử lý phản hồi thành công từ API nếu cần
                                     Log.d("DeleteItemOfOrder", "Xóa sản phẩm thành công id  : " + product.getId());
-
+                                    products.remove(product);
                                     notifyDataSetChanged();
 
                                 } else {
@@ -183,7 +186,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         return products.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder {
+    public class  viewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtPrice, txtQuantity, btnTang, btnGiam, txtCount;
         ImageView imgSelect, imgCheck;
         LinearLayout countQuanity;
