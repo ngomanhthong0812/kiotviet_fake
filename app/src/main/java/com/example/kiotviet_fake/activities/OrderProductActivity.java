@@ -19,16 +19,20 @@ import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.OrderProductAdapter;
+import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.insertOrders.OrderInsertApiClient;
 import com.example.kiotviet_fake.database.insertOrderItems.OrderInsertItemsService;
 import com.example.kiotviet_fake.database.insertOrders.OrderInsertService;
 import com.example.kiotviet_fake.database.insertOrderItems.OrderInsertItemsApiClient;
+import com.example.kiotviet_fake.database.select.BillsSelectService;
+import com.example.kiotviet_fake.database.select.OrdersSelectService;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.session.SessionManager;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +63,6 @@ public class OrderProductActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +73,8 @@ public class OrderProductActivity extends AppCompatActivity {
         isTableUserId = sharedPreferences.getInt("userId", 0);
 
         addControl();
-        btnClick();
         updateUI();
+        btnClick();
     }
 
     private void updateUI() {
@@ -79,6 +82,8 @@ public class OrderProductActivity extends AppCompatActivity {
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
         tableTotalPrice = intent.getIntExtra("totalPriceTable", 0);
+        newOrderId = intent.getIntExtra("idOrder", newOrderId);
+        Log.e("TAG", "updateUI: " + newOrderId);
 
         txtNameTable.setText(nameTable);
 
@@ -117,14 +122,10 @@ public class OrderProductActivity extends AppCompatActivity {
         btnThemVaoDon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    // thêm hiệu ứng loading
-                    progressBar.setVisibility(View.VISIBLE);
+                // thêm hiệu ứng loading
+                progressBar.setVisibility(View.VISIBLE);
+                selectOrders();
 
-                    insertOrder("11168851", "60-dayfreetrial");
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
             }
         });
         bntChonLai.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +139,53 @@ public class OrderProductActivity extends AppCompatActivity {
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
                 finish();
+            }
+        });
+
+    }
+
+    public void selectOrders() {
+        //select data from api
+        OrdersSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(OrdersSelectService.class);
+        Call<String> call = apiService.getOrders();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        boolean isInsert = false;
+                        JSONArray jsonArray = new JSONArray(response.body());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            int id = jsonObject.getInt("id");
+//                            String dateTime = jsonObject.getString("dateTime");
+//                            String code = jsonObject.getString("code");
+                            int table_id = jsonObject.getInt("table_id");
+                            int user_id = jsonObject.getInt("user_id");
+                            if (table_id == idTable && user_id == isTableUserId) {
+                                isInsert = true;
+                            }
+                        }
+                        if (isInsert) {
+                            insertOrder_items("11168851", "60-dayfreetrial");
+                            Log.d("TAG", "onResponse: " + idTable + " " + isTableUserId);
+                        } else {
+                            insertOrder("11168851", "60-dayfreetrial");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Log.e("TAG", "Failed to fetch data: " + response.code());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "Failed to fetch data: " + t.getMessage());
             }
         });
 
@@ -200,6 +248,7 @@ public class OrderProductActivity extends AppCompatActivity {
             priceString = priceString.replace(",", ""); // Loại bỏ dấu phẩy
             float price = Float.parseFloat(priceString) * order.getQuantity();
             int order_id = newOrderId;
+            Log.e("TAG", "insertOrder_items: " + order_id);
             int product_id = order.getProductId();
 
             // tính tổng giá của bàn
@@ -235,32 +284,7 @@ public class OrderProductActivity extends AppCompatActivity {
 
         //xoá tất cả product đã chọn khi nhấn thêm vào đơn
         sessionManager.removeOrderAll();
-        updateStatusTable("11168851", "60-dayfreetrial");
-    }
 
-    private void updateStatusTable(String username, String password) {
-
-        int id = idTable;
-        double status = 1;
-        float table_price = tableTotalPrice;
-
-        TableUpdateStatusService service = TableUpdateStatusApiClient.createService(username, password);
-        Call<String> call = service.updateData(id, status, table_price);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-
-                } else {
-                    // Xử lý phản hồi không thành công
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý lỗi
-            }
-        });
     }
 
     private void navigateToTableDetailActivity() {

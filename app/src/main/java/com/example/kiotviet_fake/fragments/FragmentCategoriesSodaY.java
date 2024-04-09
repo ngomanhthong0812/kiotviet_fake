@@ -96,7 +96,7 @@ public class FragmentCategoriesSodaY extends Fragment {
                         recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
 
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        ProductAdapter productAdapter = new ProductAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        ProductAdapter productAdapter = new ProductAdapter(arrayList, requireContext(),null); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
                         recyclerView.setAdapter(productAdapter);
                         productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
