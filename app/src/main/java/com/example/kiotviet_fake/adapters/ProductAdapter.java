@@ -50,6 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         SessionManager sessionManager = SessionManager.getInstance();
         int getOrderQuantityByProductId = sessionManager.getOrderQuantityByIdProductItem(product.getIdProductItem());
         final int[] count = {getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1};
+        final boolean[] isToggle = {false};
 
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
@@ -65,7 +66,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (count[0] > 0) {
+                if (!product.getIdProductItem().equals("") && !isToggle[0]) {
                     holder.countQuanity.setVisibility(View.VISIBLE);
                     holder.imgCheck.setVisibility(View.VISIBLE);
                     product.setQuantityOrder(1); // gán số lượng 1 khi chọn vào sản phẩm
@@ -82,6 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                     SessionManager sessionManager = SessionManager.getInstance();
                     sessionManager.removeOrderByProductId(product.getIdProductItem());
                 }
+                isToggle[0] = !isToggle[0];
 
             }
 
