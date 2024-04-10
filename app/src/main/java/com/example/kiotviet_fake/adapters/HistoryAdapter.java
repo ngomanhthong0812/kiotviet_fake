@@ -3,6 +3,7 @@ package com.example.kiotviet_fake.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,11 +58,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.txtCode.setText(history.getCode());
         holder.nameTable.setText(history.getNameTable());
 
-        // Kiểm tra và chuyển đổi thời gian thành chuỗi
-        String startTimeString = LocalDateTime.parse(history.getDateTime(), formatter).toString();
-        String endTimeString = LocalDateTime.parse(history.getDateTime_end(), formatter).toString();
-
-        holder.itemChidell.setText(startTimeString + " - " + endTimeString);
+        holder.itemChidell.setText(history.getDateTime() + " - " + history.getDateTime_end());
 
         // Tính khoảng thời gian giữa hai thời điểm
         LocalDateTime startTime = LocalDateTime.parse(history.getDateTime(), formatter);

@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // lấy ra tên shop vừa dc truyền khi login thành công
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         shopName = sharedPreferences.getString("shopName", "");
-        userId = sharedPreferences.getInt("userId",0);
+        userId = sharedPreferences.getInt("userId", 0);
 
         addControl();
         btnClick();
@@ -157,6 +157,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.putInt("userId", 0);
             editor.putString("shopName", shopName);
             editor.apply();
+        }
+        if (item.getItemId() == R.id.ThongBaoBep) {
+            Intent intent = new Intent(MainActivity.this, Notification.class);
+            startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
