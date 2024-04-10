@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.models.DetailBill;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class DetailBillAdapter extends RecyclerView.Adapter<DetailBillAdapter.ViewHolder>{
@@ -34,10 +35,11 @@ public class DetailBillAdapter extends RecyclerView.Adapter<DetailBillAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull DetailBillAdapter.ViewHolder holder, int position) {
         DetailBill detailBill = listBill.get(position);
-
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String formattedTotal = decimalFormat.format(detailBill.getTotal_price());
         holder.textViewProductName.setText(detailBill.getName());
         holder.textViewQuantity.setText(String.valueOf(detailBill.getQuantity()));
-        holder.textViewTotalPrice.setText(String.valueOf(detailBill.getTotal_price()));
+        holder.textViewTotalPrice.setText(formattedTotal);
 
     }
 

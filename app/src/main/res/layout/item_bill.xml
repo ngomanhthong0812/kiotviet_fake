@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="17dp"
             android:text="Phomai viên chiên" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:textSize="25dp"
+            android:textSize="17dp"
             android:textColor="@color/black"
             android:text="125,000" />
 
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="17dp"
             android:text="SP000007"/>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -53,14 +53,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 android:layout_marginRight="15dp"
                 android:text="123,000"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 android:layout_marginRight="15dp"
                 android:text="X"/>
             <TextView
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 android:layout_marginRight="15dp"
                 android:text="1"/>
 

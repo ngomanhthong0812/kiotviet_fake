@@ -83,7 +83,7 @@
                android:layout_height="wrap_content"
                android:text="Tổng tiền hàng"
                android:textColor="@color/black"
-               android:textSize="25dp" />
+               android:textSize="17dp" />
 
 <!--           <TextView-->
 <!--               android:layout_width="40dp"-->
@@ -104,7 +104,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textColor="@color/black"
-                  android:textSize="25dp"
+                  android:textSize="17dp"
                   android:text="200,000"/>
           </LinearLayout>
        </LinearLayout>
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 android:text="Khách cần trả"/>
             <TextView
                 android:id="@+id/TongTien2"
@@ -125,7 +125,7 @@
                 android:text="255,000"
                 android:gravity="end"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 />
         </LinearLayout>
         <LinearLayout
@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 android:text="Khách thanh toán"/>
             <TextView
                 android:id="@+id/TongTien3"
@@ -145,7 +145,7 @@
                 android:text="255,000"
                 android:gravity="end"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="17dp"
                 />
         </LinearLayout>
     </LinearLayout>
