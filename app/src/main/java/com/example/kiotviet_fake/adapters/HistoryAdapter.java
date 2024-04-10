@@ -1,6 +1,7 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.activities.DetailBillActivity;
 import com.example.kiotviet_fake.models.History;
 
 import java.text.DecimalFormat;
@@ -48,35 +50,45 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         float total = Float.valueOf((float) history.getTotal_price());
 
         // Định dạng mới cho ngày
-        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        // Định dạng mới cho giờ
-        SimpleDateFormat newTimeFormat = new SimpleDateFormat("HH:mm");
-
+        // Đặt các giá trị cho các TextView trong ViewHolder
         holder.totalPriceTextView.setText(formatPrice(total));
         holder.txtCode.setText(history.getCode());
         holder.nameTable.setText(history.getNameTable());
 
+        // Kiểm tra và chuyển đổi thời gian thành chuỗi
+        String startTimeString = LocalDateTime.parse(history.getDateTime(), formatter).toString();
+        String endTimeString = LocalDateTime.parse(history.getDateTime_end(), formatter).toString();
 
-        holder.itemChidell.setText(history.getDateTime() + " - " + history.getDateTime_end());
-
-        // Lấy thời gian bắt đầu và kết thúc từ đối tượng history
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startTime = LocalDateTime.parse(history.getDateTime(), formatter);
-        LocalDateTime endTime = LocalDateTime.parse(history.getDateTime_end(), formatter);
+        holder.itemChidell.setText(startTimeString + " - " + endTimeString);
 
         // Tính khoảng thời gian giữa hai thời điểm
+        LocalDateTime startTime = LocalDateTime.parse(history.getDateTime(), formatter);
+        LocalDateTime endTime = LocalDateTime.parse(history.getDateTime_end(), formatter);
         Duration duration = Duration.between(startTime, endTime);
 
-        // Lấy số giờ, phút và giây từ khoảng thời gian
+        // Lấy số giờ và phút từ khoảng thời gian
         long hours = duration.toHours();
-        long minutes = duration.toMinutesPart();
+//        long minutes = duration.toMinutesPart();
+        long minutes = duration.toMinutes();
+//        long seconds = duration.minusMinutes(minutes).getSeconds();
+
 
         // Hiển thị thời gian
         String totalTime = hours + "g" + minutes + "p";
-        // Hiển thị chuỗi thời gian đã tính được
         holder.totalTime.setText(totalTime);
 
+        // Xử lý sự kiện khi một mục được nhấn
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailBillActivity.class);
+                intent.putExtra("bill_id", history.getId());
+                intent.putExtra("total", history.getTotal_price());
+                context.startActivity(intent);
+            }
+        });
     }
 
     private String formatPrice(float price) {
