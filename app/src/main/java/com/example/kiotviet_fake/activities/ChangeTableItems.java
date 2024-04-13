@@ -1,25 +1,33 @@
-package com.example.kiotviet_fake.fragments;
+package com.example.kiotviet_fake.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.adapters.ChangeTableItemAdapter;
+import com.example.kiotviet_fake.adapters.ProductAdapter;
 import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.database.RetrofitClient;
+import com.example.kiotviet_fake.database.select.Orders_OrderItem_Product_SelectService;
 import com.example.kiotviet_fake.database.select.TableSelectByUserIdService;
 import com.example.kiotviet_fake.database.select.TableSelectService;
+import com.example.kiotviet_fake.interface_main.AdapterListener;
+import com.example.kiotviet_fake.models.Bill;
+import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.models.Table;
+import com.example.kiotviet_fake.session.SessionManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,41 +41,61 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentTatCa extends Fragment {
+public class ChangeTableItems extends AppCompatActivity {
+    ImageView btnCancel;
     int isTableUserId;
-
-    public FragmentTatCa() {
-        // Required empty public constructor
-    }
+    String nameTable;
+    int idTable;
+    int orderId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_change_table_items);
+
         // lấy ra userId vừa dc truyền khi login thành công
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tat_ca, container, false);
-    }
+        Intent intent = getIntent();
+        nameTable = intent.getStringExtra("nameTable");
+        idTable = intent.getIntExtra("idTable",0);
+        orderId = intent.getIntExtra("orderId",0);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        addControl();
+        btnClick();
         initView();
     }
 
+    private void btnClick() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChangeTableItems.this, ChangeTable.class);
+                intent.putExtra("nameTable" ,nameTable);
+                intent.putExtra("idTable" ,idTable);
+                intent.putExtra("orderId", orderId);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    private void addControl() {
+        btnCancel = (ImageView) findViewById(R.id.btnCancel);
+    }
+
     public void initView() {
-        RecyclerView recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
+        RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
+        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
 
         ArrayList<Table> arrayList = new ArrayList<>();
 
         //select data from api
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId,"");
+        Call<String> call = apiService.getTable(isTableUserId,"Mang về");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -90,13 +118,15 @@ public class FragmentTatCa extends Fragment {
                             if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
                                 userId = Integer.parseInt(userIdString);
                             }
+                            if (userId == isTableUserId && status == 0 && table_price == 0) {
                                 arrayList.add(new Table(id, tableName, status, userId, formattedPrice));
+                            }
 
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-                        recyclerView.setAdapter(tableAdapter);
-                        tableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+                        ChangeTableItemAdapter ChangeTableItemAdapter = new ChangeTableItemAdapter(arrayList, ChangeTableItems.this,idTable,orderId); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        recyclerView.setAdapter(ChangeTableItemAdapter);
+                        ChangeTableItemAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -111,6 +141,5 @@ public class FragmentTatCa extends Fragment {
             }
         });
     }
-
 
 }

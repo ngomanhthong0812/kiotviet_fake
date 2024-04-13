@@ -115,7 +115,8 @@ public class OrderProductActivity extends AppCompatActivity {
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
 
-                finish(); // Kết thúc hoạt động hiện tại và quay lại trang trước đó
+                Intent intent = new Intent(OrderProductActivity.this, MainActivity.class);
+                startActivity(intent);// Kết thúc hoạt động hiện tại và quay lại trang trước đó
             }
         });
 

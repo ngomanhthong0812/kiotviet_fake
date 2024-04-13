@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     ImageView btnCancel, btnThem;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
+    LinearLayout btnDoiBan;
 
     int idTable;
     int newOrderId;
@@ -95,6 +97,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         btnThongBao = (Button) findViewById(R.id.btnThongBao);
         btnThem = (ImageView) findViewById(R.id.btnThem);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnDoiBan = (LinearLayout) findViewById(R.id.btn_doiBan);
 
     }
 
@@ -128,6 +131,17 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             @Override
             public void onClick(View v) {
                 navigateToTableOrderProductActivity();
+            }
+        });
+
+        btnDoiBan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TableDetailActivity.this, ChangeTable.class);
+                intent.putExtra("nameTable" ,nameTable);
+                intent.putExtra("idTable" ,idTable);
+                intent.putExtra("orderId", idOrderByDelete);
+                startActivity(intent);
             }
         });
     }
@@ -178,12 +192,15 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                                 sessionManager.addBill(bill);
                             }
 
+                            if(nameTable.toLowerCase().contains("mang")){
+                                selectInfoTableMangVe(idTable,nameTable); // gửi id và ten bàn
+                            }
+
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
                             String formatPrice = formatterNumberFormat.format(priceTotal);
 
                             txtQuantity.setText("Tổng tiền " + quantityTotal);
                             txtTotalPrice.setText(formatPrice);
-
 
                         }
                         RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
@@ -201,7 +218,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         recyclerView.setAdapter(productAdapter);
                         productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
 
-                        updateTable("11168851", "60-dayfreetrial"); // cập nhật giá và trạng thái cảu bàn
+                        updateTable("11168851", "60-dayfreetrial"); // cập nhật giá và trạng thái của bàn
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -284,7 +301,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 } else {
                     // Xử lý phản hồi không thành công
                 }
-                Log.e("TAG", "onResponse: " + "ok");
             }
 
             @Override
@@ -423,5 +439,13 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 // Xử lý lỗi
             }
         });
+    }
+
+    public void selectInfoTableMangVe(int id,String nameTable){
+        SharedPreferences sharedPreferences = getSharedPreferences("tableMangVe", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("tableId", id);
+        editor.putString("tableName", nameTable);
+        editor.apply();
     }
 }
