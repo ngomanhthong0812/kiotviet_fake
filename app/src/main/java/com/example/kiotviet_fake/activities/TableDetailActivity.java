@@ -138,8 +138,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TableDetailActivity.this, ChangeTable.class);
-                intent.putExtra("nameTable" ,nameTable);
-                intent.putExtra("idTable" ,idTable);
+                intent.putExtra("nameTable", nameTable);
+                intent.putExtra("idTable", idTable);
                 intent.putExtra("orderId", idOrderByDelete);
                 startActivity(intent);
             }
@@ -150,7 +150,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     public void initView() {
         //select data from api
         Orders_OrderItem_Product_SelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Orders_OrderItem_Product_SelectService.class);
-        Call<String> call = apiService.getOrders();
+        Call<String> call = apiService.getOrders(idTable);
 
         //thêm dữ liệu vào sessionManager
         SessionManager sessionManager = SessionManager.getInstance();
@@ -192,8 +192,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                                 sessionManager.addBill(bill);
                             }
 
-                            if(nameTable.toLowerCase().contains("mang")){
-                                selectInfoTableMangVe(idTable,nameTable); // gửi id và ten bàn
+                            if (nameTable.toLowerCase().contains("mang")) {
+                                selectInfoTableMangVe(idTable, nameTable); // gửi id và ten bàn
                             }
 
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
@@ -203,6 +203,13 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             txtTotalPrice.setText(formatPrice);
 
                         }
+                        // kiểm tra xem còn sản phẩm nào trong bàn không nếu ko thì reset lại bàn và chuyển về trang home
+                        if (jsonArray.length() == 0) {
+                            deleteOrder("11168851", "60-dayfreetrial");
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
                         RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
                         recyclerView.setHasFixedSize(true);
                         GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
@@ -222,6 +229,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
                     }
                 } else {
                     Log.e("TAG", "Failed to fetch data: " + response.code());
@@ -413,6 +422,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     public void onItemDeleted() {
         quantityTotal = 0;
         priceTotal = 0;
+
+        // thêm hiệu ứng loading
+        progressBar.setVisibility(View.VISIBLE);
+
         initView();  // chạy lại initView
     }
 
@@ -441,7 +454,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         });
     }
 
-    public void selectInfoTableMangVe(int id,String nameTable){
+    public void selectInfoTableMangVe(int id, String nameTable) {
         SharedPreferences sharedPreferences = getSharedPreferences("tableMangVe", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("tableId", id);
