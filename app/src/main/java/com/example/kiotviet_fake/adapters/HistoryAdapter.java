@@ -50,31 +50,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         History history = historyList.get(position);
         float total = Float.valueOf((float) history.getTotal_price());
 
-        // Định dạng mới cho ngày
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         // Đặt các giá trị cho các TextView trong ViewHolder
         holder.totalPriceTextView.setText(formatPrice(total));
-        holder.txtCode.setText(history.getCode());
-        holder.nameTable.setText(history.getNameTable());
+        holder.txtCode.setText("HD" + history.getCode());
 
-        holder.itemChidell.setText(history.getDateTime() + " - " + history.getDateTime_end());
-
-        // Tính khoảng thời gian giữa hai thời điểm
-        LocalDateTime startTime = LocalDateTime.parse(history.getDateTime(), formatter);
-        LocalDateTime endTime = LocalDateTime.parse(history.getDateTime_end(), formatter);
-        Duration duration = Duration.between(startTime, endTime);
-
-        // Lấy số giờ và phút từ khoảng thời gian
-        long hours = duration.toHours();
-//        long minutes = duration.toMinutesPart();
-        long minutes = duration.toMinutes();
-//        long seconds = duration.minusMinutes(minutes).getSeconds();
-
-
-        // Hiển thị thời gian
-        String totalTime = hours + "g" + minutes + "p";
-        holder.totalTime.setText(totalTime);
+        holder.itemChidell.setText(history.getDateTime_end());
 
         // Xử lý sự kiện khi một mục được nhấn
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +63,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 Intent intent = new Intent(context, DetailBillActivity.class);
                 intent.putExtra("bill_id", history.getId());
                 intent.putExtra("total", history.getTotal_price());
+                intent.putExtra("code", "HD" + history.getCode());
                 context.startActivity(intent);
             }
         });
@@ -114,16 +95,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView totalPriceTextView;
-        TextView txtCode, totalTime, nameTable, itemChidell;
+        TextView txtCode, itemChidell;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             totalPriceTextView = itemView.findViewById(R.id.totalHistory);
             txtCode = itemView.findViewById(R.id.txtCode);
-            totalTime = itemView.findViewById(R.id.totalTime);
+//            totalTime = itemView.findViewById(R.id.totalTime);
             itemChidell = itemView.findViewById(R.id.itemChidell);
-            nameTable = itemView.findViewById(R.id.nameTable);
+//            nameTable = itemView.findViewById(R.id.nameTable);
         }
     }
 }

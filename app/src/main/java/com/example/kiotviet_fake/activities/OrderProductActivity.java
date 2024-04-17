@@ -58,7 +58,7 @@ public class OrderProductActivity extends AppCompatActivity {
     String nameTable;
     int newOrderId;
 
-    float tableTotalPrice;
+    int tableTotalPrice;
     int isTableUserId;
     ProgressBar progressBar;
 
@@ -82,6 +82,7 @@ public class OrderProductActivity extends AppCompatActivity {
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
         tableTotalPrice = intent.getIntExtra("totalPriceTable", 0);
+        Log.d("TAG", "updateUI11111: "+tableTotalPrice);
         newOrderId = intent.getIntExtra("idOrder", 0);
         Log.e("TAG", "updateUI: " + newOrderId);
 
@@ -245,10 +246,10 @@ public class OrderProductActivity extends AppCompatActivity {
         for (Order order : orders) {
             int quantity = order.getQuantity();
             String priceString = order.getPrice();
-            priceString = priceString.replace(",", ""); // Loại bỏ dấu phẩy
-            float price = Float.parseFloat(priceString) * order.getQuantity();
+            priceString = priceString.replace(".", ""); // Loại bỏ dấu chấm
+            int price = Integer.parseInt(priceString) * order.getQuantity();
             int order_id = newOrderId;
-            Log.e("TAG", "insertOrder_items: " + order_id);
+            Log.e("TAG", "insertOrder_items: " + priceString);
             int product_id = order.getProductId();
 
             // tính tổng giá của bàn
@@ -266,7 +267,8 @@ public class OrderProductActivity extends AppCompatActivity {
 
                         // Kiểm tra xem tất cả các cuộc gọi Retrofit đã hoàn thành chưa
                         if (counter == numberOfOrders) {
-
+                            //xoá tất cả product đã chọn khi nhấn thêm vào đơn
+                            sessionManager.removeOrderAll();
                             // Nếu tất cả các cuộc gọi Retrofit đã hoàn thành, chuyển màn hình mới
                             navigateToTableDetailActivity();
                         }
@@ -282,9 +284,6 @@ public class OrderProductActivity extends AppCompatActivity {
             });
         }
 
-        //xoá tất cả product đã chọn khi nhấn thêm vào đơn
-        sessionManager.removeOrderAll();
-
     }
 
     private void navigateToTableDetailActivity() {
@@ -293,6 +292,7 @@ public class OrderProductActivity extends AppCompatActivity {
         intent.putExtra("nameTable", nameTable);
         intent.putExtra("idOrder", newOrderId);
         startActivity(intent);
+        finish();
 
 //        // ẩn hiệu ứng loading
 //        progressBar.setVisibility(View.GONE);

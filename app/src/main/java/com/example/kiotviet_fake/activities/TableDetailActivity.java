@@ -113,8 +113,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
+//                SessionManager sessionManager = SessionManager.getInstance();
+//                sessionManager.removeBillAll();
+//                startActivity(intent);
+                finish();
             }
         });
 
@@ -179,7 +182,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
-                            if (idTable == table_id) {
                                 arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable));
                                 quantityTotal += quantity;
                                 priceTotal += totalPrice;
@@ -190,7 +192,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                                 // thêm vào kho lưu trữ bill
                                 Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
                                 sessionManager.addBill(bill);
-                            }
+                            Log.d("TAG", "onResponse: " + bill);
 
                             if (nameTable.toLowerCase().contains("mang")) {
                                 selectInfoTableMangVe(idTable, nameTable); // gửi id và ten bàn
@@ -198,6 +200,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
                             String formatPrice = formatterNumberFormat.format(priceTotal);
+
+                            Log.d("TAG", "onResponse: " +formatPrice);
 
                             txtQuantity.setText("Tổng tiền " + quantityTotal);
                             txtTotalPrice.setText(formatPrice);
@@ -331,7 +335,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
 
         String txtTotal = txtTotalPrice.getText().toString();
-        txtTotal = txtTotal.replace(",", "");
+        txtTotal = txtTotal.replace(".", "");
 
         BillsInsertService service = BillsInsertApiClient.createService(username, password);
         Call<String> call = service.insertBills(firstBill.getDateTime(), formattedDateTime, firstBill.getCode(), firstBill.getTableId(), firstBill.getUserId(), Float.parseFloat(txtTotal));
@@ -366,7 +370,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         int totalCalls = bills.size();
         final int[] completedCalls = {0};
         for (Bill bill : bills) {
-            Log.e("TAG", "insertBill: " + bill);
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
             Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(), newBillId);
             call.enqueue(new Callback<String>() {
@@ -376,6 +379,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         try {
                             completedCalls[0]++;
                             if (completedCalls[0] == totalCalls) {
+                                sessionManager.removeBillAll();
                                 deleteOrder_items("11168851", "60-dayfreetrial");
                             }
                         } catch (ParseException e) {
@@ -410,11 +414,12 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         intent.putExtra("nameTable", nameTable);
         intent.putExtra("idOrder", newOrderId);
 
-        String txtTotal = txtTotalPrice.getText().toString();
-        txtTotal = txtTotal.replace(",", "");
-        intent.putExtra("totalPriceTable", Integer.parseInt(txtTotal));
+        String formattedNumber = String.format("%.0f", priceTotal);
+//        Log.d("TAG", "navigateToTableOrderProductActivity: "+formattedNumber);
+        intent.putExtra("totalPriceTable", Integer.parseInt(formattedNumber));
 
         startActivity(intent);
+        finish();
     }
 
     // nhận thông báo từ productAdapter khi item đã được xoá
@@ -427,6 +432,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         progressBar.setVisibility(View.VISIBLE);
 
         initView();  // chạy lại initView
+    }
+
+    @Override
+    public void finishActivity() {
+        finish();
     }
 
     private void updateTable(String username, String password) {
@@ -461,4 +471,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         editor.putString("tableName", nameTable);
         editor.apply();
     }
+
+
 }

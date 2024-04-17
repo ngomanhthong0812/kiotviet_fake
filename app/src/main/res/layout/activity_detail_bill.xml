@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#F6F6F6"
     android:orientation="vertical"
     tools:context=".activities.DetailBillActivity">
 
@@ -16,138 +15,81 @@
         android:orientation="vertical">
 
         <!-- Phần 1: Header -->
+
         <LinearLayout
+            android:id="@+id/container_order_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="horizontal">
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/goback"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                app:srcCompat="@drawable/back" />
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/back" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/tv.code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_weight="1"
+                android:text="12323"
                 android:textColor="@color/black"
-                android:textSize="25dp"
-                android:gravity="center"
-                android:text="H0000000" />
+                android:textSize="19dp"
+                android:textStyle="normal" />
+
         </LinearLayout>
 
         <!-- Phần 2: Tiêu đề -->
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/tv.title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#DDDDDD"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:paddingTop="5dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="5dp"
-            android:text="Chi tiết hóa đơn" />
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:text="CHI TIẾT HOÁ ĐƠN"
+            android:textColor="#323232"
+            android:textSize="15dp" />
     </LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ListItemBill"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <!-- Phần 4: Footer -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@drawable/border_item"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_alignParentEnd="true"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:gravity="center_vertical"
-           android:layout_alignParentEnd="true"
-           android:orientation="horizontal">
-
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="Tổng tiền hàng"
-               android:textColor="@color/black"
-               android:textSize="17dp" />
-
-<!--           <TextView-->
-<!--               android:layout_width="40dp"-->
-<!--               android:layout_height="40dp"-->
-<!--               android:textColor="@color/black"-->
-<!--               android:textSize="25dp"-->
-<!--               android:padding="5dp"-->
-<!--               android:gravity="center"-->
-<!--               android:layout_marginRight="70dp"-->
-<!--               android:background="@drawable/bg_icon_count"-->
-<!--               android:text="2"/>-->
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="end">
-              <TextView
-                  android:id="@+id/TongTien1"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textColor="@color/black"
-                  android:textSize="17dp"
-                  android:text="200,000"/>
-          </LinearLayout>
-       </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="17dp"
-                android:text="Khách cần trả"/>
-            <TextView
-                android:id="@+id/TongTien2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="255,000"
-                android:gravity="end"
-                android:textColor="@color/black"
-                android:textSize="17dp"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="Tổng tiền hàng:"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tongTien"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="17dp"
-                android:text="Khách thanh toán"/>
-            <TextView
-                android:id="@+id/TongTien3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="255,000"
-                android:gravity="end"
-                android:textColor="@color/black"
-                android:textSize="17dp"
-                />
-        </LinearLayout>
+            android:text="200,000"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

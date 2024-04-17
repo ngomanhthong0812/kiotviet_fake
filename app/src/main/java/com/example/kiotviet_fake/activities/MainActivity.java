@@ -142,11 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, EndOfDayReportActivity.class);
             startActivity(intent);
         }
-        if (item.getItemId() == R.id.history) {
-            Intent intent = new Intent(this, HistoryOdersActivity.class);
-            intent.putExtra("user_id", userId);
-            startActivity(intent);
-        }
         if (item.getItemId() == R.id.DangXuat) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -174,7 +169,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Gọi lại Fragment Home để cập nhật dữ liệu khi quay lại từ một Activity khác
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
+    }
 
     public void btnClick() {
         btnNotification.setOnClickListener(new View.OnClickListener() {
