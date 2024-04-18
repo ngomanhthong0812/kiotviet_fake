@@ -133,6 +133,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, v);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                popupMenu.setForceShowIcon(true);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {

@@ -15,10 +15,14 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -57,7 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TableDetailActivity extends AppCompatActivity implements AdapterListener {
-    ImageView btnCancel, btnThem;
+    ImageView btnCancel, btnThem,btnNotification;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
     LinearLayout btnDoiBan;
@@ -98,7 +102,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         btnThem = (ImageView) findViewById(R.id.btnThem);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnDoiBan = (LinearLayout) findViewById(R.id.btn_doiBan);
-
+        btnNotification = (ImageView) findViewById(R.id.btnNotification);
     }
 
     private void updateUI() {
@@ -148,8 +152,20 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 startActivity(intent);
             }
         });
-    }
+        btnNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a PopupMenu
+                PopupMenu popupMenu = new PopupMenu(TableDetailActivity.this, v);
 
+                // Inflate the menu resource
+                popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
+                popupMenu.setForceShowIcon(true);
+
+                popupMenu.show();
+            }
+        });
+    }
 
     public void initView() {
         //select data from api
