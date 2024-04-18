@@ -3,6 +3,7 @@ package com.example.kiotviet_fake.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,10 +117,12 @@ public class FragmentTatCa extends Fragment {
     }
 
     public void performSearch(String keyword) {
+        Log.d("TAG", "performSearch: " + keyword);
         keyword = removeAccents(keyword.toLowerCase());
         ArrayList<Table> searchResult = new ArrayList<>();
         if (keyword.isEmpty()) {
             searchResult.addAll(originalTables);
+            Log.d("TAG", "performSearch: " + "hi");
         } else {
             for (Table table : originalTables) {
                 String nameTable = removeAccents(table.getTable_name().toLowerCase());
