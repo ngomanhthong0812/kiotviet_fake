@@ -82,7 +82,7 @@ public class OrderProductActivity extends AppCompatActivity {
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
         tableTotalPrice = intent.getIntExtra("totalPriceTable", 0);
-        Log.d("TAG", "updateUI11111: "+tableTotalPrice);
+        Log.d("TAG", "updateUI11111: " + tableTotalPrice);
         newOrderId = intent.getIntExtra("idOrder", 0);
         Log.e("TAG", "updateUI: " + newOrderId);
 
@@ -116,8 +116,7 @@ public class OrderProductActivity extends AppCompatActivity {
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
 
-                Intent intent = new Intent(OrderProductActivity.this, MainActivity.class);
-                startActivity(intent);// Kết thúc hoạt động hiện tại và quay lại trang trước đó
+                finish();
             }
         });
 
@@ -310,6 +309,12 @@ public class OrderProductActivity extends AppCompatActivity {
         String code = num1 + "-" + num2;
 
         return code;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 
 }

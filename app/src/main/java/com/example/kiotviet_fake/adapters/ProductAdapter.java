@@ -69,8 +69,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
         holder.txtQuantity.setText(String.valueOf(product.getQuantityOrder()));
-        holder.txtQuantity.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
-        holder.imgSelect.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
+        holder.txtQuantity.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
+        holder.imgSelect.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
 
         holder.txtCount.setText(String.valueOf(getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1));
         holder.countQuanity.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);

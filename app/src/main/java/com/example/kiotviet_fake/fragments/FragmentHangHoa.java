@@ -46,7 +46,6 @@ import retrofit2.Response;
 public class FragmentHangHoa extends Fragment {
 
     TextView txtTitleNull;
-    int total_price;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -60,6 +59,7 @@ public class FragmentHangHoa extends Fragment {
     }
 
     public void initView(String selectedDate, int isUserId) {
+        final int[] total_price = {0};
         //select data from api
         BillItemsSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillItemsSelectByUserIdService.class);
         Call<String> call = apiService.getBillItems(isUserId);
@@ -81,7 +81,7 @@ public class FragmentHangHoa extends Fragment {
                             String formatPrice = formatterNumberFormat.format(totalPrice);
 
                             if (date.equals(selectedDate)) {
-                                total_price += totalPrice;
+                                total_price[0] += totalPrice;
                                 arrayList.add(new Bill_hang_hoa(name, quantity, formatPrice));
                             }
 
@@ -91,7 +91,7 @@ public class FragmentHangHoa extends Fragment {
                         } else {
                             txtTitleNull.setVisibility(View.GONE);
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
-                            String formatPrice = formatterNumberFormat.format(total_price);
+                            String formatPrice = formatterNumberFormat.format(total_price[0]);
                             arrayList.add(0,new Bill_hang_hoa("Tổng", 0, formatPrice));
                         }
 

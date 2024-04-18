@@ -58,7 +58,7 @@ import retrofit2.Response;
 
 public class EndOfDayReportActivity extends AppCompatActivity {
     ImageView btnCancel;
-    TextView txtDate,txtNameCategories;
+    TextView txtDate, txtNameCategories;
     LinearLayout btnSetDate, btnSetBillCategories;
     String selectedDate;
     int isUserId;
@@ -90,7 +90,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
 
         // Hiển thị fragment mặc định
         showFragment(fragmentTongHop);
-        fragmentTongHop.initView(selectedDate,isUserId);
+        fragmentTongHop.initView(selectedDate, isUserId);
 
         addControl();
 
@@ -104,6 +104,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
     // Phương thức để hiển thị fragment
     private void showFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(fragment); // Loại bỏ fragment hiện tại
         transaction.replace(R.id.fragmentContainer, fragment, "CURRENT_FRAGMENT"); // Sử dụng tag "CURRENT_FRAGMENT" để xác định Fragment
         transaction.commit();
     }
@@ -136,7 +137,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnSetBillCategories.setBackgroundResource(R.drawable.bg_title_detail_btn);
-                openSetBillCategories(0,800);
+                openSetBillCategories(0, 800);
             }
         });
     }
@@ -175,7 +176,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtTongHop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTongHop.initView(selectedDate,isUserId);
+                fragmentTongHop.initView(selectedDate, isUserId);
                 txtNameCategories.setText("Tổng hợp");
                 showFragment(fragmentTongHop);
                 dialog.dismiss();
@@ -184,7 +185,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtHangHoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentHangHoa.initView(selectedDate,isUserId);
+                fragmentHangHoa.initView(selectedDate, isUserId);
                 txtNameCategories.setText("Hàng hoá");
                 showFragment(fragmentHangHoa);
                 dialog.dismiss();
@@ -193,6 +194,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtPhongBan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fragmentPhongBan.initView(selectedDate, isUserId);
                 txtNameCategories.setText("Phòng bàn");
                 showFragment(fragmentPhongBan);
                 dialog.dismiss();
@@ -201,7 +203,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtDanSachHoaDon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentHistoryOders.fetchData(selectedDate,isUserId);
+                fragmentHistoryOders.fetchData(selectedDate, isUserId);
                 txtNameCategories.setText("Danh sách hoá đơn");
                 showFragment(fragmentHistoryOders);
                 dialog.dismiss();
@@ -237,10 +239,10 @@ public class EndOfDayReportActivity extends AppCompatActivity {
                     } else if (currentFragment instanceof FragmentHangHoa) {
                         fragmentHangHoa.initView(selectedDate, isUserId);
                     } else if (currentFragment instanceof FragmentPhongBan) {
-
-                    } else if (currentFragment instanceof FragmentHistoryOders){
-                        fragmentHistoryOders.fetchData(selectedDate,isUserId);
-                    }else{
+                        fragmentPhongBan.initView(selectedDate, isUserId);
+                    } else if (currentFragment instanceof FragmentHistoryOders) {
+                        fragmentHistoryOders.fetchData(selectedDate, isUserId);
+                    } else {
 
                     }
                 }
@@ -252,5 +254,10 @@ public class EndOfDayReportActivity extends AppCompatActivity {
 
         // Mở hộp thoại chọn ngày
         datePickerDialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }

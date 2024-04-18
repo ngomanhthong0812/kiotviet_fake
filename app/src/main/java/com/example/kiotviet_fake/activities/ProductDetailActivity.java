@@ -229,4 +229,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(price);
     }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
+    }
 }

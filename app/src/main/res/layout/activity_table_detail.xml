@@ -120,22 +120,22 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints">
-            </androidx.recyclerview.widget.RecyclerView>
+                tools:ignore="MissingConstraints"></androidx.recyclerview.widget.RecyclerView>
 
             <ImageView
                 android:id="@+id/btnThem"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_marginLeft="320dp"
+                android:layout_marginTop="450dp"
                 android:background="@drawable/bg_plus"
                 android:padding="20dp"
                 android:src="@drawable/plus"
-                android:layout_marginTop="-100dp"
-                android:layout_marginLeft="280dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/linearLayout"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -145,11 +145,7 @@
             android:background="@color/white"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            android:paddingVertical="15dp">
 
             <TextView
                 android:id="@+id/txtQuantity"
@@ -215,7 +211,6 @@
                     android:textSize="16dp" />
             </LinearLayout>
         </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

@@ -166,15 +166,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
         }
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Gọi lại Fragment Home để cập nhật dữ liệu khi quay lại từ một Activity khác
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
-    }
+
 
     public void btnClick() {
         btnNotification.setOnClickListener(new View.OnClickListener() {

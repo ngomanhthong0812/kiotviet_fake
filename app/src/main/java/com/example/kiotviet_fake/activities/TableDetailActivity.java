@@ -113,10 +113,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
-//                SessionManager sessionManager = SessionManager.getInstance();
-//                sessionManager.removeBillAll();
-//                startActivity(intent);
+                SessionManager sessionManager = SessionManager.getInstance();
+                sessionManager.removeBillAll();
+
+                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -182,17 +183,16 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
-                                arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable));
-                                quantityTotal += quantity;
-                                priceTotal += totalPrice;
-                                txtCode.setText(code);
-                                idOrderByDelete = order_id;
-                                newOrderId = order_id;
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable));
+                            quantityTotal += quantity;
+                            priceTotal += totalPrice;
+                            txtCode.setText(code);
+                            idOrderByDelete = order_id;
+                            newOrderId = order_id;
 
-                                // thêm vào kho lưu trữ bill
-                                Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
-                                sessionManager.addBill(bill);
-                            Log.d("TAG", "onResponse: " + bill);
+                            // thêm vào kho lưu trữ bill
+                            Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
+                            sessionManager.addBill(bill);
 
                             if (nameTable.toLowerCase().contains("mang")) {
                                 selectInfoTableMangVe(idTable, nameTable); // gửi id và ten bàn
@@ -201,7 +201,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             NumberFormat formatterNumberFormat = NumberFormat.getInstance(Locale.getDefault());
                             String formatPrice = formatterNumberFormat.format(priceTotal);
 
-                            Log.d("TAG", "onResponse: " +formatPrice);
 
                             txtQuantity.setText("Tổng tiền " + quantityTotal);
                             txtTotalPrice.setText(formatPrice);
@@ -419,7 +418,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         intent.putExtra("totalPriceTable", Integer.parseInt(formattedNumber));
 
         startActivity(intent);
-        finish();
     }
 
     // nhận thông báo từ productAdapter khi item đã được xoá
@@ -470,6 +468,12 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         editor.putInt("tableId", id);
         editor.putString("tableName", nameTable);
         editor.apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 
 

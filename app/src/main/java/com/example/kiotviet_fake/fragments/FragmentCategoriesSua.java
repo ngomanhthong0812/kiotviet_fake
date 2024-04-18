@@ -85,7 +85,7 @@ public class FragmentCategoriesSua extends Fragment {
                             if (categoriesName.equals("SỮA")) {
                                 int number = random.nextInt(); // Tạo một số ngẫu nhiên
                                 String idProductItem = id + categoriesName; // Tạo một số ngẫu nhiên
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 0,0,null));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null));
                             }
 
 

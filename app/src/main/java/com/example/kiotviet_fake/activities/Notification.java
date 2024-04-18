@@ -32,7 +32,7 @@ public class Notification extends AppCompatActivity {
     private void addControl() {
         pager = (ViewPager) findViewById(R.id.view_pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        btnCancel = (ImageView) findViewById(R.id.btnCancel) ;
+        btnCancel = (ImageView) findViewById(R.id.btnCancel);
 
         FragmentManager manager = getSupportFragmentManager();
         NotificationPagerAdapter adapter = new NotificationPagerAdapter(manager);
@@ -47,8 +47,14 @@ public class Notification extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              finish();
+                finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }

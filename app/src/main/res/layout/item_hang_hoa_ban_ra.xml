@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_item_bao_cao_cuoi_ngay"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/item">
 
     <LinearLayout
         android:layout_width="match_parent"

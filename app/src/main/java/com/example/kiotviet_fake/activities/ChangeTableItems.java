@@ -59,8 +59,8 @@ public class ChangeTableItems extends AppCompatActivity {
 
         Intent intent = getIntent();
         nameTable = intent.getStringExtra("nameTable");
-        idTable = intent.getIntExtra("idTable",0);
-        orderId = intent.getIntExtra("orderId",0);
+        idTable = intent.getIntExtra("idTable", 0);
+        orderId = intent.getIntExtra("orderId", 0);
 
         addControl();
         btnClick();
@@ -72,8 +72,8 @@ public class ChangeTableItems extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ChangeTableItems.this, ChangeTable.class);
-                intent.putExtra("nameTable" ,nameTable);
-                intent.putExtra("idTable" ,idTable);
+                intent.putExtra("nameTable", nameTable);
+                intent.putExtra("idTable", idTable);
                 intent.putExtra("orderId", orderId);
                 startActivity(intent);
                 finish();
@@ -95,7 +95,7 @@ public class ChangeTableItems extends AppCompatActivity {
 
         //select data from api
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId,"Mang về");
+        Call<String> call = apiService.getTable(isTableUserId, "Mang về");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -124,7 +124,7 @@ public class ChangeTableItems extends AppCompatActivity {
 
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        ChangeTableItemAdapter ChangeTableItemAdapter = new ChangeTableItemAdapter(arrayList, ChangeTableItems.this,idTable,orderId); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+                        ChangeTableItemAdapter ChangeTableItemAdapter = new ChangeTableItemAdapter(arrayList, ChangeTableItems.this, idTable, orderId); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
                         recyclerView.setAdapter(ChangeTableItemAdapter);
                         ChangeTableItemAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
@@ -140,6 +140,12 @@ public class ChangeTableItems extends AppCompatActivity {
                 Log.e("TAG", "Failed to fetch data: " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 
 }
