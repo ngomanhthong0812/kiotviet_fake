@@ -40,7 +40,8 @@ public class FragmentTatCa extends Fragment {
     private ArrayList<Table> originalTables = new ArrayList<>();
     RecyclerView recyclerView;
 
-    public FragmentTatCa() {}
+    public FragmentTatCa() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +67,7 @@ public class FragmentTatCa extends Fragment {
 
         // Select data from API
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId,"");
+        Call<String> call = apiService.getTable(isTableUserId, "");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -116,13 +117,13 @@ public class FragmentTatCa extends Fragment {
 
     public void performSearch(String keyword) {
         keyword = removeAccents(keyword.toLowerCase());
-        System.out.println("ERRRR FragmentTatCa: " + keyword);
         ArrayList<Table> searchResult = new ArrayList<>();
         if (keyword.isEmpty()) {
             searchResult.addAll(originalTables);
         } else {
             for (Table table : originalTables) {
-                if (table.getTable_name().toLowerCase().contains(keyword.toLowerCase())) {
+                String nameTable = removeAccents(table.getTable_name().toLowerCase());
+                if (nameTable.contains(keyword)) {
                     searchResult.add(table);
                 }
             }
@@ -133,9 +134,9 @@ public class FragmentTatCa extends Fragment {
             // Khởi tạo adapter và đặt cho recyclerView
             tableAdapter = new TableAdapter(searchResult, requireContext());
             recyclerView.setAdapter(tableAdapter);
-            System.out.println("ERRRR2 FragmentTatCa: " + keyword);
         }
     }
+
     private String removeAccents(String input) {
         String nfdNormalizedString = Normalizer.normalize(input, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

@@ -65,8 +65,8 @@
 
                 <ImageView
                     android:id="@+id/btnClose"
-                    android:layout_width="35dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/close" />
 
             </LinearLayout>

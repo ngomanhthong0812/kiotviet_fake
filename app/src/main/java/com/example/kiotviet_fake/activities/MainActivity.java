@@ -24,17 +24,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.fragments.FragmentTatCa;
 import com.example.kiotviet_fake.fragments.FramentHome;
 import com.example.kiotviet_fake.models.Table;
 import com.google.android.material.navigation.NavigationView;
+
 import java.util.ArrayList;
 
 
@@ -50,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayout headerA, inputSearch;
     private ImageView btnSearch, btnClose;
     private EditText searchEditText;
-
-     FragmentTatCa fragmentTatCa;
+    FragmentTatCa fragmentTatCa;
+    FramentHome framentHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,21 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, android.R.color.black));
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
+            framentHome = new FramentHome();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, framentHome).commit();
         }
 
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         shopName = sharedPreferences.getString("shopName", "");
         userId = sharedPreferences.getInt("userId", 0);
-
-
-        // Initialize fragmentTatCa
-        fragmentTatCa = new FragmentTatCa();
-
-        // Thêm fragment vào FragmentManager
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragmentTatCa, "fragment_tat_ca")
-                .commit();
 
         addControl();
         btnClick();
@@ -107,6 +102,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 inputSearch.setVisibility(View.VISIBLE);
                 headerA.setVisibility(View.GONE);
+                searchEditText.setText("");
+                searchEditText.requestFocus();
+
+                // Hiển thị bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+                //ẩn fragmentHome
+                if (framentHome != null) {
+                    getSupportFragmentManager().beginTransaction().hide(framentHome).commit();
+                }
+
+                // hiển thị fragmentTatCa
+                if (fragmentTatCa == null) {
+                    fragmentTatCa = new FragmentTatCa();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_container, fragmentTatCa)
+                            .commit();
+                }
             }
         });
 
@@ -116,6 +130,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 inputSearch.setVisibility(View.GONE);
                 headerA.setVisibility(View.VISIBLE);
                 searchEditText.setText("");
+
+                // Ẩn bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                //ẩn fragmentTatCa
+                fragmentTatCa = (FragmentTatCa) getSupportFragmentManager().findFragmentByTag("fragment_tat_ca");
+                if (fragmentTatCa != null) {
+                    getSupportFragmentManager().beginTransaction().hide(fragmentTatCa).commit();
+                }
+
+                // Hiển thị lại fragment home
+                if (framentHome == null) {
+                    framentHome = new FramentHome(); // Tạo mới fragment home
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, framentHome, "fragment_home")
+                            .commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction()
+                            .show(framentHome)
+                            .commit();
+                }
             }
         });
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -128,9 +164,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String keyword = s.toString();
                 System.out.println("ERRRR MainActivity: " + keyword);
-                 fragmentTatCa = (FragmentTatCa) getSupportFragmentManager().findFragmentByTag("fragment_tat_ca");
                 if (fragmentTatCa != null) {
-                    fragmentTatCa.performSearch(keyword);
+                    if (keyword.isEmpty()) {
+                        getSupportFragmentManager().beginTransaction().hide(fragmentTatCa).commit();
+                    } else {
+                        getSupportFragmentManager().beginTransaction().show(fragmentTatCa).commit();
+                        fragmentTatCa.performSearch(keyword);
+                    }
                 } else {
                     Log.e("ERRRR MainActivity:", "FragmentTatCa is null");
                 }
@@ -142,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     private void addControl() {
         btnNotification = findViewById(R.id.btnNotification);
         navigationView = findViewById(R.id.nav_view);
