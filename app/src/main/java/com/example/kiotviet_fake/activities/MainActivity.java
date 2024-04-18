@@ -162,15 +162,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String keyword = s.toString();
+                String keyword = s.toString().trim();
                 System.out.println("ERRRR MainActivity: " + keyword);
                 if (fragmentTatCa != null) {
-                    if (keyword.isEmpty()) {
-                        getSupportFragmentManager().beginTransaction().hide(fragmentTatCa).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().show(fragmentTatCa).commit();
-                        fragmentTatCa.performSearch(keyword);
-                    }
+                    getSupportFragmentManager().beginTransaction().show(fragmentTatCa).commit();
+                    fragmentTatCa.performSearch(keyword);
                 } else {
                     Log.e("ERRRR MainActivity:", "FragmentTatCa is null");
                 }
