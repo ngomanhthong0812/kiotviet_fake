@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
 
                 //ẩn fragmentTatCa
-                fragmentTatCa = (FragmentTatCa) getSupportFragmentManager().findFragmentByTag("fragment_tat_ca");
                 if (fragmentTatCa != null) {
                     getSupportFragmentManager().beginTransaction().hide(fragmentTatCa).commit();
                 }
