@@ -37,10 +37,11 @@ public class DetailBillActivity extends AppCompatActivity {
     RecyclerView listItemBill;
     DetailBillAdapter detailBillAdapter;
     ArrayList<DetailBill> listItemProduct;
-    TextView tong1, tong2, tong3, title;
+    TextView tong, title;
     ImageView gobackk;
     int id_bill;
     double total;
+    String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,27 +124,30 @@ public class DetailBillActivity extends AppCompatActivity {
     private void LoadData() {
         Intent intent = getIntent();
         id_bill = intent.getIntExtra("bill_id", 0);
+        code = intent.getStringExtra("code");
         total = intent.getDoubleExtra("total", 0);
 
 
-        tong1 = findViewById(R.id.TongTien1);
-        tong2 = findViewById(R.id.TongTien2);
-        tong3 = findViewById(R.id.TongTien3);
+        tong = findViewById(R.id.tongTien);
         gobackk = findViewById(R.id.goback);
-        title = findViewById(R.id.textView7);
+        title = findViewById(R.id.tv_code);
 
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         String formattedTotal = decimalFormat.format(total);
 
-        tong1.setText(formattedTotal);
-        tong2.setText(formattedTotal);
-        tong3.setText(formattedTotal);
-        title.setText(String.valueOf(id_bill));
+        tong.setText(formattedTotal);
+        title.setText(code);
 
 //        listItemProduct = new ArrayList<DetailBill>();
 //        detailBillAdapter = new DetailBillAdapter(listItemProduct, this);
 //        listItemBill = findViewById(R.id.ListItemBill);
 //        listItemBill.setAdapter(detailBillAdapter);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }

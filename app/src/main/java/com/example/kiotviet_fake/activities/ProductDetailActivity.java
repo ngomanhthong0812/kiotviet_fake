@@ -29,9 +29,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     EditText edtGiamGia, quantity;
     ImageView goBack, tang, giam;
     Button btnLuu;
-    int productId,productQuantity;
+    int productId, productQuantity;
     String productPrice, productName, quantityStr;
-    float totalPrice;
+    int totalPrice;
     String nameTable;
     int idTable;
 
@@ -57,10 +57,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Sự kiện khi số lượng thay đổi
         quantity.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -71,10 +73,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Sự kiện khi phần trăm giảm giá thay đổi
         edtGiamGia.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -127,6 +131,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
+                intent.putExtra("idTable", idTable);
+                intent.putExtra("nameTable", nameTable);
+                startActivity(intent);
                 finish();
             }
         });
@@ -135,9 +143,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Lấy giá trị từ các EditText
                 String totalStr = total.getText().toString();
-                totalStr = totalStr.replace(",", "");
+                totalStr = totalStr.replace(".", "");
                 String quantityStr = quantity.getText().toString();
-
 
 
                 System.out.println("test value " + totalStr);
@@ -159,10 +166,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 Toast.makeText(ProductDetailActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                 Log.d("update", "Thành công: " + productId);
 
-                              Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
+                                Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
                                 intent.putExtra("idTable", idTable);
                                 intent.putExtra("nameTable", nameTable);
-                              startActivity(intent);
+                                startActivity(intent);
+                                finish();
 
 
                             } else {
@@ -193,11 +201,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         productId = intent.getIntExtra("product_id", 0);
         productName = intent.getStringExtra("product_name");
         productPrice = intent.getStringExtra("product_price");
-        productQuantity = intent.getIntExtra("product_quantity",0);
+        productQuantity = intent.getIntExtra("product_quantity", 0);
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
 
-        totalPrice = Float.parseFloat(productPrice.replace(",", ""));
+        totalPrice = Integer.parseInt(productPrice.replace(".", ""));
     }
 
     // Phương thức cập nhật tổng giá dựa trên số lượng, giá sản phẩm và phần trăm giảm giá
@@ -220,5 +228,11 @@ public class ProductDetailActivity extends AppCompatActivity {
     private String formatPrice(float price) {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(price);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }

@@ -20,11 +20,6 @@
             android:icon="@drawable/baseline_app_registration_24"
             android:title="Báo cáo cuối ngày" />
         <item
-            android:id="@+id/history"
-            android:icon="@drawable/baseline_history_edu_24"
-            android:title="Lịch sử" />
-
-        <item
             android:id="@+id/ThietLap"
             android:icon="@drawable/baseline_settings_24"
             android:title="Thiết lập" />

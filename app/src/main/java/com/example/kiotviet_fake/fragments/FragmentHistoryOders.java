@@ -1,14 +1,17 @@
-package com.example.kiotviet_fake.activities;
+package com.example.kiotviet_fake.fragments;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.HistoryAdapter;
@@ -26,40 +29,37 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HistoryOdersActivity extends AppCompatActivity {
+public class FragmentHistoryOders extends Fragment {
     RecyclerView listHistory;
     HistoryAdapter historyAdapter;
     ArrayList<History> historyList;
-    ImageView btnClose;
-    int userId;
 
+    TextView txtTitleNull;
+
+    @SuppressLint("MissingInflatedId")
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history_oders);
-        LoadData();
-        BtnClick();
-        fetchData();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_history_oders_end_of_day_report, container, false);
+
+        listHistory = view.findViewById(R.id.listHistory);
+        historyList = new ArrayList<>();
+        historyAdapter = new HistoryAdapter(historyList, getContext());
+        listHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        listHistory.setAdapter(historyAdapter);
+        txtTitleNull = (TextView) view.findViewById(R.id.tv_titleNull);
+
+        return view;
     }
 
-    private void BtnClick() {
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HistoryOdersActivity.this,MainActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void fetchData() {
+    public void fetchData(String selectedDate, int isUserId) {
         HistoryService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(HistoryService.class);
         Call<String> call = apiService.getHistory();
 
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     try {
                         JSONArray jsonArray = new JSONArray(response.body());
                         historyList.clear(); // Xóa dữ liệu cũ trước khi cập nhật dữ liệu mới
@@ -74,10 +74,16 @@ public class HistoryOdersActivity extends AppCompatActivity {
                             double total_price = jsonObject.getDouble("total_price");
                             String nameTable = jsonObject.getString("table_name");
 
-                            if (user_id == userId) {
-                                History history = new History(id, dateTime, dateTime_end, code, table_id, user_id, total_price,nameTable);
+                            String[] date = dateTime_end.split(" ");
+                            if (user_id == isUserId && date[0].equals(selectedDate)) {
+                                History history = new History(id, dateTime, dateTime_end, code, table_id, user_id, total_price, nameTable);
                                 historyList.add(history);
                             }
+                        }
+                        if (historyList.isEmpty()) {
+                            txtTitleNull.setVisibility(View.VISIBLE);
+                        } else {
+                            txtTitleNull.setVisibility(View.GONE);
                         }
                         // Cập nhật dữ liệu mới cho adapter
                         historyAdapter.notifyDataSetChanged();
@@ -85,29 +91,15 @@ public class HistoryOdersActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // Xử lý khi phản hồi không thành công (ví dụ: mã lỗi không phải 200)
-                    Toast.makeText(HistoryOdersActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý khi gặp lỗi trong quá trình tải dữ liệu
-                Toast.makeText(HistoryOdersActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
 
-    private void LoadData() {
-        listHistory = findViewById(R.id.listHistory);
-        btnClose = findViewById(R.id.btnClose);
-
-        Intent intent = getIntent();
-        userId = intent.getIntExtra("user_id", 0);
-
-        historyList = new ArrayList<>();
-        historyAdapter = new HistoryAdapter(historyList, this);
-        listHistory.setLayoutManager(new LinearLayoutManager(this));
-        listHistory.setAdapter(historyAdapter);
-    }
 }

@@ -141,4 +141,10 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
+    }
 }

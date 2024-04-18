@@ -199,6 +199,14 @@ public class ChangeTable extends AppCompatActivity {
         Intent intent = new Intent(ChangeTable.this, TableDetailActivity.class);
         intent.putExtra("nameTable", nameTable);
         intent.putExtra("idTable", idTableupdate);
+        intent.putExtra("finish_activity", true);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }

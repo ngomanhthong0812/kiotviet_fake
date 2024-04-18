@@ -1,5 +1,6 @@
 package com.example.kiotviet_fake.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.activities.LoginActivity;
 import com.example.kiotviet_fake.activities.MainActivity;
 import com.example.kiotviet_fake.activities.ProductDetailActivity;
+import com.example.kiotviet_fake.activities.TableDetailActivity;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderAPI;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderService;
 import com.example.kiotviet_fake.interface_main.AdapterListener;
@@ -67,8 +69,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
         holder.txtQuantity.setText(String.valueOf(product.getQuantityOrder()));
-        holder.txtQuantity.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
-        holder.imgSelect.setVisibility(product.getQuantityOrder() > 0 ? View.VISIBLE : View.GONE);
+        holder.txtQuantity.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
+        holder.imgSelect.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
 
         holder.txtCount.setText(String.valueOf(getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1));
         holder.countQuanity.setVisibility(getOrderQuantityByProductId > 0 ? View.VISIBLE : View.GONE);
@@ -146,7 +148,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             intent.putExtra("nameTable", product.getNameTable());
                             intent.putExtra("idTable", product.getIdTable());
 
-                            context.startActivity(intent); // Sử dụng context để khởi chạy Intent
+                            context.startActivity(intent);
+                            adapterListener.finishActivity();// Sử dụng context để khởi chạy Intent
 
                         }
                         if (item.getItemId() == R.id.action_delete) {

@@ -37,4 +37,10 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, SPLASH_TIME_OUT);
     }
+
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
+    }
 }

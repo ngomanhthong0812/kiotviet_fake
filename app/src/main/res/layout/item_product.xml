@@ -32,7 +32,7 @@
 
     <TextView
         android:id="@+id/txtName"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="23dp"
         android:layout_toRightOf="@id/imgProduct"
@@ -58,14 +58,13 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_below="@id/imgSelect"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="15dp"
         android:layout_toRightOf="@id/txtName"
         android:background="@drawable/bg_quantity"
         android:gravity="center"
         android:text=""
         android:textColor="@color/tabselect"
-
         android:textSize="17dp"
         android:textStyle="bold" />
 

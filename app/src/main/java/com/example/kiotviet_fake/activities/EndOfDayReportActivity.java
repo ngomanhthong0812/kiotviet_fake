@@ -2,18 +2,26 @@ package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +33,10 @@ import com.example.kiotviet_fake.adapters.ProductAdapter;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.select.BillsSelectService;
 import com.example.kiotviet_fake.database.select.Orders_OrderItem_Product_SelectService;
+import com.example.kiotviet_fake.fragments.FragmentHangHoa;
+import com.example.kiotviet_fake.fragments.FragmentHistoryOders;
+import com.example.kiotviet_fake.fragments.FragmentPhongBan;
+import com.example.kiotviet_fake.fragments.FragmentTongHop;
 import com.example.kiotviet_fake.models.Bill;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
@@ -46,20 +58,22 @@ import retrofit2.Response;
 
 public class EndOfDayReportActivity extends AppCompatActivity {
     ImageView btnCancel;
-    TextView txtTongDoanhThu, txtDoanhThu, txtDoanhThuThuan, txtDoanhThuThuan_1, txtSoHoaDon, txtDoanhThuTBD,txtDate;
-    LinearLayout btnSetDate;
-
-    int totalRevenueToday = 0;
-    int countBills = 0;
+    TextView txtDate, txtNameCategories;
+    LinearLayout btnSetDate, btnSetBillCategories;
     String selectedDate;
     int isUserId;
+
+    FragmentPhongBan fragmentPhongBan;
+    FragmentHangHoa fragmentHangHoa;
+    FragmentTongHop fragmentTongHop;
+    FragmentHistoryOders fragmentHistoryOders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_of_day_report);
 
-        // lấy id tài khoang đang login
+        // lấy id tài khoan đang login
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isUserId = sharedPreferences.getInt("userId", 0);
 
@@ -67,26 +81,41 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         selectedDate = dateFormat.format(currentDate);
 
+        // Khởi tạo các fragment
+        fragmentPhongBan = new FragmentPhongBan();
+        fragmentHangHoa = new FragmentHangHoa();
+        fragmentTongHop = new FragmentTongHop();
+        fragmentHistoryOders = new FragmentHistoryOders();
+
+
+        // Hiển thị fragment mặc định
+        showFragment(fragmentTongHop);
+        fragmentTongHop.initView(selectedDate, isUserId);
+
         addControl();
 
         //set date (UI) ngày hiện tại
         txtDate.setText(selectedDate);
 
         btnClick();
-        initView();
 
     }
 
+    // Phương thức để hiển thị fragment
+    private void showFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(fragment); // Loại bỏ fragment hiện tại
+        transaction.replace(R.id.fragmentContainer, fragment, "CURRENT_FRAGMENT"); // Sử dụng tag "CURRENT_FRAGMENT" để xác định Fragment
+        transaction.commit();
+    }
+
     private void addControl() {
-        btnCancel = (ImageView) findViewById(R.id.btnCancel);
-        txtTongDoanhThu = (TextView) findViewById(R.id.txtTongDoanhThu);
-        txtDoanhThu = (TextView) findViewById(R.id.txtDoanhThu);
-        txtDoanhThuThuan = (TextView) findViewById(R.id.txtDoanhThuThuan);
-        txtDoanhThuThuan_1 = (TextView) findViewById(R.id.txtDoanhThuThuan_1);
-        txtSoHoaDon = (TextView) findViewById(R.id.txtSoHoaDon);
-        txtDoanhThuTBD = (TextView) findViewById(R.id.txtDoanhThuTBD);
+        txtNameCategories = (TextView) findViewById(R.id.tv_nameCategories);
         txtDate = (TextView) findViewById(R.id.txtDate);
         btnSetDate = (LinearLayout) findViewById(R.id.btnSetDate);
+        btnSetBillCategories = (LinearLayout) findViewById(R.id.btn_setBillCategoies);
+        btnCancel = (ImageView) findViewById(R.id.btnCancel);
+
     }
 
     private void btnClick() {
@@ -101,6 +130,83 @@ public class EndOfDayReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openSetDate();
+            }
+        });
+
+        btnSetBillCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSetBillCategories.setBackgroundResource(R.drawable.bg_title_detail_btn);
+                openSetBillCategories(0, 800);
+            }
+        });
+    }
+
+    public void openSetBillCategories(int x, int y) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_menu_end_of_day_report);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.x = x; // Thiết lập vị trí X của cửa sổ
+        layoutParams.y = y; // Thiết lập vị trí Y của cửa sổ
+        window.setAttributes(layoutParams);
+
+        dialog.show();
+        TextView txtTongHop = (TextView) dialog.findViewById(R.id.tv_tongHop);
+        TextView txtHangHoa = (TextView) dialog.findViewById(R.id.tv_hangHoa);
+        TextView txtPhongBan = (TextView) dialog.findViewById(R.id.tv_phongBan);
+        TextView txtDanSachHoaDon = (TextView) dialog.findViewById(R.id.tv_danhSachHoaDon);
+        ImageView btnCancel = (ImageView) dialog.findViewById(R.id.iv_cancel);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        txtTongHop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTongHop.initView(selectedDate, isUserId);
+                txtNameCategories.setText("Tổng hợp");
+                showFragment(fragmentTongHop);
+                dialog.dismiss();
+            }
+        });
+        txtHangHoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentHangHoa.initView(selectedDate, isUserId);
+                txtNameCategories.setText("Hàng hoá");
+                showFragment(fragmentHangHoa);
+                dialog.dismiss();
+            }
+        });
+        txtPhongBan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentPhongBan.initView(selectedDate, isUserId);
+                txtNameCategories.setText("Phòng bàn");
+                showFragment(fragmentPhongBan);
+                dialog.dismiss();
+            }
+        });
+        txtDanSachHoaDon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentHistoryOders.fetchData(selectedDate, isUserId);
+                txtNameCategories.setText("Danh sách hoá đơn");
+                showFragment(fragmentHistoryOders);
+                dialog.dismiss();
             }
         });
     }
@@ -124,12 +230,22 @@ public class EndOfDayReportActivity extends AppCompatActivity {
                 //set date
                 txtDate.setText(selectedDate);
 
-                //reset về 0
-                totalRevenueToday = 0;
-                countBills = 0;
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentByTag("CURRENT_FRAGMENT"); // Sử dụng tag để xác định Fragment
 
-                // chạy lại initView
-                initView();
+                if (currentFragment != null) {
+                    if (currentFragment instanceof FragmentTongHop) {
+                        fragmentTongHop.initView(selectedDate, isUserId);
+                    } else if (currentFragment instanceof FragmentHangHoa) {
+                        fragmentHangHoa.initView(selectedDate, isUserId);
+                    } else if (currentFragment instanceof FragmentPhongBan) {
+                        fragmentPhongBan.initView(selectedDate, isUserId);
+                    } else if (currentFragment instanceof FragmentHistoryOders) {
+                        fragmentHistoryOders.fetchData(selectedDate, isUserId);
+                    } else {
+
+                    }
+                }
             }
         }, currentYear, currentMonth, currentDay);
 
@@ -139,69 +255,9 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         // Mở hộp thoại chọn ngày
         datePickerDialog.show();
     }
-
-
-    public void initView() {
-        //select data from api
-        BillsSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillsSelectService.class);
-        Call<String> call = apiService.getBills();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String dateTime = jsonObject.getString("dateTime");
-                            String dateTime_end = jsonObject.getString("dateTimeEnd");
-                            String code = jsonObject.getString("code");
-                            int table_id = jsonObject.getInt("tableId");
-                            int user_id = jsonObject.getInt("userId");
-                            int total_price = Integer.parseInt(jsonObject.getString("total_price"));
-
-                            String[] parts = dateTime_end.split(" ");
-                            if (parts[0].equals(selectedDate) && user_id == isUserId) {
-                                totalRevenueToday += total_price;
-                                countBills++;
-                            }
-                            Log.e("TAG", "onResponse: "+selectedDate );
-                        }
-                        updateUI();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.e("TAG", "Failed to fetch data: " + response.code());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("TAG", "Failed to fetch data: " + t.getMessage());
-            }
-        });
-
-
-    }
-
-    public void updateUI() {
-        NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
-        String formattedPrice = formatter.format(totalRevenueToday);
-
-        String trungBinhDon = "";
-        if (countBills <= 0) {
-            trungBinhDon = "0";
-        } else {
-            trungBinhDon = formatter.format(totalRevenueToday / countBills);
-        }
-
-        txtTongDoanhThu.setText(formattedPrice);
-        txtDoanhThu.setText(formattedPrice);
-        txtDoanhThuThuan.setText(formattedPrice);
-        txtDoanhThuThuan_1.setText(formattedPrice);
-        txtSoHoaDon.setText(String.valueOf(countBills));
-        txtDoanhThuTBD.setText(trungBinhDon);
+    @Override
+    public void onBackPressed() {
+        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
+//        super.onBackPressed();
     }
 }
