@@ -161,7 +161,35 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 // Inflate the menu resource
                 popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
                 popupMenu.setForceShowIcon(true);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId() == R.id.thong_tin_DH){
+                            Intent intent = new Intent(TableDetailActivity.this,InformationOderActivity.class);
+                            startActivity(intent);
+                        }
+                        if(item.getItemId() == R.id.Gop_ban){
+                            Intent intent = new Intent(TableDetailActivity.this,SingleGraftActivity.class);
 
+                            intent.putExtra("quantityItem", txtQuantity.getText());
+                            intent.putExtra("nameTable", nameTable);
+                            intent.putExtra("idTable", idTable);
+                            intent.putExtra("orderId", idOrderByDelete);
+                            startActivity(intent);
+                        }
+                        if(item.getItemId() == R.id.tach_don){
+//                            Tách đơn
+
+                        }
+                        if(item.getItemId() == R.id.bao_bep){
+//                            báo bếp
+                        }
+                        if(item.getItemId() == R.id.huy_don){
+//                            hủy đơn
+                        }
+                        return false;
+                    }
+                });
                 popupMenu.show();
             }
         });
