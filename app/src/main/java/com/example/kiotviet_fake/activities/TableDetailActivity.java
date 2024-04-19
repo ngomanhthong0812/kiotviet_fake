@@ -61,7 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TableDetailActivity extends AppCompatActivity implements AdapterListener {
-    ImageView btnCancel, btnThem,btnNotification;
+    ImageView btnCancel, btnThem, btnNotification;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
     LinearLayout btnDoiBan;
@@ -162,6 +162,15 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
                 popupMenu.setForceShowIcon(true);
 
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+
+                        return false;
+                    }
+                });
+
                 popupMenu.show();
             }
         });
@@ -207,7 +216,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             newOrderId = order_id;
 
                             // thêm vào kho lưu trữ bill
-                            Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
+                            Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id, product_name, nameTable);
                             sessionManager.addBill(bill);
 
                             if (nameTable.toLowerCase().contains("mang")) {

@@ -9,8 +9,10 @@ public class Bill {
     private int quantity;
     private float totalPrice;
     private int productId;
+    private String nameProduct;
+    private String nameTable;
 
-    public Bill(String dateTime, String dateTimeEnd, String code, int tableId, int userId, int quantity, float totalPrice, int productId) {
+    public Bill(String dateTime, String dateTimeEnd, String code, int tableId, int userId, int quantity, float totalPrice, int productId, String nameProduct, String nameTable) {
         this.dateTime = dateTime;
         this.dateTimeEnd = dateTimeEnd;
         this.code = code;
@@ -19,8 +21,9 @@ public class Bill {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.productId = productId;
+        this.nameProduct = nameProduct;
+        this.nameTable = nameTable;
     }
-
 
     public String getDateTime() {
         return dateTime;
@@ -86,6 +89,22 @@ public class Bill {
         this.productId = productId;
     }
 
+    public String getNameProduct() {
+        return nameProduct;
+    }
+
+    public void setNameProduct(String nameProduct) {
+        this.nameProduct = nameProduct;
+    }
+
+    public String getNameTable() {
+        return nameTable;
+    }
+
+    public void setNameTable(String nameTable) {
+        this.nameTable = nameTable;
+    }
+
     @Override
     public String toString() {
         return "Bill{" +
@@ -97,6 +116,8 @@ public class Bill {
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
                 ", productId=" + productId +
+                ", nameProduct='" + nameProduct + '\'' +
+                ", nameTable='" + nameTable + '\'' +
                 '}';
     }
 }

@@ -135,6 +135,7 @@ public class OrderProductActivity extends AppCompatActivity {
                 //reset lại trang
                 Intent intent = getIntent();
                 startActivity(intent);
+                finish();
 
 
                 SessionManager sessionManager = SessionManager.getInstance();
