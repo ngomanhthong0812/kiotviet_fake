@@ -83,7 +83,7 @@ public class FragmentCategoriesTatCa extends Fragment {
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
                             String idProductItem = id + "Tất Cả";
-                            arrayList.add(new Product(id, idProductItem, name, formattedPrice, quantity, 1,0,null));
+                            arrayList.add(new Product(id, idProductItem, name, formattedPrice, quantity, 1,0,null,0));
 
                         }
                         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);

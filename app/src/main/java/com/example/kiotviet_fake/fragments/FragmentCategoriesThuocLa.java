@@ -83,7 +83,7 @@ public class FragmentCategoriesThuocLa extends Fragment {
 
                             if(categoriesName.equals("THUỐC LÁ")){
                                 String idProductItem = id + categoriesName;
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0));
                             }
 
 

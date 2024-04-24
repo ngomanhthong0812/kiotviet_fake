@@ -42,12 +42,16 @@ public class ChangeTableItemAdapter extends RecyclerView.Adapter<ChangeTableItem
     int idTable;
     int idTableupdate;
     int orderId;
+    String checkFlat;
+    private AdapterListener adapterListener;
 
-    public ChangeTableItemAdapter(ArrayList<Table> tables, Context context, int idTable, int orderId) {
+    public ChangeTableItemAdapter(ArrayList<Table> tables, Context context, int idTable, int orderId, String checkFlat, AdapterListener adapterListener) {
         this.tables = tables;
         this.context = context;
         this.idTable = idTable;
         this.orderId = orderId;
+        this.checkFlat = checkFlat;
+        this.adapterListener = adapterListener;
     }
 
     @NonNull
@@ -66,25 +70,35 @@ public class ChangeTableItemAdapter extends RecyclerView.Adapter<ChangeTableItem
         if (table.getId() == idTable) {
             holder.tvNameTable.setTextColor(Color.parseColor("#0365ca"));
             holder.tvIconCheck.setImageTintList(ColorStateList.valueOf(Color.parseColor("#0365ca")));
-        }else{
+        } else {
             holder.tvNameTable.setTextColor(Color.parseColor("#000000"));
             holder.tvIconCheck.setImageTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
         }
         holder.lnlEItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                idTableupdate = table.getId();
-                Intent intent = new Intent(context, ChangeTable.class);
-                intent.putExtra("idTable", idTable);
-                intent.putExtra("idTableupdate", idTableupdate);
-                intent.putExtra("orderId", orderId);
-                intent.putExtra("nameTable", table.getTable_name());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                switch (checkFlat) {
+                    case "doiBan":
+                        idTableupdate = table.getId();
+                        Intent intent = new Intent(context, ChangeTable.class);
+                        intent.putExtra("idTable", idTable);
+                        intent.putExtra("idTableupdate", idTableupdate);
+                        intent.putExtra("orderId", orderId);
+                        intent.putExtra("nameTable", table.getTable_name());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                context.startActivity(intent);
-
-                // Kết thúc Activity hiện tại
-                ((Activity) context).finish();
+                        context.startActivity(intent);
+                        // Kết thúc Activity hiện tại
+                        ((Activity) context).finish();
+                        break;
+                    case "tachDon":
+                        idTable = table.getId();
+                        notifyDataSetChanged();// thông báo cho adapter cập nhật lại toàn bộ giao diện
+                        adapterListener.notification_insertOrder(idTable,table.getTable_name());
+                        break;
+                    default:
+                        System.out.println("error");
+                }
             }
         });
     }

@@ -9,19 +9,27 @@
         android:icon="@drawable/baseline_report_gmailerrorred_24"
         app:showAsAction="always" />
 
-    <item android:title="Gộp bàn"
+    <item
+        android:id="@+id/Gop_ban"
+        android:title="Gộp bàn"
         android:icon="@drawable/baseline_backup_table_24"
         app:showAsAction="always"/>
 
-    <item android:title="Tách đơn"
+    <item
+        android:id="@+id/tach_don"
+        android:title="Tách đơn"
         android:icon="@drawable/baseline_flip_24"
         app:showAsAction="always" />
 
-    <item android:title="Lịch sử báo bếp"
+    <item
+        android:id="@+id/bao_bep"
+        android:title="Lịch sử báo bếp"
         android:icon="@drawable/baseline_notifications_none_24"
         app:showAsAction="always"/>
 
-    <item android:title="Hủy đơn"
+    <item
+        android:id="@+id/huy_don"
+        android:title="Hủy đơn"
         android:icon="@drawable/baseline_free_cancellation_24"
         app:showAsAction="always"/>
 </menu>
