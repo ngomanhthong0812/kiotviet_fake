@@ -245,7 +245,7 @@ public class OrderProductActivity extends AppCompatActivity {
         for (Order order : orders) {
             int quantity = order.getQuantity();
             String priceString = order.getPrice();
-            priceString = priceString.replace(".", ""); // Loại bỏ dấu chấm
+            priceString = priceString.replace(",", ""); // Loại bỏ dấu chấm
             int price = Integer.parseInt(priceString) * order.getQuantity();
             int order_id = newOrderId;
             Log.e("TAG", "insertOrder_items: " + priceString);

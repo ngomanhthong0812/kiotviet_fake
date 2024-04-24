@@ -70,6 +70,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     int newOrderId;
     String nameTable;
     int quantityTotal = 0;
+
     float priceTotal = 0;
 
     int idOrderByDelete;
@@ -171,10 +172,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         if(item.getItemId() == R.id.Gop_ban){
                             Intent intent = new Intent(TableDetailActivity.this,SingleGraftActivity.class);
 
-                            intent.putExtra("quantityItem", txtQuantity.getText());
+                            intent.putExtra("quantityItem", quantityTotal);
                             intent.putExtra("nameTable", nameTable);
                             intent.putExtra("idTable", idTable);
                             intent.putExtra("orderId", idOrderByDelete);
+                            intent.putExtra("priceTotal", priceTotal);
                             startActivity(intent);
                         }
                         if(item.getItemId() == R.id.tach_don){
@@ -247,6 +249,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
 
                             txtQuantity.setText("Tổng tiền " + quantityTotal);
+
                             txtTotalPrice.setText(formatPrice);
 
                         }
