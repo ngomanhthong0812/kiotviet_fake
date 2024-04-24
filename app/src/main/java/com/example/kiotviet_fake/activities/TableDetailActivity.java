@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,8 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,7 +66,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TableDetailActivity extends AppCompatActivity implements AdapterListener {
-    ImageView btnCancel, btnThem,btnNotification;
+    ImageView btnCancel, btnThem, btnNotification;
     TextView txtNameTable, txtCode, txtQuantity, txtTotalPrice;
     Button btnThanhToan, btnTamTinh, btnThongBao;
     LinearLayout btnDoiBan;
@@ -77,7 +82,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     int newBillId;
 
+    String dateTime;
+
     ProgressBar progressBar;
+    int itemSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,12 +173,12 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId() == R.id.thong_tin_DH){
-                            Intent intent = new Intent(TableDetailActivity.this,InformationOderActivity.class);
+                        if (item.getItemId() == R.id.thong_tin_DH) {
+                            Intent intent = new Intent(TableDetailActivity.this, InformationOderActivity.class);
                             startActivity(intent);
                         }
-                        if(item.getItemId() == R.id.Gop_ban){
-                            Intent intent = new Intent(TableDetailActivity.this,SingleGraftActivity.class);
+                        if (item.getItemId() == R.id.Gop_ban) {
+                            Intent intent = new Intent(TableDetailActivity.this, SingleGraftActivity.class);
 
                             intent.putExtra("quantityItem", quantityTotal);
                             intent.putExtra("nameTable", nameTable);
@@ -179,15 +187,22 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             intent.putExtra("priceTotal", priceTotal);
                             startActivity(intent);
                         }
-                        if(item.getItemId() == R.id.tach_don){
-//                            Tách đơn
+                        if (item.getItemId() == R.id.tach_don) {
+                            Intent intent = new Intent(TableDetailActivity.this, TachDonActivity.class);
+                            intent.putExtra("nameTable", nameTable);
+                            intent.putExtra("idTable", idTable);
+                            intent.putExtra("totalPrice", priceTotal);
+                            intent.putExtra("dateTime", dateTime);
+                            intent.putExtra("itemSize", itemSize);
+                            intent.putExtra("idOrderByDelete", idOrderByDelete);
 
+                            startActivity(intent);
                         }
-                        if(item.getItemId() == R.id.bao_bep){
+                        if (item.getItemId() == R.id.bao_bep) {
 //                            báo bếp
                         }
-                        if(item.getItemId() == R.id.huy_don){
-//                            hủy đơn
+                        if (item.getItemId() == R.id.huy_don) {
+                            openNotificationDialog();
                         }
                         return false;
                     }
@@ -204,6 +219,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
         //thêm dữ liệu vào sessionManager
         SessionManager sessionManager = SessionManager.getInstance();
+        sessionManager.removeBillAll();
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -217,7 +233,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             int id = Integer.parseInt(jsonObject.getString("id"));
                             int order_id = Integer.parseInt(jsonObject.getString("orderId"));
                             String code = jsonObject.getString("code");
-                            String dateTime = jsonObject.getString("dateTime");
+                            dateTime = jsonObject.getString("dateTime");
                             int table_id = Integer.parseInt(jsonObject.getString("table_id"));
                             int user_id = Integer.parseInt(jsonObject.getString("user_id"));
                             int product_id = Integer.parseInt(jsonObject.getString("product_id"));
@@ -229,15 +245,16 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
 
-                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable));
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id));
                             quantityTotal += quantity;
                             priceTotal += totalPrice;
+                            itemSize++;
                             txtCode.setText(code);
                             idOrderByDelete = order_id;
                             newOrderId = order_id;
 
                             // thêm vào kho lưu trữ bill
-                            Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id);
+                            Bill bill = new Bill(dateTime, "demo", code, table_id, user_id, quantity, price * quantity, product_id, product_name, nameTable, price, id);
                             sessionManager.addBill(bill);
 
                             if (nameTable.toLowerCase().contains("mang")) {
@@ -484,6 +501,16 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         finish();
     }
 
+    @Override
+    public void update_totalQuantity_totalPrice(int quantity, float priceTotal) {
+
+    }
+
+    @Override
+    public void notification_insertOrder(int idTable, String nameTable) {
+
+    }
+
     private void updateTable(String username, String password) {
 
         int id = idTable;
@@ -516,6 +543,51 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         editor.putString("tableName", nameTable);
         editor.apply();
     }
+
+    public void openNotificationDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_notification);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
+        Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
+        Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
+
+        txtContent.setText("Xác nhận huỷ đơn hàng");
+
+        dialog.show();
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnXacNhan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    // thêm hiệu ứng loading
+                    progressBar.setVisibility(View.VISIBLE);
+                    deleteOrder_items("11168851", "60-dayfreetrial");
+                    dialog.dismiss();
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+
+    }
+
 
     @Override
     public void onBackPressed() {

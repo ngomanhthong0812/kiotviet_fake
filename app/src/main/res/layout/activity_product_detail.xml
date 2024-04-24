@@ -251,7 +251,8 @@
                 android:gravity="center"
                 android:text="Lưu lại"
                 android:textAllCaps="false"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
     </LinearLayout>

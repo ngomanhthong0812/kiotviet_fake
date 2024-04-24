@@ -9,8 +9,12 @@ public class Bill {
     private int quantity;
     private float totalPrice;
     private int productId;
+    private String nameProduct;
+    private String nameTable;
+    private float priceProduct;
+    private int idOrderItem;
 
-    public Bill(String dateTime, String dateTimeEnd, String code, int tableId, int userId, int quantity, float totalPrice, int productId) {
+    public Bill(String dateTime, String dateTimeEnd, String code, int tableId, int userId, int quantity, float totalPrice, int productId, String nameProduct, String nameTable, float priceProduct, int idOrderItem) {
         this.dateTime = dateTime;
         this.dateTimeEnd = dateTimeEnd;
         this.code = code;
@@ -19,8 +23,11 @@ public class Bill {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.productId = productId;
+        this.nameProduct = nameProduct;
+        this.nameTable = nameTable;
+        this.priceProduct = priceProduct;
+        this.idOrderItem = idOrderItem;
     }
-
 
     public String getDateTime() {
         return dateTime;
@@ -86,6 +93,38 @@ public class Bill {
         this.productId = productId;
     }
 
+    public String getNameProduct() {
+        return nameProduct;
+    }
+
+    public void setNameProduct(String nameProduct) {
+        this.nameProduct = nameProduct;
+    }
+
+    public String getNameTable() {
+        return nameTable;
+    }
+
+    public void setNameTable(String nameTable) {
+        this.nameTable = nameTable;
+    }
+
+    public float getPriceProduct() {
+        return priceProduct;
+    }
+
+    public void setPriceProduct(float priceProduct) {
+        this.priceProduct = priceProduct;
+    }
+
+    public int getIdOrderItem() {
+        return idOrderItem;
+    }
+
+    public void setIdOrderItem(int idOrderItem) {
+        this.idOrderItem = idOrderItem;
+    }
+
     @Override
     public String toString() {
         return "Bill{" +
@@ -97,6 +136,10 @@ public class Bill {
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
                 ", productId=" + productId +
+                ", nameProduct='" + nameProduct + '\'' +
+                ", nameTable='" + nameTable + '\'' +
+                ", priceProduct=" + priceProduct +
+                ", idOrderItem=" + idOrderItem +
                 '}';
     }
 }

@@ -9,8 +9,9 @@ public class Product {
     public int quantityOrder;
     public int idTable;
     public String nameTable;
+    public int idProduct;
 
-    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable) {
+    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable, int idProduct) {
         this.id = id;
         this.idProductItem = idProductItem;
         this.name = name;
@@ -19,6 +20,7 @@ public class Product {
         this.quantityOrder = quantityOrder;
         this.idTable = idTable;
         this.nameTable = nameTable;
+        this.idProduct = idProduct;
     }
 
     public int getId() {
@@ -83,5 +85,13 @@ public class Product {
 
     public void setNameTable(String nameTable) {
         this.nameTable = nameTable;
+    }
+
+    public int getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
     }
 }

@@ -182,7 +182,8 @@
                     android:gravity="center"
                     android:text="Xem tạm tính"
                     android:textAllCaps="false"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:textColor="@color/white"/>
 
                 <Button
                     android:id="@+id/btnThanhToan"
@@ -195,7 +196,8 @@
                     android:gravity="center"
                     android:text="Thanh toán"
                     android:textAllCaps="false"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:textColor="@color/white"/>
 
                 <Button
                     android:id="@+id/btnThongBao"
@@ -208,7 +210,8 @@
                     android:gravity="center"
                     android:text="Thông báo"
                     android:textAllCaps="false"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:textColor="@color/white"/>
             </LinearLayout>
         </LinearLayout>
 

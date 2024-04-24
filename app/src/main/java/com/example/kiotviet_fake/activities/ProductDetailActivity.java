@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.database.updateItemOfProduct.UpdateItemOfOrderAPI;
 import com.example.kiotviet_fake.database.updateItemOfProduct.UpdateItemOfOrderService;
+import com.example.kiotviet_fake.session.SessionManager;
 
 import java.text.DecimalFormat;
 
@@ -131,6 +132,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SessionManager sessionManager = SessionManager.getInstance();
+                sessionManager.removeBillAll();
+
                 Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
                 intent.putExtra("idTable", idTable);
                 intent.putExtra("nameTable", nameTable);
@@ -165,6 +169,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 // Xử lý response thành công
                                 Toast.makeText(ProductDetailActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                 Log.d("update", "Thành công: " + productId);
+
+                                SessionManager sessionManager = SessionManager.getInstance();
+                                sessionManager.removeBillAll();
 
                                 Intent intent = new Intent(ProductDetailActivity.this, TableDetailActivity.class);
                                 intent.putExtra("idTable", idTable);

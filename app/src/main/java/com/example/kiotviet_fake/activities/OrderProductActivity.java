@@ -135,6 +135,7 @@ public class OrderProductActivity extends AppCompatActivity {
                 //reset lại trang
                 Intent intent = getIntent();
                 startActivity(intent);
+                finish();
 
 
                 SessionManager sessionManager = SessionManager.getInstance();
@@ -286,6 +287,9 @@ public class OrderProductActivity extends AppCompatActivity {
     }
 
     private void navigateToTableDetailActivity() {
+        SessionManager sessionManager = SessionManager.getInstance();
+        sessionManager.removeBillAll();
+
         Intent intent = new Intent(OrderProductActivity.this, TableDetailActivity.class);
         intent.putExtra("idTable", idTable);
         intent.putExtra("nameTable", nameTable);

@@ -93,6 +93,8 @@ public class ChangeTable extends AppCompatActivity {
                 intent.putExtra("nameTable", nameTable);
                 intent.putExtra("idTable", idTable);
                 intent.putExtra("orderId", orderId);
+                intent.putExtra("checkFlat", "doiBan");
+
                 startActivity(intent);
                 finish();
             }
