@@ -82,7 +82,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     int newBillId;
 
-    String dateTime;
+    String  dateTime;
 
     ProgressBar progressBar;
     int itemSize = 0;
@@ -175,6 +175,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.thong_tin_DH) {
                             Intent intent = new Intent(TableDetailActivity.this, InformationOderActivity.class);
+                            intent.putExtra("dateTime", dateTime);
+                            intent.putExtra("nameTable", nameTable);
                             startActivity(intent);
                         }
                         if (item.getItemId() == R.id.Gop_ban) {
@@ -185,12 +187,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             editor.putInt("order_id_old", idOrderByDelete);
 
                             editor.apply();
-
-
-//                            intent.putExtra("quantityItem", quantityTotal);
-//                            intent.putExtra("nameTable", nameTable);
-//                            intent.putExtra("orderId", idOrderByDelete);
-//                            intent.putExtra("priceTotal", priceTotal);
                             startActivity(intent);
                         }
                         if (item.getItemId() == R.id.tach_don) {

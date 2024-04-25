@@ -41,12 +41,13 @@
         <TextView
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text="Khách"
+            android:text="Tên bàn"
             android:layout_marginLeft="15dp"
             android:textSize="20dp"
             android:textStyle="normal"
             android:textColor="@color/black" />
         <TextView
+            android:id="@+id/name_table"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Khách lẻ"
@@ -56,18 +57,12 @@
             android:layout_gravity="center"
             android:textColor="@color/black"
             android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_chevron_right_24"
-            android:layout_gravity="end" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@drawable/boder_top">
+        android:padding="10dp">
         <TextView
             android:layout_width="150dp"
             android:layout_height="match_parent"
@@ -78,6 +73,7 @@
             android:textColor="@color/black"
             />
         <TextView
+            android:id="@+id/time_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="19/4/2024 8:49"
@@ -87,11 +83,7 @@
             android:layout_gravity="center"
             android:textColor="@color/black"
             android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_chevron_right_24"
-            android:layout_gravity="end" />
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,7 +93,7 @@
         <TextView
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text="Phục vụ"
+            android:text="Trạng thái"
             android:layout_marginLeft="15dp"
             android:textSize="20dp"
             android:textStyle="normal"
@@ -110,23 +102,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Order"
+            android:text="Chưa thanh toán"
             android:layout_marginLeft="15dp"
             android:textSize="20dp"
             android:textStyle="normal"
             android:layout_gravity="center"
             android:textColor="@color/black"
             android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_chevron_right_24"
-            android:layout_gravity="end" />
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/boder_top"
         android:padding="10dp">
         <TextView
             android:layout_width="150dp"
@@ -147,11 +134,7 @@
             android:layout_gravity="center"
             android:textColor="@color/black"
             android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_chevron_right_24"
-            android:layout_gravity="end" />
+
     </LinearLayout>
 
 
