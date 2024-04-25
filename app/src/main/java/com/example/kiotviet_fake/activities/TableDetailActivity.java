@@ -179,12 +179,18 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         }
                         if (item.getItemId() == R.id.Gop_ban) {
                             Intent intent = new Intent(TableDetailActivity.this, SingleGraftActivity.class);
+                            SharedPreferences sharedPreferences = getSharedPreferences("order", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("idTable_old", idTable);
+                            editor.putInt("order_id_old", idOrderByDelete);
 
-                            intent.putExtra("quantityItem", quantityTotal);
-                            intent.putExtra("nameTable", nameTable);
-                            intent.putExtra("idTable", idTable);
-                            intent.putExtra("orderId", idOrderByDelete);
-                            intent.putExtra("priceTotal", priceTotal);
+                            editor.apply();
+
+
+//                            intent.putExtra("quantityItem", quantityTotal);
+//                            intent.putExtra("nameTable", nameTable);
+//                            intent.putExtra("orderId", idOrderByDelete);
+//                            intent.putExtra("priceTotal", priceTotal);
                             startActivity(intent);
                         }
                         if (item.getItemId() == R.id.tach_don) {

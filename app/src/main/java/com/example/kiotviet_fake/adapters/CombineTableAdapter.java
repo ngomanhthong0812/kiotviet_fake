@@ -65,6 +65,7 @@ public class CombineTableAdapter extends RecyclerView.Adapter<CombineTableAdapte
                 intent.putExtra("id_table", table.getTable_id());
                 intent.putExtra("nameTable", table.getTable_name());
                 intent.putExtra("quantity_product", table.getProduct_quantity());
+                intent.putExtra("order_id_new", table.getOrder_id());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 context.startActivity(intent);

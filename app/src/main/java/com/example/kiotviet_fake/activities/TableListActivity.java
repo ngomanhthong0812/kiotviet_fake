@@ -83,14 +83,15 @@ public class TableListActivity extends AppCompatActivity {
                             int status = Integer.parseInt(jsonObject.getString("status"));
                             String table_price = jsonObject.getString("table_price");
                             int product_quantity = jsonObject.getInt("product_quantity");
-
+                            String order_id = jsonObject.getString("order_id");
+                            System.out.println("tesst" + order_id);
                             int userId = 0; // Giá trị mặc định nếu không thể chuyển đổi
                             if (user_id != null && !user_id.equals("null") && !user_id.isEmpty()) {
                                 userId = Integer.parseInt(user_id);
                             }
                             if (userId == isTableUserId && status == 1) {
-                                System.out.println("test value " +  table_price + " tableName" + tableName);
-                                arrayList.add(new TableGroup(user_id,id, tableName, status,table_price,product_quantity));
+
+                                arrayList.add(new TableGroup(user_id,id, tableName, status,table_price,product_quantity,Integer.parseInt(order_id)));
                             }
 
                         }

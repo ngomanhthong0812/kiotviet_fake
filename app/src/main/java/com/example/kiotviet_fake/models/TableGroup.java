@@ -7,14 +7,16 @@ public class TableGroup {
     public int status;
     public String table_price;
     public  int product_quantity;
+    public  int order_id;
 
-    public TableGroup(String user_id, int table_id, String table_name, int status, String table_price, int product_quantity) {
+    public TableGroup(String user_id, int table_id, String table_name, int status, String table_price, int product_quantity, int order_id) {
         User_id = user_id;
         this.table_id = table_id;
         this.table_name = table_name;
         this.status = status;
         this.table_price = table_price;
         this.product_quantity = product_quantity;
+        this.order_id = order_id;
     }
 
     public String getUser_id() {
@@ -63,5 +65,13 @@ public class TableGroup {
 
     public void setProduct_quantity(int product_quantity) {
         this.product_quantity = product_quantity;
+    }
+
+    public int getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 }
