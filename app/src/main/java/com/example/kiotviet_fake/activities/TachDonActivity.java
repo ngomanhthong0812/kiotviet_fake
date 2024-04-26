@@ -115,6 +115,9 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
     }
 
     private void btnClick() {
+        SessionManager sessionManager = SessionManager.getInstance();
+        ArrayList<TachDon> tachDons = sessionManager.getTachDon();
+
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,21 +130,29 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
         btnThanhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // thêm hiệu ứng loading
-                progressBar.setVisibility(View.VISIBLE);
-                insertBill("11168851", "60-dayfreetrial");
+                if (tachDons.size() == 0) {
+                    Toast.makeText(TachDonActivity.this, "Chọn sản phẩm", Toast.LENGTH_LONG).show();
+                } else {
+                    // thêm hiệu ứng loading
+                    progressBar.setVisibility(View.VISIBLE);
+                    insertBill("11168851", "60-dayfreetrial");
+                }
             }
         });
         btnTachDon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TachDonActivity.this, ChangeTableItems.class);
-                intent.putExtra("checkFlat", "tachDon");
-                intent.putExtra("idTable", idTable);
-                intent.putExtra("itemSize", itemSize);
-                intent.putExtra("totalPriceAll", totalPriceAll);
-                intent.putExtra("idOrderByDelete", idOrderByDelete);
-                startActivity(intent);
+                if (tachDons.size() == 0) {
+                    Toast.makeText(TachDonActivity.this, "Chọn sản phẩm", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(TachDonActivity.this, ChangeTableItems.class);
+                    intent.putExtra("checkFlat", "tachDon");
+                    intent.putExtra("idTable", idTable);
+                    intent.putExtra("itemSize", itemSize);
+                    intent.putExtra("totalPriceAll", totalPriceAll);
+                    intent.putExtra("idOrderByDelete", idOrderByDelete);
+                    startActivity(intent);
+                }
             }
         });
     }

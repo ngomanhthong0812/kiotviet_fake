@@ -98,6 +98,7 @@ public class TableListActivity extends AppCompatActivity {
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
                         CombineTableAdapter combineTableAdapter = new CombineTableAdapter(arrayList, TableListActivity.this, idTable, orderId); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
                         recyclerView.setAdapter(combineTableAdapter);
+                        Log.d("TAG", "onResponse: "+idTable);
                         combineTableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -2,15 +2,20 @@ package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +33,9 @@ import com.example.kiotviet_fake.database.select.BillsSelectService;
 import com.example.kiotviet_fake.database.select.OrdersSelectService;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
+import com.example.kiotviet_fake.fragments.FragmentCategoriesTatCa;
 import com.example.kiotviet_fake.models.Order;
+import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
 import com.google.android.material.tabs.TabLayout;
 
@@ -52,7 +59,9 @@ public class OrderProductActivity extends AppCompatActivity {
     private TabLayout tabLayout;
 
     TextView txtNameTable, btnThemVaoDon, bntChonLai;
-    ImageView btnCancel;
+    ImageView btnCancel, btnSearch, btnCloseSearch;
+    LinearLayout inputSearch, container_order_3;
+    EditText searchEditText;
 
     int idTable;
     String nameTable;
@@ -61,6 +70,9 @@ public class OrderProductActivity extends AppCompatActivity {
     int tableTotalPrice;
     int isTableUserId;
     ProgressBar progressBar;
+
+    FragmentCategoriesTatCa fragmentCategoriesTatCa;
+    private BroadcastReceiver updateReceiver;
 
 
     @Override
@@ -72,9 +84,20 @@ public class OrderProductActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
 
+        // Đăng ký BroadcastReceiver
+        updateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onProductClick();
+            }
+        };
+        IntentFilter filter = new IntentFilter("ACTION_UPDATE");
+        registerReceiver(updateReceiver, filter);
+
         addControl();
         updateUI();
         btnClick();
+        onProductClick();
     }
 
     private void updateUI() {
@@ -98,6 +121,11 @@ public class OrderProductActivity extends AppCompatActivity {
         btnThemVaoDon = (TextView) findViewById(R.id.btnThemVaoDon);
         bntChonLai = (TextView) findViewById(R.id.bntChonLai);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnSearch = (ImageView) findViewById(R.id.btnSearch);
+        inputSearch = (LinearLayout) findViewById(R.id.inputSearch);
+        btnCloseSearch = (ImageView) findViewById(R.id.btnCloseSearch);
+        searchEditText = findViewById(R.id.et_search);
+        container_order_3 = findViewById(R.id.container_order_3);
 
         FragmentManager manager = getSupportFragmentManager();
         OrderProductAdapter adapter = new OrderProductAdapter(manager);
@@ -140,6 +168,49 @@ public class OrderProductActivity extends AppCompatActivity {
 
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeOrderAll();
+            }
+        });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.requestFocus();
+
+                // Hiển thị bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+                inputSearch.setVisibility(View.VISIBLE);
+                btnSearch.setVisibility(View.GONE);
+                btnCancel.setVisibility(View.GONE);
+
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) txtNameTable.getLayoutParams();
+                layoutParams.weight = 0;
+                txtNameTable.setLayoutParams(layoutParams);
+
+                tabLayout.setVisibility(View.GONE);
+                pager.setCurrentItem(0, true);
+            }
+        });
+
+        btnCloseSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText("");
+
+                // Ẩn bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                inputSearch.setVisibility(View.GONE);
+                btnSearch.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) txtNameTable.getLayoutParams();
+                layoutParams.weight = 1;
+                txtNameTable.setLayoutParams(layoutParams);
+
+                tabLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -246,7 +317,7 @@ public class OrderProductActivity extends AppCompatActivity {
         for (Order order : orders) {
             int quantity = order.getQuantity();
             String priceString = order.getPrice();
-            priceString = priceString.replace(",", ""); // Loại bỏ dấu chấm
+            priceString = priceString.replace(".", ""); // Loại bỏ dấu chấm
             int price = Integer.parseInt(priceString) * order.getQuantity();
             int order_id = newOrderId;
             Log.e("TAG", "insertOrder_items: " + priceString);
@@ -320,5 +391,17 @@ public class OrderProductActivity extends AppCompatActivity {
         // Không thực hiện hành động nào khi nút quay trở lại được nhấn
 //        super.onBackPressed();
     }
+
+    public void onProductClick() {
+        SessionManager sessionManager = SessionManager.getInstance();
+        ArrayList<Order> orders = sessionManager.getOrders();
+
+        if(orders.size() == 0){
+            container_order_3.setVisibility(View.GONE);
+        }else{
+            container_order_3.setVisibility(View.VISIBLE);
+        }
+    }
+
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,9 +47,9 @@ public class CombineTableAdapter extends RecyclerView.Adapter<CombineTableAdapte
     @Override
     public void onBindViewHolder(@NonNull CombineTableAdapter.viewHolder holder, int position) {
         TableGroup table = tables.get(position);
+        Log.d("TAG", "onBindViewHolder: " + table.getTable_id() +" " + idTable);
         holder.tvNameTable.setText(table.getTable_name());
-        if (table.getTable_id() == idTable) {
-
+        if (table.getTable_id() != idTable) {
             holder.tvNameTable.setTextColor(Color.parseColor("#000000"));
             holder.tvIconCheck.setImageTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
         }else{

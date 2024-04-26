@@ -108,9 +108,6 @@ public class TachDonAdapter extends RecyclerView.Adapter<TachDonAdapter.viewHold
 
     }
 
-//    public void updateOrderItem() {
-//
-//    }
 
     public int getItemCount() {
         return products.size();

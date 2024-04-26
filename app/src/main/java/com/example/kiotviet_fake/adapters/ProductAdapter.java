@@ -89,6 +89,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                     // thêm đơn hàng mới
                     Order order1 = new Order(product.getIdProductItem(), product.getQuantityOrder(), product.getPrice(), 1, product.getId());
                     sessionManager.addOrder(order1);
+
+                    // Khi sự kiện xảy ra, phát broadcast
+                    Intent intent = new Intent("ACTION_UPDATE");
+                    context.sendBroadcast(intent);
                 } else {
                     holder.countQuanity.setVisibility(View.GONE);
                     holder.imgCheck.setVisibility(View.GONE);
@@ -97,6 +101,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                     //xóa đơn hàng
                     SessionManager sessionManager = SessionManager.getInstance();
                     sessionManager.removeOrderByProductId(product.getIdProductItem());
+
+                    // Khi sự kiện xảy ra, phát broadcast
+                    Intent intent = new Intent("ACTION_UPDATE");
+                    context.sendBroadcast(intent);
                 }
                 isToggle[0] = !isToggle[0];
 
@@ -197,6 +205,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
             }
         });
     }
+
 
     public int getItemCount() {
         return products.size();
