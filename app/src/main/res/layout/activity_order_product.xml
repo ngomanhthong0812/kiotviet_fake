@@ -79,31 +79,10 @@
 
         </LinearLayout>
 
-        <HorizontalScrollView
-            android:id="@+id/container_order_2"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="15dp"
-            android:scrollbars="none">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                app:tabIndicatorColor="@color/tabselect"
-                app:tabIndicatorHeight="8px"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/tabselect"
-                app:tabTextColor="@color/black" />
-
-        </HorizontalScrollView>
-
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#F6F6F6" />
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/container_order_3"

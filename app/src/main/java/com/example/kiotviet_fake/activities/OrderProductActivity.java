@@ -33,7 +33,10 @@ import com.example.kiotviet_fake.database.select.BillsSelectService;
 import com.example.kiotviet_fake.database.select.OrdersSelectService;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusApiClient;
 import com.example.kiotviet_fake.database.updateTableStatus.TableUpdateStatusService;
+import com.example.kiotviet_fake.fragments.FragmentCategoriesOrder;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesTatCa;
+import com.example.kiotviet_fake.fragments.FragmentTatCa;
+import com.example.kiotviet_fake.fragments.FramentHome;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
@@ -71,8 +74,9 @@ public class OrderProductActivity extends AppCompatActivity {
     int isTableUserId;
     ProgressBar progressBar;
 
-    FragmentCategoriesTatCa fragmentCategoriesTatCa;
     private BroadcastReceiver updateReceiver;
+
+    FragmentCategoriesOrder fragmentCategoriesOrder;
 
 
     @Override
@@ -93,6 +97,12 @@ public class OrderProductActivity extends AppCompatActivity {
         };
         IntentFilter filter = new IntentFilter("ACTION_UPDATE");
         registerReceiver(updateReceiver, filter);
+
+
+        if (savedInstanceState == null) {
+            fragmentCategoriesOrder = new FragmentCategoriesOrder();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentCategoriesOrder).commit();
+        }
 
         addControl();
         updateUI();
@@ -126,14 +136,6 @@ public class OrderProductActivity extends AppCompatActivity {
         btnCloseSearch = (ImageView) findViewById(R.id.btnCloseSearch);
         searchEditText = findViewById(R.id.et_search);
         container_order_3 = findViewById(R.id.container_order_3);
-
-        FragmentManager manager = getSupportFragmentManager();
-        OrderProductAdapter adapter = new OrderProductAdapter(manager);
-        pager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(pager);
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setTabsFromPagerAdapter(adapter);//deprecated
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
     }
 
     public void btnClick() {
