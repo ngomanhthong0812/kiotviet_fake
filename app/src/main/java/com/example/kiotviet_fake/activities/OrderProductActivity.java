@@ -397,7 +397,6 @@ public class OrderProductActivity extends AppCompatActivity {
     public void onProductClick() {
         SessionManager sessionManager = SessionManager.getInstance();
         ArrayList<Order> orders = sessionManager.getOrders();
-
         if(orders.size() == 0){
             container_order_3.setVisibility(View.GONE);
         }else{
