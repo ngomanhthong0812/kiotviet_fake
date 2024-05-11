@@ -91,6 +91,16 @@ public class FragmentTatCa extends Fragment {
                             if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
                                 userId = Integer.parseInt(userIdString);
                             }
+
+                            if (tableName.toLowerCase().contains("mang")) {
+                                int statusMangVe = status;
+                                Log.d("TAG", "onResponse: "+statusMangVe);
+                                SharedPreferences sharedPreferences = requireContext().getSharedPreferences("mangVe", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt("statusMangVe", statusMangVe);
+                                editor.apply();
+                            }
+
                             Table table = new Table(id, tableName, status, userId, formattedPrice);
                             arrayList.add(table);
                             originalTables.add(table);
@@ -141,8 +151,15 @@ public class FragmentTatCa extends Fragment {
     }
 
     private String removeAccents(String input) {
+        // Loại bỏ dấu diacritical
         String nfdNormalizedString = Normalizer.normalize(input, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(nfdNormalizedString).replaceAll("");
+        String noAccents = pattern.matcher(nfdNormalizedString).replaceAll("");
+
+        // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+        String trimmedString = noAccents.trim();
+
+        // Loại bỏ tất cả khoảng trắng trong chuỗi
+        return trimmedString.replaceAll("\\s+", "");
     }
 }

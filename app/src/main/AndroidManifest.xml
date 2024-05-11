@@ -16,6 +16,15 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".activities.XemTamTinhActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activities.SingleGraftActivity"
             android:exported="true" />
         <activity
@@ -94,7 +103,6 @@
         <activity
             android:name=".activities.Notification"
             android:exported="true" />
-
     </application>
 
 </manifest>

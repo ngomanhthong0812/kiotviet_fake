@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.ProductAdapter;
@@ -86,6 +87,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     ProgressBar progressBar;
     int itemSize = 0;
+    String code;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +97,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
         addControl();
         updateUI();
-        btnClick();
         initView();
-
+        btnClick();
     }
 
     public void addControl() {
@@ -200,9 +202,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
                             startActivity(intent);
                         }
-                        if (item.getItemId() == R.id.bao_bep) {
-//                            báo bếp
-                        }
                         if (item.getItemId() == R.id.huy_don) {
                             openNotificationDialog();
                         }
@@ -210,6 +209,27 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                     }
                 });
                 popupMenu.show();
+            }
+        });
+        btnTamTinh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TableDetailActivity.this, XemTamTinhActivity.class);
+                intent.putExtra("nameTable", nameTable);
+                intent.putExtra("idTable", idTable);
+                intent.putExtra("totalPrice", priceTotal);
+                intent.putExtra("dateTime", dateTime);
+                intent.putExtra("code", code);
+                intent.putExtra("quantityTotal", quantityTotal);
+                startActivity(intent);
+
+                Log.d("TAG", "onResponse11111: " + priceTotal);
+            }
+        });
+        btnThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(TableDetailActivity.this, "Chức năng đang được cập nhật" , Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -221,6 +241,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
         //thêm dữ liệu vào sessionManager
         SessionManager sessionManager = SessionManager.getInstance();
+
+        //reset bill
         sessionManager.removeBillAll();
 
         call.enqueue(new Callback<String>() {
@@ -234,7 +256,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             int id = Integer.parseInt(jsonObject.getString("id"));
                             int order_id = Integer.parseInt(jsonObject.getString("orderId"));
-                            String code = jsonObject.getString("code");
+                            code = jsonObject.getString("code");
                             dateTime = jsonObject.getString("dateTime");
                             int table_id = Integer.parseInt(jsonObject.getString("table_id"));
                             int user_id = Integer.parseInt(jsonObject.getString("user_id"));
@@ -311,7 +333,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 Log.e("TAG", "Failed to fetch data: " + t.getMessage());
             }
         });
-
     }
 
     public void deleteOrder_items(String username, String password) throws ParseException {

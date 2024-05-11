@@ -65,10 +65,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
         int getOrderQuantityByProductId = sessionManager.getOrderQuantityByIdProductItem(product.getIdProductItem());
         final int[] count = {getOrderQuantityByProductId > 0 ? getOrderQuantityByProductId : 1};
         final boolean[] isToggle = {false};
+        int quantity = product.getQuantityOrder();
 
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
         holder.txtQuantity.setText(String.valueOf(product.getQuantityOrder()));
+        Log.d("TAG", "onMenuItemClick11: " + product.getQuantityOrder());
+
         holder.txtQuantity.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
         holder.imgSelect.setVisibility(product.getIdTable() > 0 ? View.VISIBLE : View.GONE);
 
@@ -105,6 +108,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                     // Khi sự kiện xảy ra, phát broadcast
                     Intent intent = new Intent("ACTION_UPDATE");
                     context.sendBroadcast(intent);
+                    count[0] = 1;
+                    holder.txtCount.setText(count[0] + "");
                 }
                 isToggle[0] = !isToggle[0];
 
@@ -153,7 +158,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             intent.putExtra("product_id", product.getId());
                             intent.putExtra("product_name", product.getName());
                             intent.putExtra("product_price", product.getPrice());
-                            intent.putExtra("product_quantity", product.getQuantityOrder());
+                            intent.putExtra("product_quantity", quantity);
                             intent.putExtra("nameTable", product.getNameTable());
                             intent.putExtra("idTable", product.getIdTable());
 

@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.setDrawerIndicatorEnabled(true);
         toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, android.R.color.black));
 
+        // Đặt mục "Phòng Ban" làm mục được chọn
+        navigationView.setCheckedItem(R.id.PhongBan);
+
         if (savedInstanceState == null) {
             framentHome = new FramentHome();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, framentHome).commit();
@@ -192,10 +195,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.PhongBan) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
         if (item.getItemId() == R.id.DongBo) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FramentHome()).commit();
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(intent);
         }
         if (item.getItemId() == R.id.BaoCaoCuoiNgay) {
             Intent intent = new Intent(this, EndOfDayReportActivity.class);

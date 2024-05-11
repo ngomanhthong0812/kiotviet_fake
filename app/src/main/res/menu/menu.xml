@@ -22,12 +22,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/bao_bep"
-        android:title="Lịch sử báo bếp"
-        android:icon="@drawable/baseline_notifications_none_24"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/huy_don"
         android:title="Hủy đơn"
         android:icon="@drawable/baseline_free_cancellation_24"

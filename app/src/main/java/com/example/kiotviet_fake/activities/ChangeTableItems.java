@@ -14,13 +14,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -53,11 +58,13 @@ import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.models.Table;
 import com.example.kiotviet_fake.models.TachDon;
 import com.example.kiotviet_fake.session.SessionManager;
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,7 +79,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChangeTableItems extends AppCompatActivity implements AdapterListener {
-    ImageView btnCancel;
+    ImageView btnCancel, btnSearch, btnCloseSearch;
+    LinearLayout inputSearch;
+    EditText searchEditText;
+    TextView txtNameTable;
     int isTableUserId;
     String nameTable;
     int idTable;
@@ -86,6 +96,9 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
     int idTableupdate;
     int itemSize;
     float totalPriceAll = 0;
+
+    ArrayList<Table> arrayList = new ArrayList<>();
+    RecyclerView recyclerView;
 
 
     @Override
@@ -144,20 +157,103 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
                 }
             }
         });
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.requestFocus();
+
+                // Hiển thị bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+                inputSearch.setVisibility(View.VISIBLE);
+                btnSearch.setVisibility(View.GONE);
+                btnCancel.setVisibility(View.GONE);
+
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) txtNameTable.getLayoutParams();
+                layoutParams.weight = 0;
+                txtNameTable.setLayoutParams(layoutParams);
+            }
+        });
+        btnCloseSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText("");
+
+                // Ẩn bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                inputSearch.setVisibility(View.GONE);
+                btnSearch.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) txtNameTable.getLayoutParams();
+                layoutParams.weight = 1;
+                txtNameTable.setLayoutParams(layoutParams);
+            }
+        });
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchText = s.toString().toLowerCase().trim();
+                ArrayList<Table> filterTables = new ArrayList<>();
+                searchText = removeSpecialCharacters(searchText);
+
+                for (Table table : arrayList) {
+                    System.out.println("search" + removeSpecialCharacters(table.getTable_name()) + searchText);
+                    // Lọc dữ liệu theo tên
+                    if (removeSpecialCharacters(table.getTable_name()).toLowerCase().contains(searchText)) {
+                        filterTables.add(table);
+                    }
+                }
+
+                // Tạo adapter mới với dữ liệu đã lọc và cập nhật ListView
+                ChangeTableItemAdapter ChangeTableItemAdapter = new ChangeTableItemAdapter(filterTables, ChangeTableItems.this, idTable, orderId, checkFlat, ChangeTableItems.this);
+                recyclerView.setAdapter(ChangeTableItemAdapter);
+            }
+        });
+    }
+
+    public static String removeSpecialCharacters(String input) {
+        // Chuẩn hóa chuỗi đầu vào và loại bỏ dấu
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Chuyển đổi chữ Đ thành d
+        normalized = normalized.replace("Đ", "d");
+
+        normalized = normalized.replace(" ", ""); // Loại bỏ khoang trang
+
+        return normalized;
     }
 
     private void addControl() {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
+        inputSearch = (LinearLayout) findViewById(R.id.inputSearch);
+        btnSearch = (ImageView) findViewById(R.id.btnSearch);
+        btnCloseSearch = (ImageView) findViewById(R.id.btnCloseSearch);
+        searchEditText = (EditText) findViewById(R.id.et_search);
+        txtNameTable = (TextView) findViewById(R.id.txtNameTable);
     }
 
     public void initView(String isNameTable) {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
+        recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
-
-        ArrayList<Table> arrayList = new ArrayList<>();
 
         //select data from api
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
@@ -185,7 +281,7 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
                                 userId = Integer.parseInt(userIdString);
                             }
                             if (userId == isTableUserId && id == idTable) {
-                                arrayList.add(new Table(id, tableName, status, userId, formattedPrice));
+                                arrayList.add(0, new Table(id, tableName, status, userId, formattedPrice));
                             }
                             if (userId == isTableUserId && status == 0 && table_price == 0) {
                                 arrayList.add(new Table(id, tableName, status, userId, formattedPrice));

@@ -46,9 +46,37 @@
                 android:textStyle="normal" />
 
             <ImageView
+                android:id="@+id/btnSearch"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/loupe" />
+            <LinearLayout
+                android:id="@+id/inputSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et.search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_icon_count"
+                    android:hint="Tìm bàn"
+                    android:paddingStart="15dp"
+                    android:textSize="17dp"
+                    android:paddingVertical="4dp"/>
+
+                <ImageView
+                    android:id="@+id/btnCloseSearch"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:src="@drawable/close" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

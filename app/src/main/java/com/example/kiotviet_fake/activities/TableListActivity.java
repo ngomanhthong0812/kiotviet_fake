@@ -8,9 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.adapters.ChangeTableItemAdapter;
@@ -25,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -34,11 +41,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TableListActivity extends AppCompatActivity {
-    ImageView btnCancel;
+    ImageView btnCancel, btnSearch, btnCloseSearch;
+    TextView txtNameTable;
+    LinearLayout inputSearch;
+    EditText searchEditText;
     int isTableUserId;
     String nameTable;
     int idTable;
     int orderId;
+
+    ArrayList<TableGroup> arrayList = new ArrayList<>();
+    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +71,10 @@ public class TableListActivity extends AppCompatActivity {
     }
 
     private void SelectTable() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
+        recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
-
-        ArrayList<TableGroup> arrayList = new ArrayList<>();
 
         //select data from api
         SelectTablesService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(SelectTablesService.class);
@@ -91,14 +102,14 @@ public class TableListActivity extends AppCompatActivity {
                             }
                             if (userId == isTableUserId && status == 1) {
 
-                                arrayList.add(new TableGroup(user_id,id, tableName, status,table_price,product_quantity,Integer.parseInt(order_id)));
+                                arrayList.add(new TableGroup(user_id, id, tableName, status, table_price, product_quantity, Integer.parseInt(order_id)));
                             }
 
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
                         CombineTableAdapter combineTableAdapter = new CombineTableAdapter(arrayList, TableListActivity.this, idTable, orderId); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
                         recyclerView.setAdapter(combineTableAdapter);
-                        Log.d("TAG", "onResponse: "+idTable);
+                        Log.d("TAG", "onResponse: " + idTable);
                         combineTableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -119,14 +130,97 @@ public class TableListActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TableListActivity.this,SingleGraftActivity.class);
+                Intent intent = new Intent(TableListActivity.this, SingleGraftActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.requestFocus();
+
+                // Hiển thị bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+                inputSearch.setVisibility(View.VISIBLE);
+                btnSearch.setVisibility(View.GONE);
+                btnCancel.setVisibility(View.GONE);
+                txtNameTable.setVisibility(View.GONE);
+
+            }
+        });
+        btnCloseSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText("");
+
+                // Ẩn bàn phím
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                inputSearch.setVisibility(View.GONE);
+                btnSearch.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+                txtNameTable.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchText = s.toString().toLowerCase().trim();
+                ArrayList<TableGroup> filterTables = new ArrayList<>();
+                searchText = removeSpecialCharacters(searchText);
+
+                for (TableGroup tableGroup : arrayList) {
+                    System.out.println("search" + removeSpecialCharacters(tableGroup.getTable_name()).toLowerCase() + searchText);
+                    // Lọc dữ liệu theo tên
+                    if (removeSpecialCharacters(tableGroup.getTable_name()).toLowerCase().contains(searchText)) {
+                        filterTables.add(tableGroup);
+                    }
+                }
+
+                // Tạo adapter mới với dữ liệu đã lọc và cập nhật ListView
+                CombineTableAdapter combineTableAdapter = new CombineTableAdapter(filterTables, TableListActivity.this, idTable, orderId);
+                recyclerView.setAdapter(combineTableAdapter);
+            }
+        });
+
+    }
+
+    public static String removeSpecialCharacters(String input) {
+        // Chuẩn hóa chuỗi đầu vào và loại bỏ dấu
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Chuyển đổi chữ Đ thành d
+        normalized = normalized.replace("Đ", "d");
+
+        normalized = normalized.replace(" ", ""); // Loại bỏ khoang trang
+
+        return normalized;
     }
 
     private void contronle() {
-        btnCancel = (ImageView) findViewById(R.id.btnCancell);
+        btnCancel = (ImageView) findViewById(R.id.btnCancel);
+        btnSearch = (ImageView) findViewById(R.id.btnSearch);
+        inputSearch = (LinearLayout) findViewById(R.id.inputSearch);
+        searchEditText = (EditText) findViewById(R.id.et_search);
+        txtNameTable = (TextView) findViewById(R.id.txtNameTable);
+        btnCloseSearch = (ImageView) findViewById(R.id.btnCloseSearch);
+
     }
 }

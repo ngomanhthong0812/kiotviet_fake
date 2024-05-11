@@ -65,6 +65,10 @@ public class ChangeTable extends AppCompatActivity {
         orderId = intent.getIntExtra("orderId", 0);
         Log.d("TAG", "btnClick: " + idTableupdate + " " + orderId + " " + idTable + " " + nameTable);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("mangVe", Context.MODE_PRIVATE);
+        int statusMangVe = sharedPreferences.getInt("statusMangVe", 0);
+        Log.d("TAG", "updateUI: " + statusMangVe);
+
         if (nameTable.toLowerCase().contains("mang")) {
             cbMangVe.setChecked(true);
             cbNgoiTaiBan.setChecked(false);
@@ -73,6 +77,12 @@ public class ChangeTable extends AppCompatActivity {
             cbNgoiTaiBan.setChecked(true);
             lnlSelectTable.setVisibility(View.VISIBLE);
             tvTableName.setText(nameTable);
+        }
+
+        if (statusMangVe == 1 && !nameTable.toLowerCase().contains("mang")) {
+            cbMangVe.setVisibility(View.GONE);
+            // Vô hiệu hóa CheckBox
+            cbNgoiTaiBan.setEnabled(false);
         }
 
     }
@@ -130,9 +140,9 @@ public class ChangeTable extends AppCompatActivity {
         btnLuu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(idTableupdate == 0 || idTableupdate == idTable ){
+                if (idTableupdate == 0 || idTableupdate == idTable) {
                     finish();
-                }else{
+                } else {
                     // thêm hiệu ứng loading
                     progressBar.setVisibility(View.VISIBLE);
                     updateOrderTableById("11168851", "60-dayfreetrial");
