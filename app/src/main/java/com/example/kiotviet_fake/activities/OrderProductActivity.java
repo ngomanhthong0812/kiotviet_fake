@@ -12,6 +12,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -77,6 +79,7 @@ public class OrderProductActivity extends AppCompatActivity {
     private BroadcastReceiver updateReceiver;
 
     FragmentCategoriesOrder fragmentCategoriesOrder;
+    FragmentCategoriesTatCa fragmentCategoriesTatCa;
 
 
     @Override
@@ -101,7 +104,7 @@ public class OrderProductActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             fragmentCategoriesOrder = new FragmentCategoriesOrder();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentCategoriesOrder).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_product, fragmentCategoriesOrder).commit();
         }
 
         addControl();
@@ -190,8 +193,25 @@ public class OrderProductActivity extends AppCompatActivity {
                 layoutParams.weight = 0;
                 txtNameTable.setLayoutParams(layoutParams);
 
-                tabLayout.setVisibility(View.GONE);
-                pager.setCurrentItem(0, true);
+//                tabLayout.setVisibility(View.GONE);
+//                pager.setCurrentItem(0, true);
+
+                // Hiển thị bàn phím
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+                //ẩn fragmentHome
+                if (fragmentCategoriesOrder != null) {
+                    getSupportFragmentManager().beginTransaction().hide(fragmentCategoriesOrder).commit();
+                }
+
+                // hiển thị fragmentTatCa
+                if (fragmentCategoriesTatCa == null) {
+                    fragmentCategoriesTatCa = new FragmentCategoriesTatCa();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_product, fragmentCategoriesTatCa)
+                            .commit();
+                }
             }
         });
 
@@ -212,7 +232,51 @@ public class OrderProductActivity extends AppCompatActivity {
                 layoutParams.weight = 1;
                 txtNameTable.setLayoutParams(layoutParams);
 
-                tabLayout.setVisibility(View.VISIBLE);
+                // Ẩn bàn phím
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                //ẩn fragmentTatCa
+                if (fragmentCategoriesTatCa != null) {
+                    getSupportFragmentManager().beginTransaction().hide(fragmentCategoriesTatCa).commit();
+                }
+
+                // Hiển thị lại fragment home
+                if (fragmentCategoriesOrder == null) {
+                    fragmentCategoriesOrder = new FragmentCategoriesOrder(); // Tạo mới fragment home
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_product, fragmentCategoriesOrder, "fragment_home")
+                            .commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction()
+                            .show(fragmentCategoriesOrder)
+                            .commit();
+                }
+
+//                tabLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String keyword = s.toString().trim();
+                System.out.println("ERRRR OrderProduct: " + keyword);
+                if (fragmentCategoriesTatCa != null) {
+                    getSupportFragmentManager().beginTransaction().show(fragmentCategoriesTatCa).commit();
+                    fragmentCategoriesTatCa.performSearch(keyword);
+                } else {
+                    Log.e("ERRRR OrderProduct:", "FragmentCategoriesTatCa  is null");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
