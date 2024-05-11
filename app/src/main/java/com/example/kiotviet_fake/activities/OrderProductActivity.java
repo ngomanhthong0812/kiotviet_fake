@@ -205,14 +205,12 @@ public class OrderProductActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().hide(fragmentCategoriesOrder).commit();
                 }
 
-                // hiển thị fragmentTatCa
-                if (fragmentCategoriesTatCa == null) {
-                    fragmentCategoriesTatCa = new FragmentCategoriesTatCa();
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.fragment_product, fragmentCategoriesTatCa)
-                            .commit();
-                }
+                fragmentCategoriesTatCa = new FragmentCategoriesTatCa();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_product, fragmentCategoriesTatCa)
+                        .commit();
             }
+
         });
 
         btnCloseSearch.setOnClickListener(new View.OnClickListener() {
@@ -245,7 +243,7 @@ public class OrderProductActivity extends AppCompatActivity {
                 if (fragmentCategoriesOrder == null) {
                     fragmentCategoriesOrder = new FragmentCategoriesOrder(); // Tạo mới fragment home
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_product, fragmentCategoriesOrder, "fragment_home")
+                            .replace(R.id.fragment_product, fragmentCategoriesOrder, "fragmentCategoriesOrder")
                             .commit();
                 } else {
                     getSupportFragmentManager().beginTransaction()
@@ -265,7 +263,6 @@ public class OrderProductActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String keyword = s.toString().trim();
-                System.out.println("ERRRR OrderProduct: " + keyword);
                 if (fragmentCategoriesTatCa != null) {
                     getSupportFragmentManager().beginTransaction().show(fragmentCategoriesTatCa).commit();
                     fragmentCategoriesTatCa.performSearch(keyword);
@@ -461,9 +458,9 @@ public class OrderProductActivity extends AppCompatActivity {
     public void onProductClick() {
         SessionManager sessionManager = SessionManager.getInstance();
         ArrayList<Order> orders = sessionManager.getOrders();
-        if(orders.size() == 0){
+        if (orders.size() == 0) {
             container_order_3.setVisibility(View.GONE);
-        }else{
+        } else {
             container_order_3.setVisibility(View.VISIBLE);
         }
     }

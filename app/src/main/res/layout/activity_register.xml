@@ -110,9 +110,8 @@
         android:background="#3366FF"
         android:text="Đăng ký"
         android:textSize="20dp"
-        android:textStyle="bold" />
-
-
+        android:textStyle="bold"
+        android:textColor="@color/white"/>
 
 
 </LinearLayout>

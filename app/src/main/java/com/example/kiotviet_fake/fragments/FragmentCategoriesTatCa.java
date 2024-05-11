@@ -43,6 +43,7 @@ public class FragmentCategoriesTatCa extends Fragment {
     private ProductAdapter productAdapter;
     private ArrayList<Product> arrayProducts = new ArrayList<>();
     RecyclerView recyclerView;
+    private View view;
 
     public FragmentCategoriesTatCa() {
         // Required empty public constructor
@@ -52,8 +53,8 @@ public class FragmentCategoriesTatCa extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_categories_tat_ca, container, false);
-        recyclerView = view.findViewById(R.id.recycler_view); // Đảm bảo RecyclerView đã được tìm thấy trong layout
+        view = inflater.inflate(R.layout.fragment_categories_tat_ca, container, false);
+        Log.d("TAG", "categoriesTatca: " + "da chay");
         return view;
     }
 
@@ -64,6 +65,7 @@ public class FragmentCategoriesTatCa extends Fragment {
     }
 
     public void initView() {
+        recyclerView = view.findViewById(R.id.recycler_view); // Đảm bảo RecyclerView đã được tìm thấy trong layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -90,18 +92,17 @@ public class FragmentCategoriesTatCa extends Fragment {
                             int quantity = jsonObject.getInt("quantity");
 
                             String idProductItem = id + "Tất Cả";
-                            products.add(new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0));
+                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0);
+                            products.add(product);
+                            arrayProducts.add(product);
                         }
-
-                        arrayProducts.clear();
-                        arrayProducts.addAll(products);
 
                         // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
                         if (productAdapter != null) {
-                            productAdapter.updateData(arrayProducts);
+                            productAdapter.updateData(products);
                             productAdapter.notifyDataSetChanged();
                         } else {
-                            productAdapter = new ProductAdapter(arrayProducts, requireContext(), null);
+                            productAdapter = new ProductAdapter(products, requireContext(), null);
                             recyclerView.setAdapter(productAdapter);
                         }
 
@@ -110,11 +111,7 @@ public class FragmentCategoriesTatCa extends Fragment {
                         Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
                         dividerItemDecoration.setDrawable(drawable);
                         recyclerView.addItemDecoration(dividerItemDecoration);
-//
-//                        // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
-//                        productAdapter = new ProductAdapter(arrayProducts, requireContext(), null);
-//                        recyclerView.setAdapter(productAdapter);
-//                        productAdapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -142,6 +139,7 @@ public class FragmentCategoriesTatCa extends Fragment {
             for (Product product : arrayProducts) {
                 String nameTable = removeAccents(product.getName().toLowerCase());
                 if (nameTable.contains(keyword)) {
+                    Log.d("TAG", "performSearch: " + nameTable);
                     searchResult.add(product);
                 }
             }
@@ -157,8 +155,12 @@ public class FragmentCategoriesTatCa extends Fragment {
     }
 
     private String removeAccents(String input) {
-        String nfdNormalizedString = Normalizer.normalize(input, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(nfdNormalizedString).replaceAll("");
+        // Chuẩn hóa chuỗi đầu vào và loại bỏ dấu
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        normalized = normalized.replaceAll("Đ", "d").replaceAll("đ", "d"); // Chuyển đổi chữ Đ thành d
+        return normalized.replaceAll("\\s", ""); //return và  Xoá khoảng trắng
     }
+
+
 }
