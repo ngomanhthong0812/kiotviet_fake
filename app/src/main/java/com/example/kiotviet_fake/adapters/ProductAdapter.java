@@ -28,6 +28,7 @@ import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderService;
 import com.example.kiotviet_fake.interface_main.AdapterListener;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
+import com.example.kiotviet_fake.models.Table;
 import com.example.kiotviet_fake.session.SessionManager;
 
 import java.text.ParseException;
@@ -214,6 +215,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
 
     public int getItemCount() {
         return products.size();
+    }
+    public void updateData(ArrayList<Product> newData) {
+        products.clear();
+        products.addAll(newData);
+        notifyDataSetChanged();
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
