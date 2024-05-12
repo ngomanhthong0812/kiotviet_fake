@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String shopName;
     int userId;
+    String infoUserName;
     private LinearLayout headerA, inputSearch;
     private ImageView btnSearch, btnClose;
     private EditText searchEditText;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         shopName = sharedPreferences.getString("shopName", "");
         userId = sharedPreferences.getInt("userId", 0);
+        infoUserName = sharedPreferences.getString("infoUserName", "");
+
 
         addControl();
         btnClick();
@@ -214,6 +217,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.putInt("userId", 0);
             editor.putString("shopName", shopName);
             editor.apply();
+
+            //gửi dữ liệu để lưu trữ tên đăng nhập và tên shop
+            SharedPreferences sharedPreferences_infoUser = getSharedPreferences("infoUser", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor_infoUser = sharedPreferences_infoUser.edit();
+            editor_infoUser.putString("shopName", shopName);
+            editor_infoUser.putString("infoUserName", infoUserName);
+            editor_infoUser.apply();
         }
         if (item.getItemId() == R.id.ThongBaoBep) {
             Intent intent = new Intent(MainActivity.this, Notification.class);
