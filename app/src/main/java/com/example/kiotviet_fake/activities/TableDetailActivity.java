@@ -580,9 +580,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
+        TextView txtTitle = (TextView) dialog.findViewById(R.id.tv_title);
         Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
         Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
 
+        txtTitle.setText("Huỷ đơn");
         txtContent.setText("Xác nhận huỷ đơn hàng");
 
         dialog.show();

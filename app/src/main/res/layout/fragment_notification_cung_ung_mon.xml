@@ -8,14 +8,14 @@
     android:background="@color/white">
     <ImageView
         android:src="@drawable/bell_1"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:scaleType="centerCrop"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Không có yêu cầu nào"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:textColor="@color/black"
         android:layout_marginTop="10dp"/>
 

@@ -26,24 +26,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:padding="10dp">
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/logo"
+                    android:layout_marginRight="50dp"/>
                 <ImageView
                     android:id="@+id/btnNotification"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
                     android:src="@drawable/bell"
                     android:background="@drawable/bg_icon"
                     android:layout_marginLeft="20dp"/>
                 <ImageView
                     android:id="@+id/btnSearch"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
                     android:background="@drawable/bg_icon"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/loupe"/>
@@ -57,7 +59,7 @@
                 <EditText
                     android:id="@+id/search"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="33dp"
                     android:paddingStart="15dp"
                     android:hint="Tìm bàn"
                     android:background="@drawable/bg_icon_count"
