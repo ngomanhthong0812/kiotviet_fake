@@ -122,8 +122,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EndOfDayReportActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
         btnSetDate.setOnClickListener(new View.OnClickListener() {

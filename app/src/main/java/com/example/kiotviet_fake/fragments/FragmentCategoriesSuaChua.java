@@ -81,10 +81,11 @@ public class FragmentCategoriesSuaChua extends Fragment {
 
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String categoriesName = jsonObject.getString("categories_name");
+                            String product_code = jsonObject.getString("product_code");
 
                             if (categoriesName.equals("SỮA CHUA")) {
                                 String idProductItem = id + categoriesName;
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0,categoriesName,product_code));
                             }
 
 

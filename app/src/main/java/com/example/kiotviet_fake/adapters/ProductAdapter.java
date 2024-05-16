@@ -161,6 +161,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                             intent.putExtra("product_price", product.getPrice());
                             intent.putExtra("product_quantity", quantity);
                             intent.putExtra("nameTable", product.getNameTable());
+                            intent.putExtra("product_code",product.getProduct_code());
                             intent.putExtra("idTable", product.getIdTable());
 
                             context.startActivity(intent);

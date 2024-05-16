@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.kiotviet_fake.R;
 
@@ -19,15 +20,17 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // lấy ra userId
+        // lấy ra role
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        int isTableUserId = sharedPreferences.getInt("userId", 0);
+        String role = sharedPreferences.getString("role", "");
 
         Intent intent;
-        if (isTableUserId == 0) {
-            intent = new Intent(SplashActivity.this, LoginActivity.class);
-        } else {
+        if (role.equals("order") || role.equals("thungan")) {
             intent = new Intent(SplashActivity.this, MainActivity.class);
+        } else if (role.equals("admin")) {
+            intent = new Intent(SplashActivity.this, AdminActivity.class);
+        } else {
+            intent = new Intent(SplashActivity.this, LoginActivity.class);
         }
 
         new Handler().postDelayed(new Runnable() {

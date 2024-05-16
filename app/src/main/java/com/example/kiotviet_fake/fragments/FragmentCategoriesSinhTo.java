@@ -81,11 +81,12 @@ public class FragmentCategoriesSinhTo extends Fragment {
 
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String categoriesName = jsonObject.getString("categories_name");
+                            String product_code = jsonObject.getString("product_code");
 
                             if (categoriesName.equals("SINH TỐ")) {
                                 int number = random.nextInt(); // Tạo một số ngẫu nhiên
                                 String idProductItem = id + categoriesName; // Tạo một số ngẫu nhiên
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0));
+                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0,categoriesName,product_code));
                             }
 
 

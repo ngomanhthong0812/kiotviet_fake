@@ -83,17 +83,21 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     int newBillId;
 
-    String  dateTime;
+    String dateTime;
 
     ProgressBar progressBar;
     int itemSize = 0;
-    String code;
+    String code, role;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_detail);
+
+        // lấy ra role
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        role = sharedPreferences.getString("role", "");
 
         addControl();
         updateUI();
@@ -122,6 +126,13 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         idTable = intent.getIntExtra("idTable", 0);
 
         txtNameTable.setText(nameTable);
+
+        switch (role) {
+            case "order":
+                btnThanhToan.setVisibility(View.GONE);
+                break;
+            default:
+        }
     }
 
     public void btnClick() {
@@ -229,7 +240,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         btnThongBao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(TableDetailActivity.this, "Chức năng đang được cập nhật" , Toast.LENGTH_LONG).show();
+                Toast.makeText(TableDetailActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -268,8 +279,9 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
+                            String product_code = jsonObject.getString("product_code");
 
-                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id));
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code));
                             quantityTotal += quantity;
                             priceTotal += totalPrice;
                             itemSize++;
@@ -531,6 +543,11 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     @Override
     public void notification_insertOrder(int idTable, String nameTable) {
+
+    }
+
+    @Override
+    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
 
     }
 

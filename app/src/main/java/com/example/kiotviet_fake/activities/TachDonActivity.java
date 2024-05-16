@@ -66,7 +66,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
     float totalPriceAll = 0;
     TachDonAdapter tachDonAdapter;
     int newBillId = 0;
-    String dateTime;
+    String dateTime,role;
     int isTableUserId;
     int itemSize;
     int idOrderByDelete;
@@ -79,9 +79,10 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tach_don);
 
-        // lấy ra userId vừa dc truyền khi login thành công
+        // lấy ra userId và role vừa dc truyền khi login thành công
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
+        role = sharedPreferences.getString("role", "");
 
 
         addControl();
@@ -101,6 +102,13 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
 
 
         txtNameTable.setText(nameTable);
+
+        switch (role) {
+            case "order":
+                btnThanhToan.setVisibility(View.GONE);
+                break;
+            default:
+        }
 
     }
 
@@ -163,7 +171,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
         ArrayList<Bill> bills = sessionManager.getBills();
         ArrayList<Product> arrayList = new ArrayList<>();
         for (Bill bill : bills) {
-            arrayList.add(new Product(bill.getIdOrderItem(), "", bill.getNameProduct(), String.valueOf(bill.getPriceProduct()), 200, bill.getQuantity(), bill.getTableId(), bill.getNameTable(), bill.getProductId()));
+            arrayList.add(new Product(bill.getIdOrderItem(), "", bill.getNameProduct(), String.valueOf(bill.getPriceProduct()), 200, bill.getQuantity(), bill.getTableId(), bill.getNameTable(), bill.getProductId(),"",""));
         }
         RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
@@ -426,6 +434,11 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
 
     @Override
     public void notification_insertOrder(int idTable, String nameTable) {
+
+    }
+
+    @Override
+    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
 
     }
 

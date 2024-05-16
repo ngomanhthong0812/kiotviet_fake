@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.FragmentAdminHoaDon">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="start"
-        android:padding="20dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tv.avatar"
@@ -23,7 +22,8 @@
             android:text="T"
             android:textColor="#7A5CFB"
             android:textSize="45dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textAllCaps="true"/>
 
         <TextView
             android:id="@+id/txtNameAdmin"
@@ -461,7 +461,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ln.dangXuat"
+                android:id="@+id/btnDangXuat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
