@@ -358,6 +358,7 @@ public class LoginActivity extends AppCompatActivity {
                             userId = Integer.parseInt(user.getUser_id());
                             shopName = user.getShop_name();
                             infoUserName = user.getUser_name();
+                            role = user.getRole();
                             break;
                         }
                     }
@@ -372,11 +373,25 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putInt("userId", userId);
                         editor.putString("shopName", shopName);
                         editor.putString("infoUserName", infoUserName);
+                        editor.putString("role", role);
                         editor.apply();
 
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        switch (role) {
+                            case "admin":
+                                Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
+                                startActivity(adminIntent);
+                                break;
+                            case "thungan":
+                            case "order":
+                                Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(mainIntent);
+                                break;
+                            default:
+                                // Xử lý logic cho trường hợp không xác định
+                                break;
+                        }
 
-                        startActivity(intent);
+
                     } else {
                         Toast.makeText(LoginActivity.this, "Tên người dùng hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                     }

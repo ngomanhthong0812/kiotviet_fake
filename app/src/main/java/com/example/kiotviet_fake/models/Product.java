@@ -10,8 +10,10 @@ public class Product {
     public int idTable;
     public String nameTable;
     public int idProduct;
+    public String nameCategories;
+    public String product_code;
 
-    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable, int idProduct) {
+    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable, int idProduct, String nameCategories, String product_code) {
         this.id = id;
         this.idProductItem = idProductItem;
         this.name = name;
@@ -21,6 +23,8 @@ public class Product {
         this.idTable = idTable;
         this.nameTable = nameTable;
         this.idProduct = idProduct;
+        this.nameCategories = nameCategories;
+        this.product_code = product_code;
     }
 
     public int getId() {
@@ -93,5 +97,21 @@ public class Product {
 
     public void setIdProduct(int idProduct) {
         this.idProduct = idProduct;
+    }
+
+    public String getNameCategories() {
+        return nameCategories;
+    }
+
+    public void setNameCategories(String nameCategories) {
+        this.nameCategories = nameCategories;
+    }
+
+    public String getProduct_code() {
+        return product_code;
+    }
+
+    public void setProduct_code(String product_code) {
+        this.product_code = product_code;
     }
 }

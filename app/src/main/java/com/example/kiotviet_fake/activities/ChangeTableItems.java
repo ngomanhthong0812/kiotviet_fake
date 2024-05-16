@@ -334,6 +334,11 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
         openNotificationDialog(idTable, nameTable);
     }
 
+    @Override
+    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
+
+    }
+
     public void openNotificationDialog(int idTable, String nameTable) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

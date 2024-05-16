@@ -31,7 +31,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     ImageView goBack, tang, giam;
     Button btnLuu;
     int productId, productQuantity;
-    String productPrice, productName, quantityStr;
+    String productPrice, productName, quantityStr,product_code;
     int totalPrice;
     String nameTable;
     int idTable;
@@ -50,7 +50,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void UpdateUI() {
         nameProduct.setText(productName);
         txtPrice.setText(productPrice);
-        idPr.setText(String.valueOf(productId));
+        idPr.setText(product_code);
         edtGiaBan.setText(productPrice);
         quantity.setText(String.valueOf(productQuantity));
         updateTotalPrice(); // Cập nhật tổng giá ban đầu
@@ -211,6 +211,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         productQuantity = intent.getIntExtra("product_quantity", 0);
         nameTable = intent.getStringExtra("nameTable");
         idTable = intent.getIntExtra("idTable", 0);
+        product_code = intent.getStringExtra("product_code");
 
         totalPrice = Integer.parseInt(productPrice.replace(".", ""));
     }

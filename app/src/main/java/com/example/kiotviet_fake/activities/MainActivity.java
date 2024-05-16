@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String shopName;
     int userId;
-    String infoUserName;
+    String infoUserName,role;
     private LinearLayout headerA, inputSearch;
     private ImageView btnSearch, btnClose;
     private EditText searchEditText;
@@ -97,11 +97,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, framentHome).commit();
         }
 
+        // lấy ra role
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         shopName = sharedPreferences.getString("shopName", "");
         userId = sharedPreferences.getInt("userId", 0);
         infoUserName = sharedPreferences.getString("infoUserName", "");
+        role = sharedPreferences.getString("role", "");
 
+        Menu menu = navigationView.getMenu();
+        MenuItem quanLyItem = menu.findItem(R.id.QuanLy);
+        MenuItem baoCaoCuoiNgayItem = menu.findItem(R.id.BaoCaoCuoiNgay);
+        switch (role){
+            case "order":
+                baoCaoCuoiNgayItem.setVisible(false);
+                quanLyItem.setVisible(false);
+                break;
+            case "thungan":
+                quanLyItem.setVisible(false);
+                break;
+        }
 
         addControl();
         btnClick();
@@ -203,6 +217,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
 
         TextView txtNameShop = headerView.findViewById(R.id.txtNameShop);
+        TextView txtNameRole = headerView.findViewById(R.id.txtNameRole);
+
+        if(role.equals("thungan")){
+            txtNameRole.setText("Thu ngân");
+        }else{
+            txtNameRole.setText(role);
+        }
         txtNameShop.setText(shopName);
 
         // start đổi màu item menu đăng xuất
@@ -231,6 +252,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, EndOfDayReportActivity.class);
             startActivity(intent);
         }
+        if (item.getItemId() == R.id.QuanLy) {
+            Intent intent = new Intent(this, AdminActivity.class);
+            startActivity(intent);
+            finish();
+        }
         if (item.getItemId() == R.id.DangXuat) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -238,7 +264,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("userId", 0);
-            editor.putString("shopName", shopName);
+            editor.putString("shopName", "");
+            editor.putString("role", "");
             editor.apply();
 
             //gửi dữ liệu để lưu trữ tên đăng nhập và tên shop

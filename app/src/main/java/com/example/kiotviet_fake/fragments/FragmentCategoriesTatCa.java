@@ -90,9 +90,12 @@ public class FragmentCategoriesTatCa extends Fragment {
                             String formattedPrice = formatter.format(price);
 
                             int quantity = jsonObject.getInt("quantity");
+                            String categoriesName = jsonObject.getString("categories_name");
+                            String product_code = jsonObject.getString("product_code");
 
+                            // sửa đổi thêm điều kiện userid và idcategories = user_id split(_) userId[1]
                             String idProductItem = id + "Tất Cả";
-                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0);
+                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0, categoriesName, product_code);
                             products.add(product);
                             arrayProducts.add(product);
                         }
