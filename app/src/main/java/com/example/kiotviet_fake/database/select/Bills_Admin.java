@@ -7,7 +7,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface Bills_Admin {
-    @GET("bills/selcet_bill_admin.php")
+    @FormUrlEncoded
+    @POST("bills/selcet_bill_admin.php")
     Call<String> getBills_Admin(
+            @Field("shop_id") String id_shop
     );
 }

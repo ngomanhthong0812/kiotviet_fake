@@ -9,8 +9,9 @@ public class Bill_Admin {
     public int user_Id;
     public  double total_price;
     public String name_user;
+    public String shop_id;
 
-    public Bill_Admin(int id_bill, String date_time, String dateTimeEnd, String code_admin, int tableId, int user_Id, double total_price, String name_user) {
+    public Bill_Admin(int id_bill, String date_time, String dateTimeEnd, String code_admin, int tableId, int user_Id, double total_price, String name_user, String shop_id) {
         this.id_bill = id_bill;
         this.date_time = date_time;
         this.dateTimeEnd = dateTimeEnd;
@@ -19,6 +20,7 @@ public class Bill_Admin {
         this.user_Id = user_Id;
         this.total_price = total_price;
         this.name_user = name_user;
+        this.shop_id = shop_id;
     }
 
     public int getId_bill() {
@@ -83,5 +85,13 @@ public class Bill_Admin {
 
     public void setName_user(String name_user) {
         this.name_user = name_user;
+    }
+
+    public String getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
     }
 }

@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,6 +48,7 @@ public class FragmentAdminHoaDon extends Fragment {
     private BillAdminAdapter billAdminAdapter;
     private RecyclerView recyclerView_bill;
     private TextView totalAmountTextView;
+    String id_shop;
     public FragmentAdminHoaDon() {
     }
 
@@ -67,6 +70,10 @@ public class FragmentAdminHoaDon extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView_bill.setLayoutManager(layoutManager);
 
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        id_shop = sharedPreferences.getString("shop_id","");
+        System.out.println("test id_shop : "+ id_shop);
         return view;
     }
 
@@ -87,7 +94,9 @@ public class FragmentAdminHoaDon extends Fragment {
 
     public void LoadDataHoaDon() {
         Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Bills_Admin.class);
-        Call<String> call = billAdmin.getBills_Admin();
+
+        Call<String> call = billAdmin.getBills_Admin(id_shop);
+
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -109,12 +118,19 @@ public class FragmentAdminHoaDon extends Fragment {
                             int user_id = jsonObject.getInt("userId");
                             double total_price = jsonObject.getDouble("total_price");
                             String name_user = jsonObject.getString("name_user");
+                            String shop_id = jsonObject.getString("id_shop");
 
-                            totalAmount += total_price; // Cộng dồn giá tiền vào tổng giá tiền
 
 
-                            Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user);
+                        if(id_shop.equals(shop_id)){
+                            System.out.println("test id_shop 1: "+ id_shop);
+                            System.out.println("test id_shop 2: "+ shop_id);
+                            totalAmount += total_price;
+                            Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
                             Bill_AdminArayList.add(billsAdmin);
+
+                        }
+
 
                         }
                         String formattedTotalAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(totalAmount);
