@@ -52,9 +52,9 @@ public class FragmentHistoryOders extends Fragment {
         return view;
     }
 
-    public void fetchData(String selectedDate, int isUserId) {
+    public void fetchData(String selectedDate, String isShopId) {
         HistoryService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(HistoryService.class);
-        Call<String> call = apiService.getHistory();
+        Call<String> call = apiService.getHistory(isShopId);
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -75,7 +75,7 @@ public class FragmentHistoryOders extends Fragment {
                             String nameTable = jsonObject.getString("table_name");
 
                             String[] date = dateTime_end.split(" ");
-                            if (user_id == isUserId && date[0].equals(selectedDate)) {
+                            if (date[0].equals(selectedDate)) {
                                 History history = new History(id, dateTime, dateTime_end, code, table_id, user_id, total_price, nameTable);
                                 historyList.add(history);
                             }

@@ -7,9 +7,9 @@ import retrofit2.http.POST;
 
 public interface BillsSelectByUserIdService {
     @FormUrlEncoded
-    @POST("bills/select_detail_by_id_user.php")
+    @POST("bills/select_detail_by_id_shop.php")
     Call<String> getBills(
-            @Field("user_id") int user_id,
+            @Field("shop_id") String shop_id,
             @Field("date") String date
     );
 }

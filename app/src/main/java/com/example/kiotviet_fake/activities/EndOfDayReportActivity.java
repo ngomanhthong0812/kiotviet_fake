@@ -60,7 +60,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
     ImageView btnCancel;
     TextView txtDate, txtNameCategories;
     LinearLayout btnSetDate, btnSetBillCategories;
-    String selectedDate;
+    String selectedDate,isShopId;
     int isUserId;
 
     FragmentPhongBan fragmentPhongBan;
@@ -76,6 +76,9 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         // lấy id tài khoan đang login
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isUserId = sharedPreferences.getInt("userId", 0);
+        isShopId = sharedPreferences.getString("shop_id", "");
+
+        Log.d("TAG", "onCreate: " + isShopId);
 
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -90,7 +93,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
 
         // Hiển thị fragment mặc định
         showFragment(fragmentTongHop);
-        fragmentTongHop.initView(selectedDate, isUserId);
+        fragmentTongHop.initView(selectedDate, isShopId);
 
         addControl();
 
@@ -175,7 +178,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtTongHop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTongHop.initView(selectedDate, isUserId);
+                fragmentTongHop.initView(selectedDate, isShopId);
                 txtNameCategories.setText("Tổng hợp");
                 showFragment(fragmentTongHop);
                 dialog.dismiss();
@@ -184,7 +187,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtHangHoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentHangHoa.initView(selectedDate, isUserId);
+                fragmentHangHoa.initView(selectedDate, isShopId);
                 txtNameCategories.setText("Hàng hoá");
                 showFragment(fragmentHangHoa);
                 dialog.dismiss();
@@ -193,7 +196,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtPhongBan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentPhongBan.initView(selectedDate, isUserId);
+                fragmentPhongBan.initView(selectedDate, isShopId);
                 txtNameCategories.setText("Phòng bàn");
                 showFragment(fragmentPhongBan);
                 dialog.dismiss();
@@ -202,7 +205,7 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         txtDanSachHoaDon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentHistoryOders.fetchData(selectedDate, isUserId);
+                fragmentHistoryOders.fetchData(selectedDate, isShopId);
                 txtNameCategories.setText("Danh sách hoá đơn");
                 showFragment(fragmentHistoryOders);
                 dialog.dismiss();
@@ -234,13 +237,13 @@ public class EndOfDayReportActivity extends AppCompatActivity {
 
                 if (currentFragment != null) {
                     if (currentFragment instanceof FragmentTongHop) {
-                        fragmentTongHop.initView(selectedDate, isUserId);
+                        fragmentTongHop.initView(selectedDate, isShopId);
                     } else if (currentFragment instanceof FragmentHangHoa) {
-                        fragmentHangHoa.initView(selectedDate, isUserId);
+                        fragmentHangHoa.initView(selectedDate, isShopId);
                     } else if (currentFragment instanceof FragmentPhongBan) {
-                        fragmentPhongBan.initView(selectedDate, isUserId);
+                        fragmentPhongBan.initView(selectedDate, isShopId);
                     } else if (currentFragment instanceof FragmentHistoryOders) {
-                        fragmentHistoryOders.fetchData(selectedDate, isUserId);
+                        fragmentHistoryOders.fetchData(selectedDate, isShopId);
                     } else {
 
                     }

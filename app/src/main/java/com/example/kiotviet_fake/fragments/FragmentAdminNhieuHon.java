@@ -72,6 +72,7 @@ public class FragmentAdminNhieuHon extends Fragment {
                 editor.putInt("userId", 0);
                 editor.putString("shopName", "");
                 editor.putString("role", "");
+                editor.putString("shop_id", "");
                 editor.apply();
 
                 //gửi dữ liệu để lưu trữ tên đăng nhập và tên shop

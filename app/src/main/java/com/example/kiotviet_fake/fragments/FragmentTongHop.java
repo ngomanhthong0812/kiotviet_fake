@@ -51,14 +51,14 @@ public class FragmentTongHop extends Fragment {
 
     }
 
-    public void initView(String selectedDate,int isUserId) {
+    public void initView(String selectedDate,String isShopId) {
         //reset về 0
         totalRevenueToday = 0;
         countBills = 0;
 
         //select data from api
         BillsSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillsSelectService.class);
-        Call<String> call = apiService.getBills();
+        Call<String> call = apiService.getBills(isShopId);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -75,7 +75,7 @@ public class FragmentTongHop extends Fragment {
                             int total_price = Integer.parseInt(jsonObject.getString("total_price"));
 
                             String[] parts = dateTime_end.split(" ");
-                            if (parts[0].equals(selectedDate) && user_id == isUserId) {
+                            if (parts[0].equals(selectedDate)) {
                                 totalRevenueToday += total_price;
                                 countBills++;
                             }

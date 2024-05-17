@@ -58,11 +58,11 @@ public class FragmentHangHoa extends Fragment {
         return view;
     }
 
-    public void initView(String selectedDate, int isUserId) {
+    public void initView(String selectedDate, String isShopId) {
         final int[] total_price = {0};
         //select data from api
         BillItemsSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillItemsSelectByUserIdService.class);
-        Call<String> call = apiService.getBillItems(isUserId);
+        Call<String> call = apiService.getBillItems(isShopId);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

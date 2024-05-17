@@ -59,14 +59,14 @@ LinearLayout ln_isNull;
         return view;
     }
 
-    public void initView(String selectedDate, int isUserId) {
+    public void initView(String selectedDate, String isShopId) {
         final int[] total_priceTong = {0};
         final int[] total_quantityTong = {0};
         final int[] total_quantityMangVe = {0};
         final float[] total_priceMangVe = {0};
         //select data from api
         BillsSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillsSelectByUserIdService.class);
-        Call<String> call = apiService.getBills(isUserId, selectedDate);
+        Call<String> call = apiService.getBills(isShopId, selectedDate);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

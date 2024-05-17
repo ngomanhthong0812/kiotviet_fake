@@ -431,7 +431,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         ArrayList<Bill> bills = sessionManager.getBills();
         Bill firstBill = bills.get(0);
 
-
         String txtTotal = txtTotalPrice.getText().toString();
         txtTotal = txtTotal.replace(".", "");
 
