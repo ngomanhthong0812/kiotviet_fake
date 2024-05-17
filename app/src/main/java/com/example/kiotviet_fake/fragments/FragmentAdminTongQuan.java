@@ -169,20 +169,6 @@ public class FragmentAdminTongQuan extends Fragment {
     private void setupBarChart(View view) {
         BarChart barChart = view.findViewById(R.id.barChart); // Thay đổi này
 
-        // Tạo dữ liệu cho BarChart
-
-//        entries.add(new BarEntry(1, 50));
-//        entries.add(new BarEntry(2, 80));
-//        entries.add(new BarEntry(3, 60));
-//        entries.add(new BarEntry(4, 30));
-//        entries.add(new BarEntry(5, 70));
-//        entries.add(new BarEntry(6, 35));
-//        entries.add(new BarEntry(7, 84));
-//        entries.add(new BarEntry(8, 67));
-//        entries.add(new BarEntry(9, 65));
-//        entries.add(new BarEntry(10, 45));
-//        entries.add(new BarEntry(11, 56));
-//        entries.add(new BarEntry(12, 35));
 
         BarDataSet dataSet = new BarDataSet(entries, "Doanh thu theo tháng"); // Tên của dữ liệu
 
@@ -197,7 +183,7 @@ public class FragmentAdminTongQuan extends Fragment {
         // Cấu hình trục X
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
+        xAxis.setGranularity(0.5f);
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
@@ -224,6 +210,12 @@ public class FragmentAdminTongQuan extends Fragment {
         // Tùy chỉnh màu sắc
         dataSet.setColor(Color.BLUE); // Màu của cột
         dataSet.setValueTextColor(Color.BLACK); // Màu của giá trị
+
+        // Kiểm tra số lượng cột, nếu ít hơn hoặc bằng 2, giảm kích thước cột và khoảng cách giữa cột
+        if (dataSet.getEntryCount() <= 3) {
+            barData.setBarWidth(0.2f); // Đặt độ rộng cột
+            barChart.getXAxis().setGranularity(1f); // Đặt độ rộng khoảng giữa các cột
+        }
         // Vô hiệu hóa chú thích mô tả
         barChart.getDescription().setEnabled(false);
 
