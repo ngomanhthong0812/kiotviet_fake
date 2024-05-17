@@ -359,6 +359,7 @@ public class LoginActivity extends AppCompatActivity {
                             shopName = user.getShop_name();
                             infoUserName = user.getUser_name();
                             role = user.getRole();
+                            shop_id = user.getShop_id();
                             break;
                         }
                     }
