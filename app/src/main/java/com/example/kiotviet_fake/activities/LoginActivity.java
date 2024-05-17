@@ -372,6 +372,9 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt("userId", userId);
                         editor.putString("shopName", shopName);
+                        editor.putString("shop_id", shop_id);
+                        System.out.println("test id_shop login : "+ shop_id);
+
                         editor.putString("infoUserName", infoUserName);
                         editor.putString("role", role);
                         editor.apply();
