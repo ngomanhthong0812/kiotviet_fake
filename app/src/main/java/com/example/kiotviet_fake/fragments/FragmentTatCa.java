@@ -36,6 +36,7 @@ import retrofit2.Response;
 
 public class FragmentTatCa extends Fragment {
     private int isTableUserId;
+    private String isShopId;
     private View view;
     private TableAdapter tableAdapter;
     private ArrayList<Table> originalTables = new ArrayList<>();
@@ -49,6 +50,8 @@ public class FragmentTatCa extends Fragment {
                              Bundle savedInstanceState) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
+        isShopId = sharedPreferences.getString("shop_id", "");
+        Log.d("TAG", "idshop: "+isShopId);
 
         view = inflater.inflate(R.layout.fragment_tat_ca, container, false);
         return view;
@@ -68,7 +71,7 @@ public class FragmentTatCa extends Fragment {
 
         // Select data from API
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId, "");
+        Call<String> call = apiService.getTable(isShopId, "");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

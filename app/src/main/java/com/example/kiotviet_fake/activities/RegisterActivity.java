@@ -308,9 +308,9 @@ public class RegisterActivity extends AppCompatActivity {
                         // Đăng ký thành công, chuyển hướng đến màn hình đăng nhập
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(intent);
+                        finish();
 
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
-                        finish();
                     } else {
                         // Xử lý lỗi khi đăng ký không thành công
                         Toast.makeText(RegisterActivity.this, "Đăng ký không thành công", Toast.LENGTH_SHORT).show();
@@ -379,9 +379,4 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
-//        super.onBackPressed();
-    }
 }

@@ -84,7 +84,7 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
     EditText searchEditText;
     TextView txtNameTable;
     int isTableUserId;
-    String nameTable;
+    String nameTable,isShopId;
     int idTable;
     int orderId;
     int idOrderByDelete;
@@ -109,6 +109,7 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
         // lấy ra userId vừa dc truyền khi login thành công
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
+        isShopId = sharedPreferences.getString("shop_id", "");
 
         Intent intent = getIntent();
         nameTable = intent.getStringExtra("nameTable");
@@ -257,7 +258,7 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
 
         //select data from api
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId, isNameTable);
+        Call<String> call = apiService.getTable(isShopId, isNameTable);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

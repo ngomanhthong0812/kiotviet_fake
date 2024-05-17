@@ -380,11 +380,13 @@ public class LoginActivity extends AppCompatActivity {
                             case "admin":
                                 Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
                                 startActivity(adminIntent);
+                                finish();
                                 break;
                             case "thungan":
                             case "order":
                                 Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(mainIntent);
+                                finish();
                                 break;
                             default:
                                 // Xử lý logic cho trường hợp không xác định
@@ -400,15 +402,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        // lấy ra tên shop vừa dc truyền khi login thành công
-        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        int userId = sharedPreferences.getInt("userId", 0);
-        if (userId == 0) {
-            finishAffinity();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        // lấy ra tên shop vừa dc truyền khi login thành công
+//        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+//        int userId = sharedPreferences.getInt("userId", 0);
+//        if (userId == 0) {
+//            finishAffinity();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 }

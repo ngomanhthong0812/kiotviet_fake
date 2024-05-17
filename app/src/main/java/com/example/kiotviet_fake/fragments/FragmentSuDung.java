@@ -35,6 +35,7 @@ import retrofit2.Response;
 
 public class FragmentSuDung extends Fragment {
     int isTableUserId;
+    String isShopId;
 
     public FragmentSuDung() {
         // Required empty public constructor
@@ -47,6 +48,7 @@ public class FragmentSuDung extends Fragment {
         // lấy ra userId vừa dc truyền khi login thành công
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
+        isShopId = sharedPreferences.getString("shop_id", "");
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_su_dung, container, false);
@@ -68,7 +70,7 @@ public class FragmentSuDung extends Fragment {
 
         //select data from api
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(TableSelectByUserIdService.class);
-        Call<String> call = apiService.getTable(isTableUserId, "");
+        Call<String> call = apiService.getTable(isShopId, "");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

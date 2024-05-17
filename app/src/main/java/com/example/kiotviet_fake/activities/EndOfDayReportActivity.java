@@ -254,9 +254,4 @@ public class EndOfDayReportActivity extends AppCompatActivity {
         // Mở hộp thoại chọn ngày
         datePickerDialog.show();
     }
-    @Override
-    public void onBackPressed() {
-        // Không thực hiện hành động nào khi nút quay trở lại được nhấn
-//        super.onBackPressed();
-    }
 }

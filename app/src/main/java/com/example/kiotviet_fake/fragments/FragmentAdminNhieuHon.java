@@ -65,6 +65,7 @@ public class FragmentAdminNhieuHon extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
+                getActivity().finish();
 
                 SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();

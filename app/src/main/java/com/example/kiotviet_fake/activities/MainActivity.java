@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String shopName;
     int userId;
-    String infoUserName,role;
+    String infoUserName, role;
     private LinearLayout headerA, inputSearch;
     private ImageView btnSearch, btnClose;
     private EditText searchEditText;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Menu menu = navigationView.getMenu();
         MenuItem quanLyItem = menu.findItem(R.id.QuanLy);
         MenuItem baoCaoCuoiNgayItem = menu.findItem(R.id.BaoCaoCuoiNgay);
-        switch (role){
+        switch (role) {
             case "order":
                 baoCaoCuoiNgayItem.setVisible(false);
                 quanLyItem.setVisible(false);
@@ -219,9 +219,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView txtNameShop = headerView.findViewById(R.id.txtNameShop);
         TextView txtNameRole = headerView.findViewById(R.id.txtNameRole);
 
-        if(role.equals("thungan")){
+        if (role.equals("thungan")) {
             txtNameRole.setText("Thu ngân");
-        }else{
+        } else {
             txtNameRole.setText(role);
         }
         txtNameShop.setText(shopName);
@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (item.getItemId() == R.id.DangXuat) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
+            finish();
 
             SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -280,19 +281,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }
         if (item.getItemId() == R.id.ThietLap) {
-            Toast.makeText(MainActivity.this,"Chức năng đang được cập nhật",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
         }
         if (item.getItemId() == R.id.HuongDan) {
-            Toast.makeText(MainActivity.this,"Chức năng đang được cập nhật",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
         }
         if (item.getItemId() == R.id.DieuKhoan) {
-            Toast.makeText(MainActivity.this,"Chức năng đang được cập nhật",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
         }
         if (item.getItemId() == R.id.HoTro) {
-            Toast.makeText(MainActivity.this,"Chức năng đang được cập nhật",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
         }
         if (item.getItemId() == R.id.NgonNgu) {
-            Toast.makeText(MainActivity.this,"Chức năng đang được cập nhật",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

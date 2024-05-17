@@ -11,7 +11,7 @@ public interface TableSelectByUserIdService {
     @FormUrlEncoded
     @POST("tables/select_by_user_id.php")
     Call<String> getTable(
-            @Field("user_id") int user_id,
+            @Field("shop_id") String shop_id,
             @Field("table_name") String table_name
     );
 }
