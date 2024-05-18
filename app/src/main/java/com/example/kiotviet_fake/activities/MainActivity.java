@@ -5,28 +5,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-import androidx.viewpager.widget.ViewPager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -41,18 +28,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
-import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.fragments.FragmentTatCa;
-import com.example.kiotviet_fake.fragments.FramentHome;
-import com.example.kiotviet_fake.models.Table;
+import com.example.kiotviet_fake.fragments.FragmentHome;
+import com.example.kiotviet_fake.session.SessionCategories;
+import com.example.kiotviet_fake.session.SessionProducts;
+import com.example.kiotviet_fake.workers.ApiWorker;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -69,12 +54,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView btnSearch, btnClose;
     private EditText searchEditText;
     FragmentTatCa fragmentTatCa;
-    FramentHome framentHome;
+    FragmentHome framentHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // chạy api khi mainActivity dc truy cập
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ApiWorker.class).build();
+        WorkManager.getInstance(this).enqueue(request);
 
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -93,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setCheckedItem(R.id.PhongBan);
 
         if (savedInstanceState == null) {
-            framentHome = new FramentHome();
+            framentHome = new FragmentHome();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, framentHome).commit();
         }
 
@@ -174,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Hiển thị lại fragment home
                 if (framentHome == null) {
-                    framentHome = new FramentHome(); // Tạo mới fragment home
+                    framentHome = new FragmentHome(); // Tạo mới fragment home
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, framentHome, "fragment_home")
                             .commit();
@@ -276,6 +265,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor_infoUser.putString("shopName", shopName);
             editor_infoUser.putString("infoUserName", infoUserName);
             editor_infoUser.apply();
+
+            //xoá sessionCategories và sessionProducts
+            SessionCategories sessionCategories = new SessionCategories(this);
+            sessionCategories.clearCategories();
+            SessionProducts sessionProducts = SessionProducts.getInstance();
+            sessionProducts.removeProductAll();
         }
         if (item.getItemId() == R.id.ThongBaoBep) {
             Intent intent = new Intent(MainActivity.this, Notification.class);

@@ -1,5 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.example.kiotviet_fake.adapters.ProductAdapter;
 import com.example.kiotviet_fake.database.select.ProductSelectService;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.models.Product;
+import com.example.kiotviet_fake.session.SessionProducts;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,64 +57,33 @@ public class FragmentCategoriesSodaY extends Fragment {
     }
 
     public void initView() {
+        SessionProducts sessionProducts = SessionProducts.getInstance();
+        ArrayList<Product> listProducts = sessionProducts.getProductAll();
+
         RecyclerView recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
 
-        ArrayList<Product> arrayList = new ArrayList<>();
+        SharedPreferences categorieSharedPreferences = requireContext().getSharedPreferences("categoriesFilter", Context.MODE_PRIVATE);
+        String nameCategories = categorieSharedPreferences.getString("nameCategories_5", "");
 
-        //select data from api
-        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductSelectService.class);
-        Call<String> call = apiService.getProducts();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body());
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            int id = Integer.parseInt(jsonObject.getString("id"));
-                            String name = jsonObject.getString("product_name");
-                            float price = Integer.parseInt(jsonObject.getString("price"));
-                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
-                            String formattedPrice = formatter.format(price);
-
-                            int quantity = Integer.parseInt(jsonObject.getString("quantity"));
-                            String categoriesName = jsonObject.getString("categories_name");
-                            String product_code = jsonObject.getString("product_code");
-
-                            if (categoriesName.equals("SODA Ý")) {
-                                int number = random.nextInt(); // Tạo một số ngẫu nhiên
-                                String idProductItem = id + categoriesName; // Tạo một số ngẫu nhiên
-                                arrayList.add(new Product(id,idProductItem, name, formattedPrice, quantity, 1,0,null,0,categoriesName,product_code));
-                            }
-
-
-                        }
-                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-                        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
-                        dividerItemDecoration.setDrawable(drawable);
-                        recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
-
-                        // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        ProductAdapter productAdapter = new ProductAdapter(arrayList, requireContext(),null); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-                        recyclerView.setAdapter(productAdapter);
-                        productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.e("TAG", "Failed to fetch data: " + response.code());
-                }
+        ArrayList<Product> products = new ArrayList<>();
+        for (Product listProduct : listProducts) {
+            if (listProduct.getNameCategories().equals(nameCategories)) {
+                Product product = new Product(listProduct.getId(), listProduct.getIdProductItem(), listProduct.getName(), listProduct.getPrice(), listProduct.getQuantity(), listProduct.getQuantityOrder(), listProduct.getIdTable(), listProduct.getNameTable(), listProduct.getIdProduct(), listProduct.getNameCategories(), listProduct.getProduct_code());
+                products.add(product);
             }
+        }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("TAG", "Failed to fetch data: " + t.getMessage());
-            }
-        });
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
+
+        // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
+        ProductAdapter productAdapter = new ProductAdapter(products, requireContext(), null); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
+        recyclerView.setAdapter(productAdapter);
+        productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
     }
 }
