@@ -34,23 +34,30 @@
         android:background="#eaeaea"/>
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="10dp"
         android:background="@color/white"
         android:paddingTop="5dp">
-        <ImageView
+        <LinearLayout
+            android:id="@+id/dayMonthYear"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_calendar_month_24"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="15sp"
-            android:text="Tháng này"/>
-    </LinearLayout>
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_calendar_month_24"/>
+            <TextView
+                android:id="@+id/selectedDateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="15sp"
+                android:text="Tháng này"/>
+        </LinearLayout>
 
+    </LinearLayout>
     <LinearLayout
         android:background="@color/white"
         android:layout_width="match_parent"
