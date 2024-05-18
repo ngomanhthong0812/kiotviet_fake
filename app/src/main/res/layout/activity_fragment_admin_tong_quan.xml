@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="15sp"
-                android:text="Tháng này"/>
+                android:text="Xem cả năm"/>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -76,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:text="12 hóa đơn"/>
+                android:text="0 hóa đơn"/>
 
             <TextView
                 android:id="@+id/totalRevenue"
@@ -85,7 +86,7 @@
                 android:textSize="30sp"
                 android:textStyle="bold"
                 android:textColor="#3CA0F8"
-                android:text="40.000.000"/>
+                android:text="0"/>
         </LinearLayout>
 
         <LinearLayout
