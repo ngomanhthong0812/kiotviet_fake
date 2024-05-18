@@ -1,56 +1,37 @@
 package com.example.kiotviet_fake.adapters;
 
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.kiotviet_fake.fragments.FragmentTatCa;
 import com.example.kiotviet_fake.fragments.FragmentConTrong;
 import com.example.kiotviet_fake.fragments.FragmentSuDung;
 
-public class HomePagerAdapter extends FragmentStatePagerAdapter {
+public class HomePagerAdapter extends FragmentStateAdapter {
 
-    public HomePagerAdapter(FragmentManager fragmentManager) {
-        super(fragmentManager);
+    public HomePagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
     }
 
+    @NonNull
     @Override
-    public Fragment getItem(int position) {
-        Fragment frag = null;
+    public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                frag = new FragmentTatCa();
-                break;
+                return new FragmentTatCa();
             case 1:
-                frag = new FragmentSuDung();
-                break;
+                return new FragmentSuDung();
             case 2:
-                frag = new FragmentConTrong();
-                break;
+                return new FragmentConTrong();
+            default:
+                return new FragmentTatCa();
         }
-        return frag;
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return 3;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        String title = "";
-        switch (position) {
-            case 0:
-                title = "Tất cả";
-                break;
-            case 1:
-                title = "Sử dụng";
-                break;
-            case 2:
-                title = "Còn trống";
-                break;
-        }
-        return title;
     }
 }

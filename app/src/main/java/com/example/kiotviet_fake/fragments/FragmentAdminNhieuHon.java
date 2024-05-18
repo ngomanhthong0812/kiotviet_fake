@@ -19,6 +19,8 @@ import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.activities.EndOfDayReportActivity;
 import com.example.kiotviet_fake.activities.LoginActivity;
 import com.example.kiotviet_fake.activities.MainActivity;
+import com.example.kiotviet_fake.session.SessionCategories;
+import com.example.kiotviet_fake.session.SessionProducts;
 
 public class FragmentAdminNhieuHon extends Fragment {
     TextView txtNameAdmin, txtAvatar;
@@ -81,6 +83,12 @@ public class FragmentAdminNhieuHon extends Fragment {
                 editor_infoUser.putString("shopName", shopName);
                 editor_infoUser.putString("infoUserName", infoUserName);
                 editor_infoUser.apply();
+
+                //xoá sessionCategories và sessionProducts
+                SessionCategories sessionCategories = new SessionCategories(getContext());
+                sessionCategories.clearCategories();
+                SessionProducts sessionProducts = SessionProducts.getInstance();
+                sessionProducts.removeProductAll();
             }
         });
         btnBanHang.setOnClickListener(new View.OnClickListener() {

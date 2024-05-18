@@ -1,5 +1,7 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,8 +24,10 @@ import com.example.kiotviet_fake.adapters.ProductAdapter;
 import com.example.kiotviet_fake.adapters.TableAdapter;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.select.ProductSelectService;
+import com.example.kiotviet_fake.models.Bill;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.models.Table;
+import com.example.kiotviet_fake.session.SessionProducts;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,70 +69,37 @@ public class FragmentCategoriesTatCa extends Fragment {
     }
 
     public void initView() {
+        SessionProducts sessionProducts = SessionProducts.getInstance();
+        ArrayList<Product> listProducts = sessionProducts.getProductAll();
+
         recyclerView = view.findViewById(R.id.recycler_view); // Đảm bảo RecyclerView đã được tìm thấy trong layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        //select data from api
-        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductSelectService.class);
-        Call<String> call = apiService.getProducts();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body());
-                        ArrayList<Product> products = new ArrayList<>();
+        ArrayList<Product> products = new ArrayList<>();
+        for (Product listProduct : listProducts) {
+            Product product = new Product(listProduct.getId(), listProduct.getIdProductItem(), listProduct.getName(), listProduct.getPrice(), listProduct.getQuantity(), listProduct.getQuantityOrder(), listProduct.getIdTable(), listProduct.getNameTable(), listProduct.getIdProduct(), listProduct.getNameCategories(), listProduct.getProduct_code());
+            products.add(product);
+            arrayProducts.add(product);
+        }
 
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            int id = jsonObject.getInt("id");
-                            String name = jsonObject.getString("product_name");
-                            float price = Float.parseFloat(jsonObject.getString("price"));
-                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
-                            String formattedPrice = formatter.format(price);
+        // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
+        if (productAdapter != null) {
+            productAdapter.updateData(products);
+            productAdapter.notifyDataSetChanged();
+        } else {
+            productAdapter = new ProductAdapter(products, requireContext(), null);
+            recyclerView.setAdapter(productAdapter);
+        }
 
-                            int quantity = jsonObject.getInt("quantity");
-                            String categoriesName = jsonObject.getString("categories_name");
-                            String product_code = jsonObject.getString("product_code");
-
-                            // sửa đổi thêm điều kiện userid và idcategories = user_id split(_) userId[1]
-                            String idProductItem = id + "Tất Cả";
-                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0, categoriesName, product_code);
-                            products.add(product);
-                            arrayProducts.add(product);
-                        }
-
-                        // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
-                        if (productAdapter != null) {
-                            productAdapter.updateData(products);
-                            productAdapter.notifyDataSetChanged();
-                        } else {
-                            productAdapter = new ProductAdapter(products, requireContext(), null);
-                            recyclerView.setAdapter(productAdapter);
-                        }
-
-//                        // Thêm đường phân chia giữa các mục trong RecyclerView
-                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-                        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
-                        dividerItemDecoration.setDrawable(drawable);
-                        recyclerView.addItemDecoration(dividerItemDecoration);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    // Xử lý lỗi khi không nhận được phản hồi từ API
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý lỗi khi gọi API không thành công
-            }
-        });
+        // Thêm đường phân chia giữa các mục trong RecyclerView
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
+
 
     // Phương thức thực hiện tìm kiếm sản phẩm
     public void performSearch(String keyword) {

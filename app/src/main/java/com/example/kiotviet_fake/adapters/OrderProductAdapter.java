@@ -1,9 +1,13 @@
 package com.example.kiotviet_fake.adapters;
 
+import android.content.Context;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.kiotviet_fake.fragments.FragmentCategoriesCafe;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesDaXay;
@@ -16,101 +20,70 @@ import com.example.kiotviet_fake.fragments.FragmentCategoriesSua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesSuaChua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesTatCa;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesThuocLa;
+import com.example.kiotviet_fake.session.SessionCategories;
 
-import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
 
-public class OrderProductAdapter extends FragmentStatePagerAdapter {
+public class OrderProductAdapter extends FragmentStateAdapter {
 
-    public OrderProductAdapter(FragmentManager fragmentManager) {
-        super(fragmentManager);
+    private Context context;
+    private List<String> categoryTitles;
+    private SessionCategories sessionCategories;
+
+    public OrderProductAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Context context) {
+        super(fragmentManager, lifecycle);
+        this.context = context;
+        this.categoryTitles = new ArrayList<>();
+        loadCategoryTitles();
     }
 
+    @NonNull
     @Override
-    public Fragment getItem(int position) {
-        Fragment frag = null;
+    public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                frag = new FragmentCategoriesTatCa();
-                break;
+                return new FragmentCategoriesTatCa();
             case 1:
-                frag = new FragmentCategoriesCafe();
-                break;
+                return new FragmentCategoriesCafe();
             case 2:
-                frag = new FragmentCategoriesDaXay();
-                break;
+                return new FragmentCategoriesDaXay();
             case 3:
-                frag = new FragmentCategoriesNuocEp();
-                break;
+                return new FragmentCategoriesNuocEp();
             case 4:
-                frag = new FragmentCategoriesNuocDongChai();
-                break;
+                return new FragmentCategoriesNuocDongChai();
             case 5:
-                frag = new FragmentCategoriesSinhTo();
-                break;
+                return new FragmentCategoriesSinhTo();
             case 6:
-                frag = new FragmentCategoriesSodaY();
-                break;
+                return new FragmentCategoriesSodaY();
             case 7:
-                frag = new FragmentCategoriesSuaChua();
-                break;
+                return new FragmentCategoriesSuaChua();
             case 8:
-                frag = new FragmentCategoriesSua();
-                break;
+                return new FragmentCategoriesSua();
             case 9:
-                frag = new FragmentCategoriesThuocLa();
-                break;
+                return new FragmentCategoriesThuocLa();
             case 10:
-                frag = new FragmentCategoriesMonThem();
-                break;
-
-
+                return new FragmentCategoriesMonThem();
+            default:
+                return null;
         }
-        return frag;
     }
 
     @Override
-    public int getCount() {
-        return 11;
+    public int getItemCount() {
+        return categoryTitles.size();
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        String title = "";
-        switch (position) {
-            case 0:
-                title = "Tất cả";
-                break;
-            case 1:
-                title = "Cà phê";
-                break;
-            case 2:
-                title = "Đá xay";
-                break;
-            case 3:
-                title = "Nước ép";
-                break;
-            case 4:
-                title = "Nước đóng chai";
-                break;
-            case 5:
-                title = "Sinh tố";
-                break;
-            case 6:
-                title = "Soda ý";
-                break;
-            case 7:
-                title = "Sữa chua";
-                break;
-            case 8:
-                title = "Sữa";
-                break;
-            case 9:
-                title = "Thuốc lá";
-                break;
-            case 10:
-                title = "Món thêm";
-                break;
+    public List<String> getCategoryTitles() {
+        return categoryTitles;
+    }
+
+    private void loadCategoryTitles() {
+        sessionCategories = new SessionCategories(context);
+        List<String> categories = sessionCategories.getCategories();
+        for (String category : categories) {
+            categoryTitles.add(category);
         }
-        return title;
+        notifyDataSetChanged();
     }
 }

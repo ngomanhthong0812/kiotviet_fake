@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.select.ProductSelectService;
 import com.example.kiotviet_fake.interface_main.AdapterListener;
 import com.example.kiotviet_fake.models.Product;
+import com.example.kiotviet_fake.session.SessionProducts;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +52,7 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
     private View view;
     int countProduct = 0;
     TextView txtCountProduct, txtTitle;
-    ImageView btnClose, btnSearch, btnClear,btnThem;
+    ImageView btnClose, btnSearch, btnClear, btnThem;
 
     public FragmentAdminHangHoa() {
     }
@@ -108,70 +111,37 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
     }
 
     public void initView() {
+        SessionProducts sessionProducts = SessionProducts.getInstance();
+        ArrayList<Product> listProducts = sessionProducts.getProductAll();
+
         recyclerView = view.findViewById(R.id.recycler_view); // Đảm bảo RecyclerView đã được tìm thấy trong layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        //select data from api
-        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductSelectService.class);
-        Call<String> call = apiService.getProducts();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body());
-                        ArrayList<Product> products = new ArrayList<>();
+        ArrayList<Product> products = new ArrayList<>();
+        for (Product listProduct : listProducts) {
+            Product product = new Product(listProduct.getId(), listProduct.getIdProductItem(), listProduct.getName(), listProduct.getPrice(), listProduct.getQuantity(), listProduct.getQuantityOrder(), listProduct.getIdTable(), listProduct.getNameTable(), listProduct.getIdProduct(), listProduct.getNameCategories(), listProduct.getProduct_code());
+            products.add(product);
+            arrayProducts.add(product);
+            countProduct++;
+        }
 
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            int id = jsonObject.getInt("id");
-                            String name = jsonObject.getString("product_name");
-                            float price = Float.parseFloat(jsonObject.getString("price"));
-                            NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
-                            String formattedPrice = formatter.format(price);
+        txtCountProduct.setText(countProduct + " hàng hoá");
 
-                            int quantity = jsonObject.getInt("quantity");
-                            String categoriesName = jsonObject.getString("categories_name");
-                            String product_code = jsonObject.getString("product_code");
+        // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
+        if (productAdminAdapter != null) {
+            productAdminAdapter.notifyDataSetChanged();
+        } else {
+            productAdminAdapter = new ProductAdminAdapter(products, requireContext(), FragmentAdminHangHoa.this);
+            recyclerView.setAdapter(productAdminAdapter);
+        }
 
-                            String idProductItem = id + "Tất Cả";
-                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0,categoriesName,product_code);
-                            products.add(product);
-                            arrayProducts.add(product);
-                            countProduct++;
-                        }
-
-                        txtCountProduct.setText(countProduct + " hàng hoá");
-
-                        // Tạo adapter nếu chưa có và cập nhật dữ liệu mới
-                        if (productAdminAdapter != null) {
-                            productAdminAdapter.notifyDataSetChanged();
-                        } else {
-                            productAdminAdapter = new ProductAdminAdapter(products, requireContext(), FragmentAdminHangHoa.this);
-                            recyclerView.setAdapter(productAdminAdapter);
-                        }
-
-//                        // Thêm đường phân chia giữa các mục trong RecyclerView
-                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-                        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
-                        dividerItemDecoration.setDrawable(drawable);
-                        recyclerView.addItemDecoration(dividerItemDecoration);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    // Xử lý lỗi khi không nhận được phản hồi từ API
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý lỗi khi gọi API không thành công
-            }
-        });
+        // Thêm đường phân chia giữa các mục trong RecyclerView
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -196,7 +166,7 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
 
     @Override
     public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
-        if(arrIdDelete.size() > 0){
+        if (arrIdDelete.size() > 0) {
             btnClear.setVisibility(View.VISIBLE);
             btnClose.setVisibility(View.VISIBLE);
             btnSearch.setVisibility(View.GONE);
