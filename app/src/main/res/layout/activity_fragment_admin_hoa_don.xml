@@ -73,7 +73,7 @@
                 android:id="@+id/dayMonthYearr"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="start|center_vertical"
                 android:textStyle="bold"
                 android:layout_marginLeft="5dp"
                 android:textSize="15dp"
