@@ -40,6 +40,7 @@ public class ApiWorker extends Worker {
     public Result doWork() {
         callCategoriesApi();
         callProductsApi();
+        Log.d("TAG", "doWork: da chay");
         // Trả về trạng thái success tạm thời, API call sẽ chạy trong nền
         return Result.success();
     }
