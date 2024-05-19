@@ -153,7 +153,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onClick(View v) {
                 // thêm hiệu ứng loading
                 progressBar.setVisibility(View.VISIBLE);
-                insertBill("11168851", "60-dayfreetrial");
+                insertBill("11177575", "60-dayfreetrial");
             }
         });
 
@@ -247,7 +247,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
     public void initView() {
         //select data from api
-        Orders_OrderItem_Product_SelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Orders_OrderItem_Product_SelectService.class);
+        Orders_OrderItem_Product_SelectService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Orders_OrderItem_Product_SelectService.class);
         Call<String> call = apiService.getOrders(idTable);
 
         //thêm dữ liệu vào sessionManager
@@ -308,7 +308,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         }
                         // kiểm tra xem còn sản phẩm nào trong bàn không nếu ko thì reset lại bàn và chuyển về trang home
                         if (jsonArray.length() == 0) {
-                            deleteOrder("11168851", "60-dayfreetrial");
+                            deleteOrder("11177575", "60-dayfreetrial");
                         } else {
                             progressBar.setVisibility(View.GONE);
                         }
@@ -328,7 +328,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         recyclerView.setAdapter(productAdapter);
                         productAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
 
-                        updateTable("11168851", "60-dayfreetrial"); // cập nhật giá và trạng thái của bàn
+                        updateTable("11177575", "60-dayfreetrial"); // cập nhật giá và trạng thái của bàn
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -358,7 +358,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
                     try {
-                        deleteOrder("11168851", "60-dayfreetrial");
+                        deleteOrder("11177575", "60-dayfreetrial");
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
@@ -383,7 +383,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onResponse(Call<String> call, Response<String> response) {
                 // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
-                    isUpdateStatusTable("11168851", "60-dayfreetrial");
+                    isUpdateStatusTable("11177575", "60-dayfreetrial");
                 } else {
                     // Xử lý phản hồi không thành công
                 }
@@ -444,7 +444,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                     try {
                         jsonObject = new JSONObject(response.body().toString());
                         newBillId = jsonObject.getInt("billId");
-                        insertBillItems("11168851", "60-dayfreetrial");
+                        insertBillItems("11177575", "60-dayfreetrial");
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -477,7 +477,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             completedCalls[0]++;
                             if (completedCalls[0] == totalCalls) {
                                 sessionManager.removeBillAll();
-                                deleteOrder_items("11168851", "60-dayfreetrial");
+                                deleteOrder_items("11177575", "60-dayfreetrial");
                             }
                         } catch (ParseException e) {
                             throw new RuntimeException(e);
@@ -618,7 +618,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 try {
                     // thêm hiệu ứng loading
                     progressBar.setVisibility(View.VISIBLE);
-                    deleteOrder_items("11168851", "60-dayfreetrial");
+                    deleteOrder_items("11177575", "60-dayfreetrial");
                     dialog.dismiss();
                 } catch (ParseException e) {
                     throw new RuntimeException(e);

@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class OrderInsertItemsApiClient {
-    private static final String BASE_URL = "http://ngomanhthong-001-site1.htempurl.com/";
+    private static final String BASE_URL = "http://gaycoffee-001-site1.jtempurl.com/";
 
     public static OrderInsertItemsService createService(String username, String password) {
         OkHttpClient client = new OkHttpClient.Builder()

@@ -158,7 +158,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     // Chuyển đổi giá trị sang kiểu dữ liệu float và int
 
                     // Gọi service Retrofit để cập nhật thông tin sản phẩm
-                    UpdateItemOfOrderService service = UpdateItemOfOrderAPI.createService("11168851", "60-dayfreetrial");
+                    UpdateItemOfOrderService service = UpdateItemOfOrderAPI.createService("11177575", "60-dayfreetrial");
                     Call<String> call = service.updateItemOfOrder(productId, totalStr, quantityStr);
 
                     // Thực hiện request và xử lý response

@@ -299,7 +299,7 @@ public class RegisterActivity extends AppCompatActivity {
         String matKhauText = password.getText().toString().trim();
 
         if (!tenGianHangText.isEmpty() && !tenDangNhapText.isEmpty() && !matKhauText.isEmpty()) {
-            UserInsert service = UserInsertAPIClient.createService("11168851", "60-dayfreetrial");
+            UserInsert service = UserInsertAPIClient.createService("11177575", "60-dayfreetrial");
             Call<String> call = service.insertUser(tenGianHangText, tenDangNhapText, matKhauText);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -330,7 +330,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-        UserService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(UserService.class);
+        UserService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(UserService.class);
         Call<String> call = apiService.getUsers();
         call.enqueue(new Callback<String>() {
             @Override

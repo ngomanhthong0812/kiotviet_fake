@@ -64,7 +64,7 @@ public class DetailBillActivity extends AppCompatActivity {
 
     private void fetchData() {
 
-        Detail_item apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Detail_item.class);
+        Detail_item apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Detail_item.class);
         Call<String> call = apiService.getDetail_item();
         call.enqueue(new Callback<String>() {
             @Override

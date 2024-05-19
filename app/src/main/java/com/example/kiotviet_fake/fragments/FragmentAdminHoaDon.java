@@ -170,7 +170,7 @@ public class FragmentAdminHoaDon extends Fragment {
     }
 
     public void LoadDataHoaDon(int year, int month, int dayOfMonth) {
-        Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Bills_Admin.class);
+        Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Bills_Admin.class);
 
         Call<String> call = billAdmin.getBills_Admin(id_shop);
 

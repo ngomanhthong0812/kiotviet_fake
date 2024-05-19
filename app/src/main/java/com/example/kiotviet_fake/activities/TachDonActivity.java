@@ -143,7 +143,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
                 } else {
                     // thêm hiệu ứng loading
                     progressBar.setVisibility(View.VISIBLE);
-                    insertBill("11168851", "60-dayfreetrial");
+                    insertBill("11177575", "60-dayfreetrial");
                 }
             }
         });
@@ -211,7 +211,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
                     try {
                         jsonObject = new JSONObject(response.body().toString());
                         newBillId = jsonObject.getInt("billId");
-                        insertBillItems("11168851", "60-dayfreetrial");
+                        insertBillItems("11177575", "60-dayfreetrial");
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -243,7 +243,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
                         try {
                             completedCalls[0]++;
                             if (completedCalls[0] == totalCalls) {
-                                deleteOrder_items("11168851", "60-dayfreetrial");
+                                deleteOrder_items("11177575", "60-dayfreetrial");
                             }
                         } catch (ParseException e) {
                             throw new RuntimeException(e);
@@ -337,7 +337,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
             public void onResponse(Call<String> call, Response<String> response) {
                 // kiểm tra Retrofit đã hoàn thành
                 if (response.isSuccessful()) {
-                    isUpdateStatusTable("11168851", "60-dayfreetrial");
+                    isUpdateStatusTable("11177575", "60-dayfreetrial");
                 } else {
                     // Xử lý phản hồi không thành công
                 }
