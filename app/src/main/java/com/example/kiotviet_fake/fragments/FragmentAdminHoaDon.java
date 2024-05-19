@@ -24,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +60,9 @@ public class FragmentAdminHoaDon extends Fragment {
     private TextView totalAmountTextView,dayMonthYearr,dayMonthYearr2;
     LinearLayout xemTheoLich;
     String id_shop;
-
+    private int startYear, startMonth, startDay, endYear, endMonth, endDay;
+    private NumberPicker startDayPicker, startMonthPicker, startYearPicker;
+    private NumberPicker endDayPicker, endMonthPicker, endYearPicker;
     public FragmentAdminHoaDon() {
     }
 
@@ -76,6 +79,9 @@ public class FragmentAdminHoaDon extends Fragment {
         xemTheoLich = view.findViewById(R.id.xemTheoLich);
         dayMonthYearr =view.findViewById(R.id.dayMonthYearr);
         dayMonthYearr2 = view.findViewById(R.id.dayMonthYearr2);
+
+
+
 
         Bill_AdminArayList = new ArrayList<>();
         billAdminAdapter = new BillAdminAdapter(Bill_AdminArayList, getContext());
@@ -102,7 +108,7 @@ public class FragmentAdminHoaDon extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LoadDataHoaDon(0,0,0); // Di chuyển hàm gọi LoadDataHoaDon() sau khi adapter được thiết lập
+        LoadDataHoaDon(0,0,0,0,0,0); // Di chuyển hàm gọi LoadDataHoaDon() sau khi adapter được thiết lập
         addDividerToRecyclerView();
 
     }
@@ -120,12 +126,12 @@ public class FragmentAdminHoaDon extends Fragment {
                         showDayPickerDialog();
                         break;
                     case 1:
-//                        showDayToDayPickerDialog();
+                       showDayToDayPickerDialog();
                         break;
                     case 2:
                         dayMonthYearr.setText("Xem tất cả");
                         dayMonthYearr2.setText("Xem tất cả");
-                        LoadDataHoaDon(0,0,0);
+                        LoadDataHoaDon(0,0,0,0,0,0);
 
                         break;
                 }
@@ -138,6 +144,77 @@ public class FragmentAdminHoaDon extends Fragment {
 
         builder.show();
     }
+
+    private void showDayToDayPickerDialog() {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.day_month_year, null);
+        NumberPicker startDayPicker = dialogView.findViewById(R.id.dayPicker);
+        NumberPicker startMonthPicker = dialogView.findViewById(R.id.monthPicker);
+        NumberPicker startYearPicker = dialogView.findViewById(R.id.yearPicker);
+
+        NumberPicker endDayPicker = dialogView.findViewById(R.id.endDayPicker);
+        NumberPicker endMonthPicker = dialogView.findViewById(R.id.endMonthPicker);
+        NumberPicker endYearPicker = dialogView.findViewById(R.id.endYearPicker);
+
+        // Thiết lập giá trị cho NumberPickers
+        startDayPicker.setMinValue(1);
+        startDayPicker.setMaxValue(31);
+        startDayPicker.setValue(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)); // Ngày hiện tại
+        startDayPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        startMonthPicker.setMinValue(1);
+        startMonthPicker.setMaxValue(12);
+        startMonthPicker.setValue(Calendar.getInstance().get(Calendar.MONTH) + 1); // Tháng hiện tại
+        startMonthPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        startYearPicker.setMinValue(1900); // Năm bắt đầu
+        startYearPicker.setMaxValue(2100); // Năm kết thúc
+        startYearPicker.setValue(Calendar.getInstance().get(Calendar.YEAR)); // Năm hiện tại
+        startYearPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        // Thiết lập giá trị cho NumberPickers
+        endDayPicker.setMinValue(1);
+        endDayPicker.setMaxValue(31);
+        endDayPicker.setValue(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)); // Ngày hiện tại
+        endDayPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        endMonthPicker.setMinValue(1);
+        endMonthPicker.setMaxValue(12);
+        endMonthPicker.setValue(Calendar.getInstance().get(Calendar.MONTH) + 1); // Tháng hiện tại
+        endMonthPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        endYearPicker.setMinValue(1900); // Năm bắt đầu
+        endYearPicker.setMaxValue(2100); // Năm kết thúc
+        endYearPicker.setValue(Calendar.getInstance().get(Calendar.YEAR)); // Năm hiện tại
+        endYearPicker.setWrapSelectorWheel(true); // Cho phép lặp lại giá trị
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(dialogView);
+        builder.setTitle("Chọn tháng và năm");
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int selectedStartDay = startDayPicker.getValue();
+                int selectedStartMonth = startMonthPicker.getValue();
+                int selectedStartYear = startYearPicker.getValue();
+
+                int selectedEndDay = endDayPicker.getValue();
+                int selectedEndMonth = endMonthPicker.getValue();
+                int selectedEndYear = endYearPicker.getValue();
+
+                dayMonthYearr.setText(String.format("%02d/%02d/%d đến %02d/%02d/%d ", selectedStartDay,selectedStartMonth , selectedStartYear ,selectedEndDay,selectedEndMonth,selectedEndYear));
+                dayMonthYearr2.setText(String.format("%02d/%02d/%d đến %02d/%02d/%d ", selectedStartDay,selectedStartMonth, selectedStartYear ,selectedEndDay,selectedEndMonth,selectedEndYear));
+                // Gọi phương thức để truy vấn dữ liệu dựa trên ngày được chọn
+                LoadDataHoaDon(selectedStartYear, selectedStartMonth, selectedStartDay, selectedEndYear, selectedEndMonth, selectedEndDay);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void showDayPickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -150,7 +227,7 @@ public class FragmentAdminHoaDon extends Fragment {
                         // Không cần thực hiện gì ở đây vì bạn chỉ muốn chọn tháng và năm
                         dayMonthYearr.setText(String.format("%02d/%02d/%d", dayOfMonth,month + 1, year));
                         dayMonthYearr2.setText(String.format("%02d/%02d/%d", dayOfMonth,month + 1, year));
-                        LoadDataHoaDon(year,  month + 1, dayOfMonth);
+                        LoadDataHoaDon(year,  month + 1, dayOfMonth,0,0,0);
 
                     }
                 }, year, month, 1); // 1: ngày mặc định sẽ hiển thị, có thể là bất kỳ ngày nào vì nó sẽ bị ẩn đi
@@ -169,7 +246,7 @@ public class FragmentAdminHoaDon extends Fragment {
         recyclerView_bill.addItemDecoration(dividerItemDecoration);
     }
 
-    public void LoadDataHoaDon(int year, int month, int dayOfMonth) {
+    public void LoadDataHoaDon(int startYear, int startMonth, int startDayOfMonth,int endYear, int endMonth, int endDayOfMonth) {
         Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Bills_Admin.class);
 
         Call<String> call = billAdmin.getBills_Admin(id_shop);
@@ -215,18 +292,34 @@ public class FragmentAdminHoaDon extends Fragment {
                             int billDay = Integer.parseInt(Day);
 
                             if(id_shop.equals(shop_id )){
-                                if(year != 0 && month != 0 && dayOfMonth != 0){
+                                // Kiểm tra xem hóa đơn có nằm trong khoảng thời gian từ 12/3/2024 đến 12/7/2024 không
 
-                                    if (billYear == year && billMonth == month && billDay == dayOfMonth){
+                                if(startYear != 0 && startMonth != 0 && startDayOfMonth != 0 && endYear == 0 && endMonth == 0 && endDayOfMonth == 0){
+
+                                    if (billYear == startYear && billMonth == startMonth && billDay == startDayOfMonth ){
+                                        totalAmount += total_price;
+                                        Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
+                                        Bill_AdminArayList.add(billsAdmin);
+
+                                    }
+
+                                } else{
+                                    if(startYear != 0 && startMonth != 0 && startDayOfMonth != 0 && endYear != 0 && endMonth != 0 && endDayOfMonth != 0){
+                                        // Kiểm tra xem hóa đơn có nằm trong khoảng thời gian từ 12/3/2024 đến 12/7/2024 không
+                                        if ((billYear > startYear || (billYear == startYear && billMonth > startMonth) || (billYear == startYear && billMonth == startMonth && billDay >= startDayOfMonth)) &&
+                                                (billYear < endYear || (billYear == endYear && billMonth < endMonth) || (billYear == endYear && billMonth == endMonth && billDay <= endDayOfMonth))) {
+                                            totalAmount += total_price;
+                                            Bill_Admin billsAdmin = new Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user, shop_id);
+                                            Bill_AdminArayList.add(billsAdmin);
+                                        }
+
+                                    } else {
                                         totalAmount += total_price;
                                         Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
                                         Bill_AdminArayList.add(billsAdmin);
                                     }
-                                }
-                                else{
-                                    totalAmount += total_price;
-                                    Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
-                                    Bill_AdminArayList.add(billsAdmin);
+
+
                                 }
 
                             }
