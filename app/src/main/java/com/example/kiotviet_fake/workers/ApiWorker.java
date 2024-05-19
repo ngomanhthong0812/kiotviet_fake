@@ -50,7 +50,7 @@ public class ApiWorker extends Worker {
         String isShopId = sharedPreferences.getString("shop_id", "");
 
         //select data from api
-        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(ProductSelectService.class);
+        ProductSelectService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(ProductSelectService.class);
         Call<String> call = apiService.getProducts(isShopId);
         call.enqueue(new Callback<String>() {
             @Override
@@ -99,7 +99,7 @@ public class ApiWorker extends Worker {
 
         sessionCategories = new SessionCategories(getApplicationContext());
 
-        SelectCategoriesService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(SelectCategoriesService.class);
+        SelectCategoriesService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(SelectCategoriesService.class);
         Call<String> call = apiService.getCategories(isShopId);
 
         call.enqueue(new Callback<String>() {

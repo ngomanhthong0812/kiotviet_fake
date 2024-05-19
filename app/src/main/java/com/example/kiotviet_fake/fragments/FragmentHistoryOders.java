@@ -2,6 +2,7 @@ package com.example.kiotviet_fake.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class FragmentHistoryOders extends Fragment {
     }
 
     public void fetchData(String selectedDate, String isShopId) {
-        HistoryService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(HistoryService.class);
+        HistoryService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(HistoryService.class);
         Call<String> call = apiService.getHistory(isShopId);
 
         call.enqueue(new Callback<String>() {
@@ -65,6 +66,7 @@ public class FragmentHistoryOders extends Fragment {
                         historyList.clear(); // Xóa dữ liệu cũ trước khi cập nhật dữ liệu mới
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            Log.d("TAG", "onResponse: "+jsonObject.getInt("id"));
                             int id = jsonObject.getInt("id");
                             String dateTime = jsonObject.getString("dateTime");
                             String dateTime_end = jsonObject.getString("dateTime_end");
@@ -89,6 +91,7 @@ public class FragmentHistoryOders extends Fragment {
                         historyAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Log.d("TAG", "onResponse: erros "+e.getMessage());
                     }
                 } else {
 

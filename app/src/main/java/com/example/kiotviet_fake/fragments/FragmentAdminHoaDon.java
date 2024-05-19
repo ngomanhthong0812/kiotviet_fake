@@ -189,7 +189,7 @@ public class FragmentAdminHoaDon extends Fragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
-        builder.setTitle("Chọn tháng và năm");
+        builder.setTitle("Chọn ngày,tháng và năm");
 
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -247,7 +247,8 @@ public class FragmentAdminHoaDon extends Fragment {
     }
 
     public void LoadDataHoaDon(int startYear, int startMonth, int startDayOfMonth,int endYear, int endMonth, int endDayOfMonth) {
-        Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Bills_Admin.class);
+        Bills_Admin billAdmin =  RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Bills_Admin.class);
+
 
         Call<String> call = billAdmin.getBills_Admin(id_shop);
 

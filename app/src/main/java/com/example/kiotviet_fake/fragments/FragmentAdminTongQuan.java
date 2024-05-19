@@ -121,7 +121,7 @@ public class FragmentAdminTongQuan extends Fragment {
         GetRevenueCaNam();
     }
     private void GetRevenueCaNam() {
-        GetRevenue getRevenue = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(GetRevenue.class);
+        GetRevenue getRevenue = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(GetRevenue.class);
 
         Call<String> call = getRevenue.GetRevenue_Admin(id_shop);
         call.enqueue(new Callback<String>() {
@@ -203,7 +203,7 @@ public class FragmentAdminTongQuan extends Fragment {
 
     private void GetRevenue(int selectedMonth, int selectedYear) {
 
-        GetRevenue getRevenue = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(GetRevenue.class);
+        GetRevenue getRevenue = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(GetRevenue.class);
 
         Call<String> call = getRevenue.GetRevenue_Admin(id_shop);
         call.enqueue(new Callback<String>() {
@@ -251,7 +251,7 @@ public class FragmentAdminTongQuan extends Fragment {
     }
 
     private void CountQuantityAndTotalBills(int month , int year) {
-        Bills_Admin billAdmin = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(Bills_Admin.class);
+        Bills_Admin billAdmin = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Bills_Admin.class);
 
         Call<String> call = billAdmin.getBills_Admin(id_shop);
         call.enqueue(new Callback<String>() {

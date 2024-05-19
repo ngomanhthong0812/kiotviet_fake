@@ -57,7 +57,7 @@ public class FragmentTongHop extends Fragment {
         countBills = 0;
 
         //select data from api
-        BillsSelectService apiService = RetrofitClient.getRetrofitInstance("11168851", "60-dayfreetrial").create(BillsSelectService.class);
+        BillsSelectService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(BillsSelectService.class);
         Call<String> call = apiService.getBills(isShopId);
         call.enqueue(new Callback<String>() {
             @Override
