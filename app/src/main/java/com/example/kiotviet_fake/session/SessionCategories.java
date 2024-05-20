@@ -3,14 +3,13 @@ package com.example.kiotviet_fake.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.kiotviet_fake.models.Category;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SessionCategories {
 
@@ -27,42 +26,31 @@ public class SessionCategories {
         gson = new Gson();
     }
 
-    // Thêm tên loại vào danh sách
-    public void addCategory(String category) {
-        Set<String> categories = getCategoriesSet();
+    // Thêm một đối tượng Category vào danh sách
+    public void addCategory(Category category) {
+        List<Category> categories = getCategories();
         categories.add(category);
         saveCategories(categories);
     }
 
-    // Xóa tất cả các tên loại
+    // Xóa tất cả các danh mục
     public void clearCategories() {
         editor.remove(KEY_CATEGORIES).apply();
     }
 
-    // Lấy danh sách tất cả các tên loại
-    public List<String> getCategories() {
+    // Lấy danh sách tất cả các danh mục
+    public List<Category> getCategories() {
         String categoriesJson = sharedPreferences.getString(KEY_CATEGORIES, null);
         if (categoriesJson != null) {
-            Type type = new TypeToken<List<String>>() {}.getType();
+            Type type = new TypeToken<List<Category>>() {}.getType();
             return gson.fromJson(categoriesJson, type);
         } else {
             return new ArrayList<>();
         }
     }
 
-    // Lấy danh sách tất cả các tên loại dưới dạng Set (sử dụng cho việc thêm mới)
-    private Set<String> getCategoriesSet() {
-        String categoriesJson = sharedPreferences.getString(KEY_CATEGORIES, null);
-        if (categoriesJson != null) {
-            Type type = new TypeToken<Set<String>>() {}.getType();
-            return gson.fromJson(categoriesJson, type);
-        } else {
-            return new HashSet<>();
-        }
-    }
-
-    // Lưu danh sách tên loại
-    private void saveCategories(Set<String> categories) {
+    // Lưu danh sách danh mục
+    private void saveCategories(List<Category> categories) {
         String categoriesJson = gson.toJson(categories);
         editor.putString(KEY_CATEGORIES, categoriesJson).apply();
     }

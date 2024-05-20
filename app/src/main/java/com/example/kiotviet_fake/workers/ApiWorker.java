@@ -11,6 +11,7 @@ import androidx.work.WorkerParameters;
 import com.example.kiotviet_fake.database.RetrofitClient;
 import com.example.kiotviet_fake.database.select.ProductSelectService;
 import com.example.kiotviet_fake.database.select.SelectCategoriesService;
+import com.example.kiotviet_fake.models.Category;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionCategories;
 import com.example.kiotviet_fake.session.SessionProducts;
@@ -71,10 +72,11 @@ public class ApiWorker extends Worker {
                             int quantity = jsonObject.getInt("quantity");
                             String categoriesName = jsonObject.getString("categories_name");
                             String product_code = jsonObject.getString("product_code");
+                            int categories_id = jsonObject.getInt("categories_id");
 
                             // sửa đổi thêm điều kiện userid và idcategories = user_id split(_) userId[1]
                             String idProductItem = id + "Tất Cả";
-                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0, categoriesName, product_code);
+                            Product product = new Product(id, idProductItem, name, formattedPrice, quantity, 1, 0, null, 0, categoriesName, product_code,categories_id);
                             sessionProducts.addProduct(product);
                         }
 
@@ -115,12 +117,13 @@ public class ApiWorker extends Worker {
                         editor.clear();
 
                         sessionCategories.clearCategories();
-                        sessionCategories.addCategory("Tất cả");
+                        sessionCategories.addCategory(new Category(-1, "Tất cả"));
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            int id = jsonObject.getInt("id");
                             String name = jsonObject.getString("name");
                             editor.putString("nameCategories_" + i + "", name);
-                            sessionCategories.addCategory(name);
+                            sessionCategories.addCategory(new Category(id,name));
                         }
                         editor.apply();
                     } catch (JSONException e) {

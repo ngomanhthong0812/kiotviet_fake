@@ -20,6 +20,7 @@ import com.example.kiotviet_fake.fragments.FragmentCategoriesSua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesSuaChua;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesTatCa;
 import com.example.kiotviet_fake.fragments.FragmentCategoriesThuocLa;
+import com.example.kiotviet_fake.models.Category;
 import com.example.kiotviet_fake.session.SessionCategories;
 
 import java.util.ArrayList;
@@ -80,9 +81,9 @@ public class OrderProductAdapter extends FragmentStateAdapter {
 
     private void loadCategoryTitles() {
         sessionCategories = new SessionCategories(context);
-        List<String> categories = sessionCategories.getCategories();
-        for (String category : categories) {
-            categoryTitles.add(category);
+        List<Category> categories = sessionCategories.getCategories(); // Thay vì List<String>
+        for (Category category : categories) { // Thay vì String category : categories
+            categoryTitles.add(category.getName()); // Thêm tên của danh mục
         }
         notifyDataSetChanged();
     }

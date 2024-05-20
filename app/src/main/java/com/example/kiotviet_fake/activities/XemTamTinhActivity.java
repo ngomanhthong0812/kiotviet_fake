@@ -118,7 +118,7 @@ public class XemTamTinhActivity extends AppCompatActivity {
         ArrayList<Bill> bills = sessionManager.getBills();
         ArrayList<Product> arrayList = new ArrayList<>();
         for (Bill bill : bills) {
-            arrayList.add(new Product(bill.getIdOrderItem(), "", bill.getNameProduct(), String.valueOf(bill.getPriceProduct()), 200, bill.getQuantity(), bill.getTableId(), bill.getNameTable(), bill.getProductId(),"",""));
+            arrayList.add(new Product(bill.getIdOrderItem(), "", bill.getNameProduct(), String.valueOf(bill.getPriceProduct()), 200, bill.getQuantity(), bill.getTableId(), bill.getNameTable(), bill.getProductId(),"","",0));
         }
         RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
