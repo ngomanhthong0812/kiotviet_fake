@@ -1,13 +1,20 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Looper;
+import android.os.Messenger;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -130,8 +137,14 @@ public class Adapter_Admin_Tables extends RecyclerView.Adapter<Adapter_Admin_Tab
                 // Handle delete action
                 // For example:
                 // deleteTable(tableAdmin);
-                DeleteTable(tableAdmin.getId_table());
-                alertDialog.dismiss();
+                if(tableAdmin.getStatus() == 0){
+                    DeleteTable(tableAdmin.getId_table());
+                    alertDialog.dismiss();
+                }else {
+                    Toast.makeText(context, "Vui lòng thanh toán trước khi xóa", Toast.LENGTH_SHORT).show();
+                    MessengerDialog();
+                }
+
             }
         });
 
@@ -150,6 +163,19 @@ public class Adapter_Admin_Tables extends RecyclerView.Adapter<Adapter_Admin_Tab
         });
 
         alertDialog.show();
+    }
+
+    private void MessengerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Thông báo");
+        builder.setMessage("Vui lòng thánh toán bàn trước khi xóa")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Đóng dialog
+                    }
+                })
+                .show();
     }
 
     private void DeleteTable(String idTable) {
