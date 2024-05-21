@@ -336,7 +336,7 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
     }
 
     @Override
-    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
+    public void notification_arrIdDeleteSize(int arrIdDelete) {
 
     }
 

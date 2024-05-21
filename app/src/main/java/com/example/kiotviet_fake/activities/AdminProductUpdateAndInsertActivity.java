@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.database.insertProduct.ProductInsert;
+import com.example.kiotviet_fake.database.insertProduct.ProductInsertAPIClient;
 import com.example.kiotviet_fake.database.updateCategory.UpdateCategoryByIdAPI;
 import com.example.kiotviet_fake.database.updateCategory.UpdateCategoryByIdService;
 import com.example.kiotviet_fake.database.updateProduct.UpdateProductAPI;
@@ -81,7 +83,7 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
                         updateProduct("11177575", "60-dayfreetrial");
                         break;
                     case "add":
-                        Toast.makeText(AdminProductUpdateAndInsertActivity.this, "add", Toast.LENGTH_LONG).show();
+                        insertProduct("11177575", "60-dayfreetrial");
                         break;
                     default:
                         Toast.makeText(AdminProductUpdateAndInsertActivity.this, "not key", Toast.LENGTH_LONG).show();
@@ -98,6 +100,8 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
         txtLoaiHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                name = txtNameProduct.getText().toString();
+                price = txtGiaBan.getText().toString();
                 Intent intent = new Intent(AdminProductUpdateAndInsertActivity.this, ChangerCategoriesActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("product_code", product_code);
@@ -143,13 +147,20 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
 
         UpdateProductService service = UpdateProductAPI.createService(username, password);
         Call<String> call = service.updateProduct(id,txtNameProduct.getText().toString(),txtPrice,200,categories_id);
-        Log.d("TAG", "updateProduct: "+id+txtNameProduct.getText().toString()+txtGiaBan.getText().toString()+categories_id);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
+                    Intent intent = new Intent(AdminProductUpdateAndInsertActivity.this, AdminProductDetailActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("product_code", product_code);
+                    intent.putExtra("name", txtNameProduct.getText().toString());
+                    intent.putExtra("categories_name", categories_name);
+                    intent.putExtra("categories_id", categories_id);
+                    intent.putExtra("price", txtGiaBan.getText().toString());
+                    closeAdminActivity();
                     finish();
-                    Log.d("TAG", "onResponse: thanh cong");
+                    startActivity(intent);
                 } else {
                     // Xử lý phản hồi không thành công
                 }
@@ -160,6 +171,39 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
                 // Xử lý lỗi
             }
         });
+    }
+
+    private void insertProduct(String username, String password) {
+        String txtPrice = txtGiaBan.getText().toString();
+        txtPrice = txtPrice.replace(".", "");
+
+        ProductInsert service = ProductInsertAPIClient.createService(username, password);
+        Call<String> call = service.insertProduct(txtNameProduct.getText().toString(),txtPrice,200,categories_id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    runInitViewFragmentHangHoa();
+                    finish();
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+    }
+
+    private void closeAdminActivity() {
+        Intent intent = new Intent("CLOSE_ADMIN_PRODUCT_DETAIL_ACTIVITY");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+    private void runInitViewFragmentHangHoa() {
+        Intent intent = new Intent("RUN_INIT_VIEW");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void addControl() {

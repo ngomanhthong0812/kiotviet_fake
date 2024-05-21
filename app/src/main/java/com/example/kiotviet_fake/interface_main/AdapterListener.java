@@ -11,5 +11,5 @@ public interface AdapterListener {
     void update_totalQuantity_totalPrice(int quantity, float priceTotal);
 
     void notification_insertOrder(int idTable, String nameTable);
-    void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete);
+    void notification_arrIdDeleteSize(int arrIdDelete);
 }

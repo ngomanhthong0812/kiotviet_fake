@@ -235,7 +235,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
         final int[] completedCalls = {0};
         for (TachDon tachDon : tachDons) {
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
-            Call<String> call = service.insertBillItems(tachDon.getNewQuantity(), tachDon.getTotalPrice(), tachDon.getProductId(), newBillId);
+            Call<String> call = service.insertBillItems(tachDon.getNewQuantity(), tachDon.getTotalPrice(), tachDon.getProductId(),tachDon.getNameProduct(), newBillId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -438,7 +438,7 @@ public class TachDonActivity extends AppCompatActivity implements AdapterListene
     }
 
     @Override
-    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
+    public void notification_arrIdDeleteSize(int arrIdDelete) {
 
     }
 

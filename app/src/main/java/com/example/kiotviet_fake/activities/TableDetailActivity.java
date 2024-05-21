@@ -280,9 +280,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String product_code = jsonObject.getString("product_code");
-                            int categories_id = jsonObject.getInt("categories_id");
 
-                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code,categories_id));
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code,0));
                             quantityTotal += quantity;
                             priceTotal += totalPrice;
                             itemSize++;
@@ -469,7 +468,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         final int[] completedCalls = {0};
         for (Bill bill : bills) {
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
-            Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(), newBillId);
+            Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(),bill.getNameProduct(), newBillId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -547,7 +546,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     }
 
     @Override
-    public void notification_arrIdDeleteSize(ArrayList<Integer> arrIdDelete) {
+    public void notification_arrIdDeleteSize(int arrIdDelete) {
 
     }
 

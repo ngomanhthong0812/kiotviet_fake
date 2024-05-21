@@ -65,7 +65,7 @@ public class DetailBillActivity extends AppCompatActivity {
     private void fetchData() {
 
         Detail_item apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Detail_item.class);
-        Call<String> call = apiService.getDetail_item();
+        Call<String> call = apiService.getDetail_item(id_bill);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -81,10 +81,8 @@ public class DetailBillActivity extends AppCompatActivity {
                             int product_id = jsonObject.getInt("product_id");
                             int bill_id = jsonObject.getInt("bill_id");
                             String product_name = jsonObject.getString("product_name");
+                            arrayList.add(new DetailBill(bill_item_id, quantity, total_price, product_id, bill_id, product_name));
 
-                            if (bill_id == id_bill) {
-                                arrayList.add(new DetailBill(bill_item_id, quantity, total_price, product_id, bill_id, product_name));
-                            }
                         }
                         RecyclerView recyclerView = findViewById(R.id.ListItemBill); // Sử dụng getView() để lấy view được inflate từ layout
                         recyclerView.setHasFixedSize(true);
