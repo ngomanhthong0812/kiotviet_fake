@@ -125,7 +125,7 @@
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:id="@+id/ln.traHang"
+                    android:id="@+id/ln.phongBan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -137,14 +137,14 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/outline_send_to_mobile_24" />
+                        android:src="@drawable/baseline_backup_table_24" />
 
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:text="Trả hàng"
+                        android:text="Phòng bàn"
                         android:textColor="@color/black"
                         android:textSize="17dp" />
                 </LinearLayout>

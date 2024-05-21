@@ -19,12 +19,13 @@ import com.example.kiotviet_fake.R;
 import com.example.kiotviet_fake.activities.EndOfDayReportActivity;
 import com.example.kiotviet_fake.activities.LoginActivity;
 import com.example.kiotviet_fake.activities.MainActivity;
+import com.example.kiotviet_fake.activities.PhongBanActivity;
 import com.example.kiotviet_fake.session.SessionCategories;
 import com.example.kiotviet_fake.session.SessionProducts;
 
 public class FragmentAdminNhieuHon extends Fragment {
     TextView txtNameAdmin, txtAvatar;
-    LinearLayout btnDangXuat,btnBanHang,btnBaoCao;
+    LinearLayout btnDangXuat,btnBanHang,btnBaoCao,btnPhongBan;
     private View view;
 
     String shopName;
@@ -44,6 +45,7 @@ public class FragmentAdminNhieuHon extends Fragment {
         btnDangXuat = view.findViewById(R.id.btnDangXuat);
         btnBanHang = view.findViewById(R.id.ln_banHang);
         btnBaoCao = view.findViewById(R.id.ln_baoCao);
+        btnPhongBan = view.findViewById(R.id.ln_phongBan);
 
         return view;
     }
@@ -104,6 +106,13 @@ public class FragmentAdminNhieuHon extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), EndOfDayReportActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnPhongBan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), PhongBanActivity.class);
                 startActivity(intent);
             }
         });

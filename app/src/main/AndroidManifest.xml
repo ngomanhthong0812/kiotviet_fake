@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+<<<<<<< HEAD
+            android:name=".activities.PhongBanActivity"
+=======
             android:name=".activities.AddCategoriesActivity"
             android:exported="true">
             <intent-filter>
@@ -26,6 +29,7 @@
         </activity>
         <activity
             android:name=".activities.ChangerCategoriesActivity"
+>>>>>>> 0614df44061ddb9d09f3ca28f11e84ea687444e8
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
