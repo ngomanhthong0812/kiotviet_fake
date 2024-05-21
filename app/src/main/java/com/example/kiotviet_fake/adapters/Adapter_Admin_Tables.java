@@ -130,8 +130,13 @@ public class Adapter_Admin_Tables extends RecyclerView.Adapter<Adapter_Admin_Tab
                 // Handle delete action
                 // For example:
                 // deleteTable(tableAdmin);
-                DeleteTable(tableAdmin.getId_table());
-                alertDialog.dismiss();
+                if(tableAdmin.getStatus() == 0){
+                    DeleteTable(tableAdmin.getId_table());
+                    alertDialog.dismiss();
+                }else {
+                    Toast.makeText(context, "Vui lòng thanh toán trước khi xóa", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

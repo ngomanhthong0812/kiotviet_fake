@@ -1,6 +1,7 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.activities.DetailBillActivity;
 import com.example.kiotviet_fake.models.Bill_Admin;
 import com.example.kiotviet_fake.models.DetailBill;
 
@@ -41,6 +43,19 @@ public class BillAdminAdapter extends RecyclerView.Adapter<BillAdminAdapter.View
         holder.textViewName.setText(String.valueOf(billAdmin.getName_user()));
         holder.textViewTotalPrice.setText(formattedTotal);
         holder.textViewDayTime.setText(billAdmin.getDateTimeEnd());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Sử dụng context từ Adapter
+                Intent intent = new Intent(context, DetailBillActivity.class);
+                // Truyền dữ liệu nếu cần thiết
+                intent.putExtra("bill_id", billAdmin.id_bill);
+                System.out.println("bill_id  : "+ billAdmin.id_bill);
+                // Thực hiện chuyển Activity
+                context.startActivity(intent);
+            }
+        });
 
     }
 
