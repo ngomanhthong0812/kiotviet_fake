@@ -130,15 +130,12 @@ public class FragmentAdminHoaDon extends Fragment {
                         break;
                     case 2:
                         dayMonthYearr.setText("Xem tất cả");
-                        dayMonthYearr2.setText("Xem tất cả");
+
                         LoadDataHoaDon(0,0,0,0,0,0);
 
                         break;
                 }
             }
-
-
-
 
         });
 
@@ -191,7 +188,6 @@ public class FragmentAdminHoaDon extends Fragment {
         builder.setView(dialogView);
         builder.setTitle("Chọn ngày,tháng và năm");
 
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -203,16 +199,37 @@ public class FragmentAdminHoaDon extends Fragment {
                 int selectedEndMonth = endMonthPicker.getValue();
                 int selectedEndYear = endYearPicker.getValue();
 
-                dayMonthYearr.setText(String.format("%02d/%02d/%d đến %02d/%02d/%d ", selectedStartDay,selectedStartMonth , selectedStartYear ,selectedEndDay,selectedEndMonth,selectedEndYear));
-                dayMonthYearr2.setText(String.format("%02d/%02d/%d đến %02d/%02d/%d ", selectedStartDay,selectedStartMonth, selectedStartYear ,selectedEndDay,selectedEndMonth,selectedEndYear));
-                // Gọi phương thức để truy vấn dữ liệu dựa trên ngày được chọn
-                LoadDataHoaDon(selectedStartYear, selectedStartMonth, selectedStartDay, selectedEndYear, selectedEndMonth, selectedEndDay);
+                if (isDateValid(selectedStartYear, selectedStartMonth, selectedStartDay, selectedEndYear, selectedEndMonth, selectedEndDay)) {
+                    dayMonthYearr.setText(String.format("%02d/%02d/%d đến %02d/%02d/%d ", selectedStartDay, selectedStartMonth, selectedStartYear, selectedEndDay, selectedEndMonth, selectedEndYear));
+
+                    // Gọi phương thức để truy vấn dữ liệu dựa trên ngày được chọn
+                    LoadDataHoaDon(selectedStartYear, selectedStartMonth, selectedStartDay, selectedEndYear, selectedEndMonth, selectedEndDay);
+                } else {
+                    // Hiển thị thông báo cho người dùng nếu ngày bắt đầu lớn hơn ngày kết thúc
+                    Toast.makeText(requireContext(), "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         builder.setNegativeButton("Cancel", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private boolean isDateValid(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
+        // Kiểm tra năm bắt đầu có nhỏ hơn hoặc bằng năm kết thúc
+        if (startYear > endYear) {
+            return false;
+        } else if (startYear == endYear) {
+            // Nếu năm bắt đầu bằng năm kết thúc, kiểm tra tháng bắt đầu
+            if (startMonth > endMonth) {
+                return false;
+            } else if (startMonth == endMonth) {
+                // Nếu tháng bắt đầu bằng tháng kết thúc, kiểm tra ngày bắt đầu
+                return startDay <= endDay;
+            }
+        }
+        return true;
     }
 
     private void showDayPickerDialog() {
@@ -226,7 +243,7 @@ public class FragmentAdminHoaDon extends Fragment {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         // Không cần thực hiện gì ở đây vì bạn chỉ muốn chọn tháng và năm
                         dayMonthYearr.setText(String.format("%02d/%02d/%d", dayOfMonth,month + 1, year));
-                        dayMonthYearr2.setText(String.format("%02d/%02d/%d", dayOfMonth,month + 1, year));
+
                         LoadDataHoaDon(year,  month + 1, dayOfMonth,0,0,0);
 
                     }
@@ -262,6 +279,7 @@ public class FragmentAdminHoaDon extends Fragment {
                         JSONArray jsonArray = new JSONArray(response.body());
                         Bill_AdminArayList.clear();
                         double totalAmount = 0;
+                        int countBill = 0;
                         // Định dạng của chuỗi datetime
                         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         SimpleDateFormat outputYearFormat = new SimpleDateFormat("yyyy");
@@ -299,9 +317,9 @@ public class FragmentAdminHoaDon extends Fragment {
 
                                     if (billYear == startYear && billMonth == startMonth && billDay == startDayOfMonth ){
                                         totalAmount += total_price;
+                                        countBill++;
                                         Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
                                         Bill_AdminArayList.add(billsAdmin);
-
                                     }
 
                                 } else{
@@ -310,12 +328,15 @@ public class FragmentAdminHoaDon extends Fragment {
                                         if ((billYear > startYear || (billYear == startYear && billMonth > startMonth) || (billYear == startYear && billMonth == startMonth && billDay >= startDayOfMonth)) &&
                                                 (billYear < endYear || (billYear == endYear && billMonth < endMonth) || (billYear == endYear && billMonth == endMonth && billDay <= endDayOfMonth))) {
                                             totalAmount += total_price;
+                                            countBill++;
                                             Bill_Admin billsAdmin = new Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user, shop_id);
                                             Bill_AdminArayList.add(billsAdmin);
                                         }
 
                                     } else {
                                         totalAmount += total_price;
+                                        countBill++;
+
                                         Bill_Admin billsAdmin = new  Bill_Admin(id_bill, dateTime, dateTime_end, code, table_id, user_id, total_price, name_user,shop_id);
                                         Bill_AdminArayList.add(billsAdmin);
                                     }
@@ -327,6 +348,7 @@ public class FragmentAdminHoaDon extends Fragment {
 
 
                         }
+                        dayMonthYearr2.setText( countBill +" hóa đơn");
                         String formattedTotalAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(totalAmount);
                         totalAmountTextView.setText(formattedTotalAmount + " VND");
                         // Cập nhật dữ liệu mới cho adapter
