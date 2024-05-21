@@ -150,7 +150,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ln.nhapHang"
+                    android:id="@+id/ln.loaHang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -163,14 +163,14 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/outline_file_download_24" />
+                        android:src="@drawable/outline_category_24" />
 
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:text="Nhập hàng"
+                        android:text="Loại hàng"
                         android:textColor="@color/black"
                         android:textSize="17dp" />
                 </LinearLayout>
