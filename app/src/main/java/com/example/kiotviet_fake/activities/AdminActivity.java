@@ -24,9 +24,9 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        // Chạy api khi AdminActivity được truy cập
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ApiWorker.class).build();
-        WorkManager.getInstance(this).enqueue(request);
+//        // Chạy api khi AdminActivity được truy cập
+//        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ApiWorker.class).build();
+//        WorkManager.getInstance(this).enqueue(request);
 
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);

@@ -12,6 +12,7 @@ public interface BillsInsertItemsService {
             @Field("quantity") int quantity,
             @Field("total_price") float total_price,
             @Field("product_id") int product_id,
+            @Field("product_name") String product_name,
             @Field("bill_id") int bill_id
     );
 }

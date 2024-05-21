@@ -7,15 +7,17 @@ public class TachDon {
     private float totalPrice;
     private int productId;
     private float priceProduct;
+    private String nameProduct;
     private int idOrderItem;
 
-    public TachDon(int tableId, int newQuantity, int quantity, float totalPrice, int productId, float priceProduct, int idOrderItem) {
+    public TachDon(int tableId, int newQuantity, int quantity, float totalPrice, int productId, float priceProduct, String nameProduct, int idOrderItem) {
         this.tableId = tableId;
         this.newQuantity = newQuantity;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.productId = productId;
         this.priceProduct = priceProduct;
+        this.nameProduct = nameProduct;
         this.idOrderItem = idOrderItem;
     }
 
@@ -67,6 +69,14 @@ public class TachDon {
         this.priceProduct = priceProduct;
     }
 
+    public String getNameProduct() {
+        return nameProduct;
+    }
+
+    public void setNameProduct(String nameProduct) {
+        this.nameProduct = nameProduct;
+    }
+
     public int getIdOrderItem() {
         return idOrderItem;
     }
@@ -84,6 +94,7 @@ public class TachDon {
                 ", totalPrice=" + totalPrice +
                 ", productId=" + productId +
                 ", priceProduct=" + priceProduct +
+                ", nameProduct=" + nameProduct +
                 ", idOrderItem=" + idOrderItem +
                 '}';
     }

@@ -1,9 +1,14 @@
 package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +23,14 @@ public class AdminProductDetailActivity extends AppCompatActivity {
     int id,categories_id;
     String name, categories_name, price, product_code;
 
+    // tranh quay lại activity củ
+    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +41,23 @@ public class AdminProductDetailActivity extends AppCompatActivity {
         updateUI();
         btnClick();
 
+        // tranh quay lại activity củ
+        // Đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(closeReceiver, new IntentFilter("CLOSE_ADMIN_PRODUCT_DETAIL_ACTIVITY"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Hủy đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(closeReceiver);
+        super.onDestroy();
     }
 
     private void btnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runInitViewFragmentHangHoa();
                 finish();
             }
         });
@@ -60,6 +84,11 @@ public class AdminProductDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void runInitViewFragmentHangHoa() {
+        Intent intent = new Intent("RUN_INIT_VIEW");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
     private void updateUI() {
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
@@ -69,6 +98,7 @@ public class AdminProductDetailActivity extends AppCompatActivity {
         categories_id = intent.getIntExtra("categories_id",0);
         price = intent.getStringExtra("price");
 
+        Log.d("TAG", "updateUI: "+name);
         txtMaHang.setText(product_code);
         txtNameProduct.setText(name);
         txtLoaiHang.setText(categories_name);

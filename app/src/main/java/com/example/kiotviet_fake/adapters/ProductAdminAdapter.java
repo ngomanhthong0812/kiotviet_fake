@@ -1,14 +1,19 @@
 package com.example.kiotviet_fake.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -25,13 +30,22 @@ import com.example.kiotviet_fake.activities.AdminProductDetailActivity;
 import com.example.kiotviet_fake.activities.ProductDetailActivity;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderAPI;
 import com.example.kiotviet_fake.database.deleteItems.DeleteItemOfOrderService;
+import com.example.kiotviet_fake.database.deleteProduct.ProductDeleteApiClient;
+import com.example.kiotviet_fake.database.deleteProduct.ProductDeleteService;
+import com.example.kiotviet_fake.database.insertProduct.ProductInsert;
+import com.example.kiotviet_fake.database.insertProduct.ProductInsertAPIClient;
 import com.example.kiotviet_fake.interface_main.AdapterListener;
+import com.example.kiotviet_fake.models.Category;
 import com.example.kiotviet_fake.models.Order;
 import com.example.kiotviet_fake.models.Product;
 import com.example.kiotviet_fake.session.SessionManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,7 +102,7 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
                     arrIdDelete.clear();
                     arrIdDelete.add(productId);
 
-                    adapterListener.notification_arrIdDeleteSize(arrIdDelete);
+                    adapterListener.notification_arrIdDeleteSize(arrIdDelete.size());
                     notifyDataSetChanged();
                 }
                 return true;
@@ -111,8 +125,8 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
             public void onClick(View v) {
                 Intent intent = new Intent(context, AdminProductDetailActivity.class);
                 // thêm max sản pẩm vào product data
-                intent.putExtra("id",productId);
-                intent.putExtra("product_code",product.getProduct_code());
+                intent.putExtra("id", productId);
+                intent.putExtra("product_code", product.getProduct_code());
                 intent.putExtra("name", product.getName());
                 intent.putExtra("categories_name", product.getNameCategories());
                 intent.putExtra("categories_id", product.getIdCategories());
@@ -131,15 +145,76 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
         for (int i = 0; i < selectedItems.size(); i++) {
             selectedItems.set(i, false);
         }
-//        Log.d("TAG", "clearSelection: " + arrIdDelete.toString());
         arrIdDelete.clear();
 
         notifyDataSetChanged();
     }
 
-    public void clearSelection() {
-        // thực hiện xoá các sản phẩm và chạy lại closeSelection() để reset
-        Log.d("TAG", "clearSelection: " + "đã xoá các sản phẩm" + arrIdDelete.toString());
+    public void clearSelection(String username, String password) {
+        for (int id : arrIdDelete) {
+            ProductDeleteService service = ProductDeleteApiClient.createService(username, password);
+            Call<String> call = service.deleteProduct(id);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        adapterListener.notification_arrIdDeleteSize(-1);
+                    } else {
+                        if (response.code() == 400) {
+                            // Xử lý lỗi 400
+                            openNotificationDialog();
+                        } else {
+                            // Xử lý các mã lỗi khác nếu cần
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    // Xử lý lỗi
+                }
+            });
+        }
+    }
+
+    public void openNotificationDialog() {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_notification);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
+        TextView txtTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
+        Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
+
+        txtContent.setText("Bạn không thể xoá sản phẩm khi sản phẩm đang được liên kết với bàn chưa được thanh toán, vui lòng thanh toán các sản phẩm liên quan và thử lại.");
+        txtTitle.setVisibility(View.GONE);
+        btnHuy.setAlpha(0);
+
+        dialog.show();
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnXacNhan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
     }
 
 

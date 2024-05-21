@@ -77,7 +77,7 @@ public class TachDonAdapter extends RecyclerView.Adapter<TachDonAdapter.viewHold
 
                     if (holder.COUNT[position] == 1) {
                         // thêm vào kho lưu trữ tach don
-                        TachDon tachDon = new TachDon(product.getIdTable(), holder.COUNT[position], product.getQuantityOrder(), Float.parseFloat(priceWithoutDots) * holder.COUNT[position], product.getIdProduct(), Integer.parseInt(priceWithoutDots), product.getId());
+                        TachDon tachDon = new TachDon(product.getIdTable(), holder.COUNT[position], product.getQuantityOrder(), Float.parseFloat(priceWithoutDots) * holder.COUNT[position], product.getIdProduct(), Integer.parseInt(priceWithoutDots),product.getName(), product.getId());
                         holder.sessionManager.addTachDon(tachDon);
                     } else {
                         holder.sessionManager.updateQuantityProductTachDon(product.getId(), holder.COUNT[position]);
