@@ -12,8 +12,9 @@ public class Product {
     public int idProduct;
     public String nameCategories;
     public String product_code;
+    public int idCategories;
 
-    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable, int idProduct, String nameCategories, String product_code) {
+    public Product(int id, String idProductItem, String name, String price, int quantity, int quantityOrder, int idTable, String nameTable, int idProduct, String nameCategories, String product_code, int idCategories) {
         this.id = id;
         this.idProductItem = idProductItem;
         this.name = name;
@@ -25,6 +26,7 @@ public class Product {
         this.idProduct = idProduct;
         this.nameCategories = nameCategories;
         this.product_code = product_code;
+        this.idCategories = idCategories;
     }
 
     public int getId() {
@@ -113,5 +115,13 @@ public class Product {
 
     public void setProduct_code(String product_code) {
         this.product_code = product_code;
+    }
+
+    public int getIdCategories() {
+        return idCategories;
+    }
+
+    public void setIdCategories(int idCategories) {
+        this.idCategories = idCategories;
     }
 }

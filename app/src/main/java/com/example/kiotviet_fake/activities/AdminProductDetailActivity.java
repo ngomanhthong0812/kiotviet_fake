@@ -15,7 +15,7 @@ public class AdminProductDetailActivity extends AppCompatActivity {
     TextView txtNameProduct, txtMaHang, txtLoaiHang, txtGiaBan;
     ImageView btnCancel, btnUpdate, btnDelete;
 
-    int id;
+    int id,categories_id;
     String name, categories_name, price, product_code;
 
     @Override
@@ -46,6 +46,7 @@ public class AdminProductDetailActivity extends AppCompatActivity {
                 intent.putExtra("product_code", product_code);
                 intent.putExtra("name", name);
                 intent.putExtra("categories_name", categories_name);
+                intent.putExtra("categories_id", categories_id);
                 intent.putExtra("price", price);
                 intent.putExtra("checkFlat", "update");
                 startActivity(intent);
@@ -65,6 +66,7 @@ public class AdminProductDetailActivity extends AppCompatActivity {
         product_code = intent.getStringExtra("product_code");
         name = intent.getStringExtra("name");
         categories_name = intent.getStringExtra("categories_name");
+        categories_id = intent.getIntExtra("categories_id",0);
         price = intent.getStringExtra("price");
 
         txtMaHang.setText(product_code);

@@ -115,6 +115,7 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
                 intent.putExtra("product_code",product.getProduct_code());
                 intent.putExtra("name", product.getName());
                 intent.putExtra("categories_name", product.getNameCategories());
+                intent.putExtra("categories_id", product.getIdCategories());
                 intent.putExtra("price", product.getPrice());
                 context.startActivity(intent);
             }

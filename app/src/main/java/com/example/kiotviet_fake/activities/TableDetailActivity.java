@@ -280,8 +280,9 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             float totalPrice = Integer.parseInt(jsonObject.getString("totalPrice"));
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String product_code = jsonObject.getString("product_code");
+                            int categories_id = jsonObject.getInt("categories_id");
 
-                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code));
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code,categories_id));
                             quantityTotal += quantity;
                             priceTotal += totalPrice;
                             itemSize++;

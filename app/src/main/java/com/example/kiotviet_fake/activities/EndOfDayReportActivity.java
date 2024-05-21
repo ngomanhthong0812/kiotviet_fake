@@ -19,6 +19,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -139,27 +140,26 @@ public class EndOfDayReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnSetBillCategories.setBackgroundResource(R.drawable.bg_title_detail_btn);
-                openSetBillCategories(0, 800);
+                openSetBillCategories();
             }
         });
     }
 
-    public void openSetBillCategories(int x, int y) {
+    public void openSetBillCategories() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_menu_end_of_day_report);
 
         Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.x = x; // Thiết lập vị trí X của cửa sổ
-        layoutParams.y = y; // Thiết lập vị trí Y của cửa sổ
-        window.setAttributes(layoutParams);
+            // Set gravity to bottom
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            layoutParams.gravity = Gravity.BOTTOM;
+            window.setAttributes(layoutParams);
+        }
 
         dialog.show();
         TextView txtTongHop = (TextView) dialog.findViewById(R.id.tv_tongHop);

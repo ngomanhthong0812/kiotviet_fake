@@ -121,7 +121,7 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
 
         ArrayList<Product> products = new ArrayList<>();
         for (Product listProduct : listProducts) {
-            Product product = new Product(listProduct.getId(), listProduct.getIdProductItem(), listProduct.getName(), listProduct.getPrice(), listProduct.getQuantity(), listProduct.getQuantityOrder(), listProduct.getIdTable(), listProduct.getNameTable(), listProduct.getIdProduct(), listProduct.getNameCategories(), listProduct.getProduct_code());
+            Product product = new Product(listProduct.getId(), listProduct.getIdProductItem(), listProduct.getName(), listProduct.getPrice(), listProduct.getQuantity(), listProduct.getQuantityOrder(), listProduct.getIdTable(), listProduct.getNameTable(), listProduct.getIdProduct(), listProduct.getNameCategories(), listProduct.getProduct_code(),listProduct.getIdCategories());
             products.add(product);
             arrayProducts.add(product);
             countProduct++;

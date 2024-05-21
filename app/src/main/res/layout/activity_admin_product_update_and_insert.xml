@@ -99,12 +99,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:focusable="false"
+                android:hint="Mã hàng tự động"
                 android:inputType="none"
                 android:paddingVertical="16dp"
-                android:hint="Mã hàng tự động"
                 android:textColor="@color/black"
-                android:textSize="15dp"
-                android:textColorHint="#CFCFCF"/>
+                android:textColorHint="#CFCFCF"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -151,7 +151,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawableRight="@drawable/baseline_navigate_next_24"
+                android:focusable="false"
                 android:hint="Nhập loại hàng"
+                android:inputType="none"
                 android:paddingVertical="15dp"
                 android:textColor="@color/black"
                 android:textSize="16dp" />

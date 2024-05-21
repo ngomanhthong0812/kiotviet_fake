@@ -1,9 +1,14 @@
 package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,14 +16,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.database.updateCategory.UpdateCategoryByIdAPI;
+import com.example.kiotviet_fake.database.updateCategory.UpdateCategoryByIdService;
+import com.example.kiotviet_fake.database.updateProduct.UpdateProductAPI;
+import com.example.kiotviet_fake.database.updateProduct.UpdateProductService;
+import com.example.kiotviet_fake.models.Category;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
     EditText txtNameProduct, txtMaHang, txtLoaiHang, txtGiaBan;
     TextView txtTitle, btnLuu;
     ImageView btnCancel, setImage;
 
-    int id;
+    int id, categories_id;
     String name, categories_name, product_code, price, checkFlat;
+
+    // tranh quay lại activity củ
+    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+            Log.d("TAG", "onReceive: mong la dc ");
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +52,19 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
         addControl();
         updateUI();
         btnClick();
+
+        // tranh quay lại activity củ
+        // Đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(closeReceiver, new IntentFilter("CLOSE_ADMIN_ACTIVITY"));
     }
+
+    @Override
+    protected void onDestroy() {
+        // Hủy đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(closeReceiver);
+        super.onDestroy();
+    }
+
 
     private void btnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +78,7 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (checkFlat) {
                     case "update":
-                        Toast.makeText(AdminProductUpdateAndInsertActivity.this, "luu những thay doi lên data by id || maHang", Toast.LENGTH_LONG).show();
+                        updateProduct("11177575", "60-dayfreetrial");
                         break;
                     case "add":
                         Toast.makeText(AdminProductUpdateAndInsertActivity.this, "add", Toast.LENGTH_LONG).show();
@@ -58,6 +94,21 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
                 Toast.makeText(AdminProductUpdateAndInsertActivity.this, "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
             }
         });
+
+        txtLoaiHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminProductUpdateAndInsertActivity.this, ChangerCategoriesActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("product_code", product_code);
+                intent.putExtra("name", name);
+                intent.putExtra("categories_name", categories_name);
+                intent.putExtra("categories_id", categories_id);
+                intent.putExtra("price", price);
+                intent.putExtra("checkFlat", checkFlat);
+                startActivity(intent);
+            }
+        });
     }
 
     private void updateUI() {
@@ -66,6 +117,7 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
         product_code = intent.getStringExtra("product_code");
         name = intent.getStringExtra("name");
         categories_name = intent.getStringExtra("categories_name");
+        categories_id = intent.getIntExtra("categories_id", 0);
         price = intent.getStringExtra("price");
         checkFlat = intent.getStringExtra("checkFlat");
 
@@ -83,6 +135,31 @@ public class AdminProductUpdateAndInsertActivity extends AppCompatActivity {
         txtNameProduct.setText(name);
         txtLoaiHang.setText(categories_name);
         txtGiaBan.setText(price);
+    }
+
+    private void updateProduct(String username, String password) {
+        String txtPrice = txtGiaBan.getText().toString();
+        txtPrice = txtPrice.replace(".", "");
+
+        UpdateProductService service = UpdateProductAPI.createService(username, password);
+        Call<String> call = service.updateProduct(id,txtNameProduct.getText().toString(),txtPrice,200,categories_id);
+        Log.d("TAG", "updateProduct: "+id+txtNameProduct.getText().toString()+txtGiaBan.getText().toString()+categories_id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    finish();
+                    Log.d("TAG", "onResponse: thanh cong");
+                } else {
+                    // Xử lý phản hồi không thành công
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
     }
 
     private void addControl() {
