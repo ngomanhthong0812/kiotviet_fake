@@ -78,7 +78,7 @@ public class ChangeCategoriesAdapter extends RecyclerView.Adapter<ChangeCategori
                 switch (checkFlat) {
                     case "add":
                     case "update":
-                        adapterChangerCategories.finishActivity(category.getName(),category.getId());
+                        adapterChangerCategories.finishActivity(category.getName(), category.getId());
                         break;
                     case "manage":
                         onDialogSelect(position);
@@ -248,7 +248,12 @@ public class ChangeCategoriesAdapter extends RecyclerView.Adapter<ChangeCategori
                     adapterChangerCategories.updateSizeCategories(categories.size());
                     notifyDataSetChanged();
                 } else {
-                    // Xử lý phản hồi không thành công
+                    if (response.code() == 400) {
+                        // Xử lý lỗi 400
+                        openNotificationDialog();
+                    } else {
+                        // Xử lý các mã lỗi khác nếu cần
+                    } // Xử lý phản hồi không thành công
                 }
             }
 
@@ -257,6 +262,46 @@ public class ChangeCategoriesAdapter extends RecyclerView.Adapter<ChangeCategori
                 // Xử lý lỗi
             }
         });
+    }
+
+    public void openNotificationDialog() {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_notification);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
+        TextView txtTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
+        Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
+
+        txtContent.setText("Không thể xóa loại hàng này vì đang liên kết với sản phẩm. Vui lòng thay đổi liên kết sản phẩm trước và thử lại.");
+        txtTitle.setVisibility(View.GONE);
+        btnHuy.setAlpha(0);
+
+        dialog.show();
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnXacNhan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
     }
 
     private void updateCategory(String username, String password, int id, Category category) {

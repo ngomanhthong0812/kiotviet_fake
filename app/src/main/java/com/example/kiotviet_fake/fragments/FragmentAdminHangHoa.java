@@ -73,6 +73,7 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             initView();
+            Log.d("TAG", "onReceive: fg hang hoa ");
         }
     };
 
@@ -280,6 +281,7 @@ public class FragmentAdminHangHoa extends Fragment implements AdapterListener {
             btnSearch.setVisibility(View.VISIBLE);
             txtTitle.setVisibility(View.VISIBLE);
             btnThem.setVisibility(View.VISIBLE);
+            productAdminAdapter.closeSelection();
         }
     }
 }

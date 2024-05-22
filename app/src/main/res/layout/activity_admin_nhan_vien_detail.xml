@@ -26,10 +26,16 @@
                 android:layout_height="20dp"
                 android:src="@drawable/back" />
 
-            <View
+            <TextView
+                android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:text="Chi tiết"
+                android:textColor="@color/black"
+                android:textSize="19dp"
+                android:textStyle="normal" />
 
             <ImageView
                 android:id="@+id/btnUpdate"
@@ -44,7 +50,6 @@
                 android:layout_height="22dp"
                 android:src="@drawable/outline_delete_24" />
 
-
         </LinearLayout>
 
         <LinearLayout
@@ -58,7 +63,9 @@
                 android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/bg_restaurant"
-                android:src="@drawable/restaurant"
+                android:src="@drawable/outline_account_circle_24"
+                app:tint="@color/light_blue_600"
+                android:padding="10dp"
                 android:visibility="visible" />
         </LinearLayout>
 
@@ -69,16 +76,6 @@
             android:orientation="vertical"
             android:paddingHorizontal="15dp">
 
-            <TextView
-                android:id="@+id/tv.nameProduct"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="15dp"
-                android:text="Bạc xỉu đá"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -94,17 +91,17 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
-                    android:text="Mã hàng"
+                    android:text="Tài khoản"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
                 <TextView
-                    android:id="@+id/tv.maHang"
+                    android:id="@+id/tv.userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingVertical="10dp"
-                    android:text="SP00010"
+                    android:text="thong"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
             </LinearLayout>
@@ -124,26 +121,20 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
-                    android:text="Loại hàng"
+                    android:text="Mật khẩu"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
                 <TextView
-                    android:id="@+id/tv.loaiHang"
+                    android:id="@+id/tv.password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingVertical="10dp"
-                    android:text="Cà phê"
+                    android:text="123"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#D1D1D1" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -154,75 +145,19 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
-                    android:text="Giá bán"
+                    android:text="Phân quyền"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
                 <TextView
-                    android:id="@+id/tv.giaBan"
+                    android:id="@+id/tv.role"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingVertical="10dp"
-                    android:text="18.000"
+                    android:text="thungan"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingHorizontal="15dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/check_1"
-                    app:tint="@color/tabselect" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:paddingVertical="7dp"
-                    android:text="Bán trực tiếp"
-                    android:textColor="@color/black"
-                    android:textSize="15dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/check_1"
-                    app:tint="@color/tabselect" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:paddingVertical="7dp"
-                    android:text="Đang kinh doanh"
-                    android:textColor="@color/black"
-                    android:textSize="15dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

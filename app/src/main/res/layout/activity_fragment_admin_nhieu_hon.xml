@@ -20,10 +20,10 @@
             android:background="@drawable/bg_admin_avatar"
             android:gravity="center"
             android:text="T"
+            android:textAllCaps="true"
             android:textColor="#7A5CFB"
             android:textSize="45dp"
-            android:textStyle="bold"
-            android:textAllCaps="true"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtNameAdmin"
@@ -93,7 +93,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ln.datHang"
+                    android:id="@+id/ln.xuatHuy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -106,14 +106,14 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/outline_shopping_bag_24" />
+                        android:src="@drawable/baseline_free_cancellation_24" />
 
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:text="Đặt hàng"
+                        android:text="Xuất huỷ"
                         android:textColor="@color/black"
                         android:textSize="17dp" />
                 </LinearLayout>
@@ -182,177 +182,6 @@
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:id="@+id/ln.traHangNhap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_file_upload_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Trả hàng nhập"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln.chuyenHang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_local_shipping_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Chuyển hàng"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <LinearLayout
-                    android:id="@+id/ln.kiemKho"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_assignment_turned_in_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Kiểm kho"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln.xuatHuy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/baseline_free_cancellation_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Xuất huỷ"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <LinearLayout
-                    android:id="@+id/ln.khachHang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_account_circle_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Khách hàng"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln.nhaCungCap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_supervised_user_circle_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Nhà cung cấp"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <LinearLayout
                     android:id="@+id/ln.nhanVien"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -376,38 +205,6 @@
                         android:textColor="@color/black"
                         android:textSize="17dp" />
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln.soQuy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_admin_item_nhieu_hon"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/outline_account_balance_wallet_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:text="Số quỹ"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
 
                 <LinearLayout
                     android:id="@+id/ln.baoCao"
@@ -434,30 +231,6 @@
                         android:textSize="17dp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:alpha="0"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="15dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/baseline_notifications_none_24" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/black"
-                        android:textSize="17dp" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

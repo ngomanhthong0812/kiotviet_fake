@@ -118,20 +118,26 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
                 } else {
                     arrIdDelete.remove(Integer.valueOf(productId));
                 }
+
+                if(arrIdDelete.size() == 0){
+                    adapterListener.notification_arrIdDeleteSize(-1);
+                }
             }
         });
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AdminProductDetailActivity.class);
-                // thêm max sản pẩm vào product data
-                intent.putExtra("id", productId);
-                intent.putExtra("product_code", product.getProduct_code());
-                intent.putExtra("name", product.getName());
-                intent.putExtra("categories_name", product.getNameCategories());
-                intent.putExtra("categories_id", product.getIdCategories());
-                intent.putExtra("price", product.getPrice());
-                context.startActivity(intent);
+                if(arrIdDelete.size() == 0){
+                    Intent intent = new Intent(context, AdminProductDetailActivity.class);
+                    // thêm max sản pẩm vào product data
+                    intent.putExtra("id", productId);
+                    intent.putExtra("product_code", product.getProduct_code());
+                    intent.putExtra("name", product.getName());
+                    intent.putExtra("categories_name", product.getNameCategories());
+                    intent.putExtra("categories_id", product.getIdCategories());
+                    intent.putExtra("price", product.getPrice());
+                    context.startActivity(intent);
+                }
             }
         });
     }
@@ -194,7 +200,7 @@ public class ProductAdminAdapter extends RecyclerView.Adapter<ProductAdminAdapte
         Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
         Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
 
-        txtContent.setText("Bạn không thể xoá sản phẩm khi sản phẩm đang được liên kết với bàn chưa được thanh toán, vui lòng thanh toán các sản phẩm liên quan và thử lại.");
+        txtContent.setText("Không thể xóa sản phẩm khi đang liên kết với bàn chưa thanh toán. Vui lòng thanh toán trước và thử lại.");
         txtTitle.setVisibility(View.GONE);
         btnHuy.setAlpha(0);
 

@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kiotviet_fake.R;
+import com.example.kiotviet_fake.activities.AdminNhanVienActivity;
 import com.example.kiotviet_fake.activities.ChangerCategoriesActivity;
 import com.example.kiotviet_fake.activities.EndOfDayReportActivity;
 import com.example.kiotviet_fake.activities.LoginActivity;
@@ -26,7 +28,7 @@ import com.example.kiotviet_fake.session.SessionProducts;
 
 public class FragmentAdminNhieuHon extends Fragment {
     TextView txtNameAdmin, txtAvatar;
-    LinearLayout btnDangXuat,btnBanHang,btnBaoCao,btnPhongBan,btnLoaiHang;
+    LinearLayout btnDangXuat,btnBanHang,btnBaoCao,btnPhongBan,btnLoaiHang,btnNhanVien,btnXuatHuy;
     private View view;
 
     String shopName;
@@ -48,6 +50,8 @@ public class FragmentAdminNhieuHon extends Fragment {
         btnBaoCao = view.findViewById(R.id.ln_baoCao);
         btnPhongBan = view.findViewById(R.id.ln_phongBan);
         btnLoaiHang = view.findViewById(R.id.ln_loaHang);
+        btnNhanVien = view.findViewById(R.id.ln_nhanVien);
+        btnXuatHuy = view.findViewById(R.id.ln_xuatHuy);
         return view;
     }
 
@@ -123,6 +127,19 @@ public class FragmentAdminNhieuHon extends Fragment {
                 Intent intent = new Intent(getContext(), ChangerCategoriesActivity.class);
                 intent.putExtra("checkFlat","manage");
                 startActivity(intent);
+            }
+        });
+        btnNhanVien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AdminNhanVienActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnXuatHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Chức năng đang được cập nhật", Toast.LENGTH_LONG).show();
             }
         });
     }

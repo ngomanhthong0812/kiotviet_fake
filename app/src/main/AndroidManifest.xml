@@ -16,35 +16,44 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".activities.AdminNhanVienUpdateAndInsertActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminNhanVienDetailActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.AdminNhanVienActivity"
+            android:exported="false"/>
+        <activity
             android:name=".activities.PhongBanActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.ChangerCategoriesActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.AdminProductUpdateAndInsertActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.AdminProductDetailActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".fragments.FragmentAdminNhieuHon"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".fragments.FragmentAdminThongBao"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".fragments.FragmentAdminHangHoa"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".fragments.FragmentAdminHoaDon"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".fragments.FragmentAdminTongQuan"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.AdminActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
