@@ -57,14 +57,6 @@ public class FragmentTatCa extends Fragment {
     public FragmentTatCa() {
     }
 
-    // chạy lại initview()
-    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            initView();
-        }
-    };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,8 +72,6 @@ public class FragmentTatCa extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Đăng ký BroadcastReceiver
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeReceiver, new IntentFilter("RUN_INIT_VIEW_TABLE"));
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -111,13 +101,6 @@ public class FragmentTatCa extends Fragment {
         super.onPause();
         // Loại bỏ callback của handler khi Fragment bị tạm dừng
         handler.removeCallbacks(runnable);
-    }
-
-    @Override
-    public void onDestroy() {
-        // Hủy đăng ký BroadcastReceiver
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(closeReceiver);
-        super.onDestroy();
     }
 
     private void initView() {

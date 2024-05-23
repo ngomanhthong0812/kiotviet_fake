@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.BroadcastReceiver;
@@ -446,6 +447,7 @@ public class OrderProductActivity extends AppCompatActivity {
         private void navigateToTableDetailActivity () {
             SessionManager sessionManager = SessionManager.getInstance();
             sessionManager.removeBillAll();
+            runInitViewTable();
 
             Intent intent = new Intent(OrderProductActivity.this, TableDetailActivity.class);
             intent.putExtra("idTable", idTable);
@@ -471,6 +473,11 @@ public class OrderProductActivity extends AppCompatActivity {
 
             return code;
         }
+
+    private void runInitViewTable() {
+        Intent intent = new Intent("FINISH_ACTIVITY_TABLE_DETAIL");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
         @Override
         public void onBackPressed () {

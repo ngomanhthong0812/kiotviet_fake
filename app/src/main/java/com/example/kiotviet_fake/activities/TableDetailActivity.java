@@ -76,8 +76,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     Button btnThanhToan, btnTamTinh, btnThongBao;
     LinearLayout btnDoiBan;
 
-    private Handler handler;
-    private Runnable runnable;
     RecyclerView recyclerView;
 
     int idTable;
@@ -96,8 +94,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     ProgressBar progressBar;
     int itemSize = 0;
     String code, role;
-
-    boolean isSubmit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,33 +116,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
         addControl();
         updateUI();
+        initView();
         btnClick();
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume() {
-        super.onResume();
-        initView();
-
-        handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                initView(); // Gọi lại hàm initview()
-                handler.postDelayed(this, 1000); // Lập lịch chạy lại sau 5 giây
-                Log.d("TAG", "onResume: dang mo ");
-            }
-        };
-        handler.postDelayed(runnable, 1000); // Lập lịch chạy hàm đầu tiên sau 5 giây
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void onPause() {
-        super.onPause();
-        // Loại bỏ callback của handler khi Fragment bị tạm dừng
-        handler.removeCallbacks(runnable);
-        Log.d("TAG", "onResume: da tat ");
-    }
 
     public void addControl() {
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
@@ -185,7 +158,8 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeBillAll();
 
-                runInitViewTable();
+                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -195,7 +169,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onClick(View v) {
                 // thêm hiệu ứng loading
                 progressBar.setVisibility(View.VISIBLE);
-                isSubmit = true;
                 insertBill("11177575", "60-dayfreetrial");
             }
         });
@@ -257,7 +230,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             startActivity(intent);
                         }
                         if (item.getItemId() == R.id.huy_don) {
-                            isSubmit = true;
                             openNotificationDialog();
                         }
                         return false;
@@ -533,27 +505,12 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     }
 
     private void navigateToTableMainActivity() {
-        runInitViewTable();
-        if(isSubmit){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Hoàn thành Activity sau 0.5 giây
-                    finish();
-                }
-            }, 500); // Trì hoãn 0.5 giây (500 milliseconds)
-        }else{
-            handler.removeCallbacks(runnable);
-            openNotificationSubmitDialog();
-        }
+        Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.removeBillAll();
 
-    }
-
-    private void runInitViewTable() {
-        Intent intent = new Intent("RUN_INIT_VIEW_TABLE");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void navigateToTableOrderProductActivity() {
@@ -679,49 +636,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
 
 
     }
-
-    public void openNotificationSubmitDialog() {
-        Dialog dialog = new Dialog(TableDetailActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_notification);
-        dialog.setCanceledOnTouchOutside(false); // Ngăn dialog tự đóng khi nhấn ra ngoài
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
-        TextView txtTitle = (TextView) dialog.findViewById(R.id.tv_title);
-        Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
-        Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
-
-        txtContent.setText("Bàn có thể đã thanh toán hoặc huỷ");
-        txtTitle.setVisibility(View.GONE);
-        btnHuy.setAlpha(0);
-
-        dialog.show();
-
-        btnHuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btnXacNhan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                dialog.dismiss();
-            }
-        });
-
-
-    }
-
 
     @Override
     public void onBackPressed() {

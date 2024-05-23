@@ -53,13 +53,6 @@ public class FragmentConTrong extends Fragment {
         // Required empty public constructor
     }
 
-    // chạy lại initview()
-    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            initView();
-        }
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,8 +68,6 @@ public class FragmentConTrong extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Đăng ký BroadcastReceiver
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeReceiver, new IntentFilter("RUN_INIT_VIEW_TABLE"));
         recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
@@ -106,12 +97,6 @@ public class FragmentConTrong extends Fragment {
         handler.removeCallbacks(runnable);
     }
 
-    @Override
-    public void onDestroy() {
-        // Hủy đăng ký BroadcastReceiver
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(closeReceiver);
-        super.onDestroy();
-    }
 
     public void initView() {
 
