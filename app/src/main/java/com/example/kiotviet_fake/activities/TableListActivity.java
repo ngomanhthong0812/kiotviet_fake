@@ -49,6 +49,7 @@ public class TableListActivity extends AppCompatActivity {
     String nameTable;
     int idTable;
     int orderId;
+    String id_shop;
 
     ArrayList<TableGroup> arrayList = new ArrayList<>();
     RecyclerView recyclerView;
@@ -59,6 +60,7 @@ public class TableListActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
+        id_shop = sharedPreferences.getString("shop_id","");
 
         Intent intent = getIntent();
         nameTable = intent.getStringExtra("nameTable");
@@ -78,7 +80,7 @@ public class TableListActivity extends AppCompatActivity {
 
         //select data from api
         SelectTablesService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(SelectTablesService.class);
-        Call<String> call = apiService.getTable(isTableUserId, "Mang về");
+        Call<String> call = apiService.getTable(id_shop);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -96,11 +98,8 @@ public class TableListActivity extends AppCompatActivity {
                             int product_quantity = jsonObject.getInt("product_quantity");
                             String order_id = jsonObject.getString("order_id");
                             System.out.println("tesst" + order_id);
-                            int userId = 0; // Giá trị mặc định nếu không thể chuyển đổi
-                            if (user_id != null && !user_id.equals("null") && !user_id.isEmpty()) {
-                                userId = Integer.parseInt(user_id);
-                            }
-                            if (userId == isTableUserId && status == 1) {
+
+                            if (status == 1 && id != idTable) {
 
                                 arrayList.add(new TableGroup(user_id, id, tableName, status, table_price, product_quantity, Integer.parseInt(order_id)));
                             }

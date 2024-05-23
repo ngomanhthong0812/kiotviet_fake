@@ -9,7 +9,6 @@ public interface SelectTablesService {
     @FormUrlEncoded
     @POST("tables/selectTables.php")
     Call<String> getTable(
-            @Field("user_id") int user_id,
-            @Field("table_name") String table_name
+            @Field("shop_id") String shop_id
     );
 }
