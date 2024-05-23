@@ -1,8 +1,12 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,9 +43,23 @@ import retrofit2.Response;
 public class FragmentConTrong extends Fragment {
     String isShopId;
 
+    private Handler handler;
+    private Runnable runnable;
+    private TableAdapter tableAdapter;
+    private RecyclerView recyclerView;
+
+
     public FragmentConTrong() {
         // Required empty public constructor
     }
+
+    // chạy lại initview()
+    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initView();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,14 +75,45 @@ public class FragmentConTrong extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView();
-    }
-
-    public void initView() {
-        RecyclerView recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
+        // Đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeReceiver, new IntentFilter("RUN_INIT_VIEW_TABLE"));
+        recyclerView = getView().findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume() {
+        super.onResume();
+        initView();
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                initView(); // Gọi lại hàm initview()
+                handler.postDelayed(this, 2000); // Lập lịch chạy lại sau 2 giây
+            }
+        };
+        handler.postDelayed(runnable, 2000); // Lập lịch chạy hàm đầu tiên sau 2 giây
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause() {
+        super.onPause();
+        // Loại bỏ callback của handler khi Fragment bị tạm dừng
+        handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    public void onDestroy() {
+        // Hủy đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(closeReceiver);
+        super.onDestroy();
+    }
+
+    public void initView() {
 
         ArrayList<Table> arrayList = new ArrayList<>();
 
@@ -95,9 +147,12 @@ public class FragmentConTrong extends Fragment {
                             }
                         }
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
-                        TableAdapter tableAdapter = new TableAdapter(arrayList, requireContext()); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
-                        recyclerView.setAdapter(tableAdapter);
-                        tableAdapter.notifyDataSetChanged(); // Thông báo cập nhật dữ liệu cho RecyclerView
+                        if (tableAdapter == null) {
+                            tableAdapter = new TableAdapter(arrayList, requireContext());
+                            recyclerView.setAdapter(tableAdapter);
+                        } else {
+                            tableAdapter.updateData(arrayList);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

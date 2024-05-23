@@ -1,8 +1,12 @@
 package com.example.kiotviet_fake.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,8 +49,21 @@ public class FragmentTatCa extends Fragment {
     private ArrayList<Table> originalTables = new ArrayList<>();
     RecyclerView recyclerView;
 
+    String search = "";
+
+    private Handler handler;
+    private Runnable runnable;
+
     public FragmentTatCa() {
     }
+
+    // chạy lại initview()
+    private BroadcastReceiver closeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initView();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,7 +71,7 @@ public class FragmentTatCa extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         isTableUserId = sharedPreferences.getInt("userId", 0);
         isShopId = sharedPreferences.getString("shop_id", "");
-        Log.d("TAG", "idshop: "+isShopId);
+        Log.d("TAG", "idshop: " + isShopId);
 
         view = inflater.inflate(R.layout.fragment_tat_ca, container, false);
         return view;
@@ -60,15 +80,47 @@ public class FragmentTatCa extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView();
-    }
+        // Đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeReceiver, new IntentFilter("RUN_INIT_VIEW_TABLE"));
 
-    private void initView() {
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+    }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume() {
+        super.onResume();
+        initView();
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                initView(); // Gọi lại hàm initview()
+
+                handler.postDelayed(this, 1000); // Lập lịch chạy lại sau 2 giây
+            }
+        };
+        handler.postDelayed(runnable, 1000); // Lập lịch chạy hàm đầu tiên sau 2 giây
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause() {
+        super.onPause();
+        // Loại bỏ callback của handler khi Fragment bị tạm dừng
+        handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    public void onDestroy() {
+        // Hủy đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(closeReceiver);
+        super.onDestroy();
+    }
+
+    private void initView() {
         // Select data from API
         TableSelectByUserIdService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(TableSelectByUserIdService.class);
         Call<String> call = apiService.getTable(isShopId, "");
@@ -79,7 +131,7 @@ public class FragmentTatCa extends Fragment {
                     try {
                         JSONArray jsonArray = new JSONArray(response.body());
                         ArrayList<Table> arrayList = new ArrayList<>();
-
+                        originalTables.clear();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             int id = Integer.parseInt(jsonObject.getString("id"));
@@ -97,7 +149,6 @@ public class FragmentTatCa extends Fragment {
 
                             if (tableName.toLowerCase().contains("mang")) {
                                 int statusMangVe = status;
-                                Log.d("TAG", "onResponse: "+statusMangVe);
                                 SharedPreferences sharedPreferences = requireContext().getSharedPreferences("mangVe", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putInt("statusMangVe", statusMangVe);
@@ -113,8 +164,12 @@ public class FragmentTatCa extends Fragment {
                         if (tableAdapter == null) {
                             tableAdapter = new TableAdapter(arrayList, requireContext());
                             recyclerView.setAdapter(tableAdapter);
+                            Log.d("TAG", "onResponse: add");
                         } else {
-                            tableAdapter.updateData(arrayList);
+                            if(search.equals("")){
+                                tableAdapter.updateData(arrayList);
+                                Log.d("TAG", "onResponse: update");
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -131,6 +186,7 @@ public class FragmentTatCa extends Fragment {
 
     public void performSearch(String keyword) {
         Log.d("TAG", "performSearch: " + keyword);
+        search = keyword;
         keyword = removeAccents(keyword.toLowerCase());
         ArrayList<Table> searchResult = new ArrayList<>();
         if (keyword.isEmpty()) {

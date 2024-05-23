@@ -45,7 +45,7 @@ public class FragmentCategoriesOrder extends Fragment {
         pager.setAdapter(adapter);
 
         // Đặt số trang được giữ
-        pager.setOffscreenPageLimit(5); // Số trang được giữ: 5
+        pager.setOffscreenPageLimit(3); // Số trang được giữ: 5
 
 
         new TabLayoutMediator(tabLayout, pager, new TabLayoutMediator.TabConfigurationStrategy() {

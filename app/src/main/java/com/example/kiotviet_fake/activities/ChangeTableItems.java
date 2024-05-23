@@ -281,10 +281,10 @@ public class ChangeTableItems extends AppCompatActivity implements AdapterListen
                             if (userIdString != null && !userIdString.equals("null") && !userIdString.isEmpty()) {
                                 userId = Integer.parseInt(userIdString);
                             }
-                            if (userId == isTableUserId && id == idTable) {
+                            if (id == idTable) {
                                 arrayList.add(0, new Table(id, tableName, status, userId, formattedPrice));
                             }
-                            if (userId == isTableUserId && status == 0 && table_price == 0) {
+                            if (status == 0 && table_price == 0) {
                                 arrayList.add(new Table(id, tableName, status, userId, formattedPrice));
                             }
 

@@ -90,47 +90,6 @@ public class PhongBanActivity extends AppCompatActivity {
                 finish();
             }
         });
-//        imageView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getActionMasked()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        mLastAction = MotionEvent.ACTION_DOWN;
-//                        // Lưu vị trí ban đầu khi bắt đầu kéo ImageView
-//                        mInitialX = (int) event.getRawX() - v.getLeft();
-//                        mInitialY = (int) event.getRawY() - v.getTop();
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        if (mLastAction == MotionEvent.ACTION_DOWN) {
-//                            // Lấy vị trí mới của ImageView khi di chuyển
-//                            int newX = (int) event.getRawX() - mInitialX;
-//                            int newY = (int) event.getRawY() - mInitialY;
-//
-//                            // Lấy kích thước của FrameLayout
-//                            int parentWidth = ((ViewGroup)v.getParent()).getWidth();
-//                            int parentHeight = ((ViewGroup)v.getParent()).getHeight();
-//
-//                            // Lấy kích thước của ImageView
-//                            int viewWidth = v.getWidth();
-//                            int viewHeight = v.getHeight();
-//
-//                            // Giới hạn vị trí của ImageView để nó chỉ di chuyển trong phạm vi của FrameLayout
-//                            newX = Math.max(0, Math.min(newX, parentWidth - viewWidth));
-//                            newY = Math.max(0, Math.min(newY, parentHeight - viewHeight));
-//
-//                            // Di chuyển ImageView tới vị trí mới
-//                            v.setX(newX);
-//                            v.setY(newY);
-//                        }
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        mLastAction = MotionEvent.ACTION_UP;
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +135,7 @@ public class PhongBanActivity extends AppCompatActivity {
     private void addTableToDatabase(String tableName, String idShop, int idUser) {
        TableInsertService service = TableInsertApiClient.createService("11177575", "60-dayfreetrial");
 
-        Call<String> call = service.insertTable(tableName,idUser,idShop);
+        Call<String> call = service.insertTable(tableName.toString().toUpperCase(),idUser,idShop);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

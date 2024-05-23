@@ -2,6 +2,9 @@ package com.example.kiotviet_fake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -72,6 +76,10 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     Button btnThanhToan, btnTamTinh, btnThongBao;
     LinearLayout btnDoiBan;
 
+    private Handler handler;
+    private Runnable runnable;
+    RecyclerView recyclerView;
+
     int idTable;
     int newOrderId;
     String nameTable;
@@ -89,6 +97,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     int itemSize = 0;
     String code, role;
 
+    boolean isSubmit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +108,44 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         role = sharedPreferences.getString("role", "");
 
+        recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
+        recyclerView.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
+        recyclerView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
+
         addControl();
         updateUI();
-        initView();
         btnClick();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume() {
+        super.onResume();
+        initView();
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                initView(); // Gọi lại hàm initview()
+                handler.postDelayed(this, 1000); // Lập lịch chạy lại sau 5 giây
+                Log.d("TAG", "onResume: dang mo ");
+            }
+        };
+        handler.postDelayed(runnable, 1000); // Lập lịch chạy hàm đầu tiên sau 5 giây
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause() {
+        super.onPause();
+        // Loại bỏ callback của handler khi Fragment bị tạm dừng
+        handler.removeCallbacks(runnable);
+        Log.d("TAG", "onResume: da tat ");
     }
 
     public void addControl() {
@@ -142,8 +185,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.removeBillAll();
 
-                Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
-                startActivity(intent);
+                runInitViewTable();
                 finish();
             }
         });
@@ -153,6 +195,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
             public void onClick(View v) {
                 // thêm hiệu ứng loading
                 progressBar.setVisibility(View.VISIBLE);
+                isSubmit = true;
                 insertBill("11177575", "60-dayfreetrial");
             }
         });
@@ -214,6 +257,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             startActivity(intent);
                         }
                         if (item.getItemId() == R.id.huy_don) {
+                            isSubmit = true;
                             openNotificationDialog();
                         }
                         return false;
@@ -246,6 +290,9 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     }
 
     public void initView() {
+        quantityTotal = 0;
+        priceTotal = 0;
+        itemSize = 0;
         //select data from api
         Orders_OrderItem_Product_SelectService apiService = RetrofitClient.getRetrofitInstance("11177575", "60-dayfreetrial").create(Orders_OrderItem_Product_SelectService.class);
         Call<String> call = apiService.getOrders(idTable);
@@ -281,7 +328,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                             int quantity = Integer.parseInt(jsonObject.getString("quantity"));
                             String product_code = jsonObject.getString("product_code");
 
-                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code,0));
+                            arrayList.add(new Product(id, "", product_name, formattedPrice, 200, quantity, idTable, nameTable, product_id, "", product_code, 0));
                             quantityTotal += quantity;
                             priceTotal += totalPrice;
                             itemSize++;
@@ -312,16 +359,6 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                         } else {
                             progressBar.setVisibility(View.GONE);
                         }
-
-                        RecyclerView recyclerView = findViewById(R.id.recycler_view); // Sử dụng getView() để lấy view được inflate từ layout
-                        recyclerView.setHasFixedSize(true);
-                        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false); // Thay vì FragmentTatCa.this, sử dụng requireContext()
-                        recyclerView.setLayoutManager(layoutManager);
-
-                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-                        Drawable drawable = ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider);
-                        dividerItemDecoration.setDrawable(drawable);
-                        recyclerView.addItemDecoration(dividerItemDecoration); // Thêm dường viền vào RecyclerView
 
                         // Tạo và thiết lập Adapter mới sau khi đã thêm dữ liệu từ API
                         ProductAdapter productAdapter = new ProductAdapter(arrayList, getApplicationContext(), TableDetailActivity.this); // Sử dụng requireContext() thay vì getContext() để đảm bảo không trả về null
@@ -468,7 +505,7 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
         final int[] completedCalls = {0};
         for (Bill bill : bills) {
             BillsInsertItemsService service = BillsInsertItemsApiClient.createService(username, password);
-            Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(),bill.getNameProduct(), newBillId);
+            Call<String> call = service.insertBillItems(bill.getQuantity(), bill.getTotalPrice(), bill.getProductId(), bill.getNameProduct(), newBillId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -496,13 +533,27 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
     }
 
     private void navigateToTableMainActivity() {
-        Intent intent = new Intent(TableDetailActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-
+        runInitViewTable();
+        if(isSubmit){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Hoàn thành Activity sau 0.5 giây
+                    finish();
+                }
+            }, 500); // Trì hoãn 0.5 giây (500 milliseconds)
+        }else{
+            handler.removeCallbacks(runnable);
+            openNotificationSubmitDialog();
+        }
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.removeBillAll();
 
+    }
+
+    private void runInitViewTable() {
+        Intent intent = new Intent("RUN_INIT_VIEW_TABLE");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void navigateToTableOrderProductActivity() {
@@ -623,6 +674,48 @@ public class TableDetailActivity extends AppCompatActivity implements AdapterLis
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+
+    }
+
+    public void openNotificationSubmitDialog() {
+        Dialog dialog = new Dialog(TableDetailActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_notification);
+        dialog.setCanceledOnTouchOutside(false); // Ngăn dialog tự đóng khi nhấn ra ngoài
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView txtContent = (TextView) dialog.findViewById(R.id.tv_content);
+        TextView txtTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        Button btnHuy = (Button) dialog.findViewById(R.id.btn_huy);
+        Button btnXacNhan = (Button) dialog.findViewById(R.id.btn_xacNhan);
+
+        txtContent.setText("Bàn có thể đã thanh toán hoặc huỷ");
+        txtTitle.setVisibility(View.GONE);
+        btnHuy.setAlpha(0);
+
+        dialog.show();
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnXacNhan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                dialog.dismiss();
             }
         });
 

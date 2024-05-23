@@ -206,7 +206,7 @@ public class Adapter_Admin_Tables extends RecyclerView.Adapter<Adapter_Admin_Tab
     private void UpdattNameTable(String idTable, String newName) {
         System.out.println("test update table " + idTable+ " " + newName);
         UpdateNameTableService updateNameTableService = UpdateNameTableAPI.createService("11177575", "60-dayfreetrial");
-        Call<String> call = updateNameTableService.updateNameTable(newName, idTable);
+        Call<String> call = updateNameTableService.updateNameTable(newName.toString().toUpperCase(), idTable);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
